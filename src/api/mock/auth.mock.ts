@@ -6,8 +6,8 @@ export const mockLogin = async (
     setTimeout(() => {
       if (
         (emailOrPhone === 'admin@franchiseos.com' ||
-          emailOrPhone === '9876543210') &&
-        password === 'Admin@123'
+          emailOrPhone === '8209832665') &&
+        password === 'mohit123'
       ) {
         resolve({
           success: true,

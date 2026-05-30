@@ -1,28 +1,32 @@
 import React from 'react';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { routes } from '../constants/routes';
+import {View, Text} from 'react-native';
+import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 
-// Placeholder imports - replace with actual screens
-// import Dashboard from '../screens/superAdmin/Dashboard';
-// import Companies from '../screens/superAdmin/Companies';
-
-const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
-const DashboardStack = () => {
+const DashboardScreen = () => {
   return (
-    <Stack.Navigator screenOptions={{ headerShown: false }}>
-      {/* <Stack.Screen name={routes.SUPER_ADMIN_DASHBOARD} component={Dashboard} /> */}
-    </Stack.Navigator>
+    <View
+      style={{
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+      }}>
+      <Text>Super Admin Dashboard</Text>
+    </View>
   );
 };
 
-const CompaniesStack = () => {
+const CompaniesScreen = () => {
   return (
-    <Stack.Navigator screenOptions={{ headerShown: false }}>
-      {/* <Stack.Screen name={routes.COMPANIES} component={Companies} /> */}
-    </Stack.Navigator>
+    <View
+      style={{
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+      }}>
+      <Text>Companies</Text>
+    </View>
   );
 };
 
@@ -31,10 +35,16 @@ const SuperAdminNavigator = () => {
     <Tab.Navigator
       screenOptions={{
         headerShown: false,
-      }}
-    >
-      <Tab.Screen name="Dashboard" component={DashboardStack} />
-      <Tab.Screen name="Companies" component={CompaniesStack} />
+      }}>
+      <Tab.Screen
+        name="Dashboard"
+        component={DashboardScreen}
+      />
+
+      <Tab.Screen
+        name="Companies"
+        component={CompaniesScreen}
+      />
     </Tab.Navigator>
   );
 };

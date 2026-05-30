@@ -9,6 +9,7 @@ import {
   ScrollView,
   Alert,
   StatusBar,
+  TextInput,
 } from 'react-native';
 
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -23,6 +24,18 @@ const ForgotPasswordScreen = () => {
   const [emailOrPhone, setEmailOrPhone] =
     useState('');
 
+  const [otpSent, setOtpSent] =
+    useState(false);
+
+  const [otp, setOtp] = useState([
+    '',
+    '',
+    '',
+    '',
+    '',
+    '',
+  ]);
+
   const onSendOtp = () => {
     if (!emailOrPhone.trim()) {
       Alert.alert(
@@ -32,11 +45,23 @@ const ForgotPasswordScreen = () => {
       return;
     }
 
-    navigation.navigate(
-      'OtpVerification',
-      {
-        emailOrPhone,
-      },
+    setOtpSent(true);
+  };
+
+  const onVerifyOtp = () => {
+    const otpValue = otp.join('');
+
+    if (otpValue.length !== 6) {
+      Alert.alert(
+        'Validation',
+        'Please enter valid OTP',
+      );
+      return;
+    }
+
+    Alert.alert(
+      'Success',
+      'OTP Verified Successfully',
     );
   };
 
@@ -108,7 +133,7 @@ const ForgotPasswordScreen = () => {
 
             <View
               style={{
-                marginTop: 30,
+                marginTop: 25,
               }}>
               <AppInput
                 placeholder="Mobile Number or Email"
@@ -116,12 +141,12 @@ const ForgotPasswordScreen = () => {
                 onChangeText={
                   setEmailOrPhone
                 }
-                leftIcon="call-outline"
+                leftIcon="person"
               />
 
               <View
                 style={{
-                  height: 25,
+                  height: 20,
                 }}
               />
 
@@ -129,6 +154,105 @@ const ForgotPasswordScreen = () => {
                 title="Send OTP"
                 onPress={onSendOtp}
               />
+
+              {otpSent && (
+                <>
+                  <View
+                    style={{
+                      height: 40,
+                    }}
+                  />
+
+                  <View
+                    style={
+                      styles.otpContainer
+                    }>
+                    {otp.map(
+                      (
+                        digit,
+                        index,
+                      ) => (
+                        <TextInput
+                          key={index}
+                          value={digit}
+                          maxLength={1}
+                          keyboardType="number-pad"
+                          style={
+                            styles.otpInput
+                          }
+                          onChangeText={text => {
+                            const newOtp =
+                              [...otp];
+
+                            newOtp[
+                              index
+                            ] = text;
+
+                            setOtp(
+                              newOtp,
+                            );
+                          }}
+                        />
+                      ),
+                    )}
+                  </View>
+
+                  <View
+                    style={
+                      styles.resendRow
+                    }>
+                    <Text
+                      style={
+                        styles.timerText
+                      }>
+                      Resend OTP in
+                      0:45
+                    </Text>
+
+                    <TouchableOpacity>
+                      <Text
+                        style={
+                          styles.resendText
+                        }>
+                        Resend OTP
+                      </Text>
+                    </TouchableOpacity>
+                  </View>
+
+                  <View
+                    style={{
+                      height: 35,
+                    }}
+                  />
+
+                  <AppButton
+                    title="Verify OTP"
+                    onPress={
+                      onVerifyOtp
+                    }
+                  />
+
+                  <TouchableOpacity
+                    style={{
+                      marginTop: 20,
+                    }}
+                    onPress={() =>
+                      navigation.navigate(
+                        'Login',
+                      )
+                    }>
+                    <Text
+                      style={
+                        styles.backText
+                      }>
+                      Remember
+                      password?
+                      {' '}
+                      Back to Login
+                    </Text>
+                  </TouchableOpacity>
+                </>
+              )}
             </View>
           </View>
         </ScrollView>
@@ -146,7 +270,7 @@ const styles = StyleSheet.create({
   },
 
   topSection: {
-    height: 250,
+    height: 220,
     backgroundColor: '#0D3696',
     justifyContent: 'center',
     alignItems: 'center',
@@ -187,25 +311,18 @@ const styles = StyleSheet.create({
 
   card: {
     backgroundColor: '#FFFFFF',
-
     marginHorizontal: 20,
-
-    marginTop: -70,
-
+    marginTop: -60,
     borderRadius: 18,
-
     paddingHorizontal: 24,
     paddingVertical: 30,
-
     shadowColor: '#000',
     shadowOpacity: 0.12,
     shadowRadius: 16,
-
     shadowOffset: {
       width: 0,
       height: 8,
     },
-
     elevation: 10,
   },
 
@@ -222,5 +339,44 @@ const styles = StyleSheet.create({
     color: '#6B7280',
     fontSize: 15,
     lineHeight: 22,
+  },
+
+  otpContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+
+  otpInput: {
+    width: 42,
+    height: 50,
+    borderWidth: 1.5,
+    borderColor: '#2563EB',
+    borderRadius: 8,
+    textAlign: 'center',
+    fontSize: 20,
+    fontWeight: '600',
+    color: '#111827',
+  },
+
+  resendRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: 20,
+  },
+
+  timerText: {
+    fontSize: 13,
+    color: '#6B7280',
+  },
+
+  resendText: {
+    fontSize: 13,
+    color: '#A1A1AA',
+  },
+
+  backText: {
+    textAlign: 'center',
+    color: '#6B7280',
+    fontSize: 13,
   },
 });

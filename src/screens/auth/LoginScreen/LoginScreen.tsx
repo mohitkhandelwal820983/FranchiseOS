@@ -117,23 +117,12 @@ const LoginScreen = () => {
               />
 
               <TouchableOpacity
-                style={{
-                  backgroundColor: 'red',
-                  padding: 20,
-                  marginTop: 20,
-                }}
                 onPress={() => {
-                 console.log("Pressed")
+                  console.log('Forgot Password Pressed');
+                  navigation.navigate('ForgotPassword');
                 }}
               >
-                <Text
-                  style={{
-                    color: 'white',
-                    fontSize: 18,
-                  }}
-                >
-                  Forgot Password
-                </Text>
+                <Text style={styles.forgotText}>Forgot Password</Text>
               </TouchableOpacity>
 
               <View
