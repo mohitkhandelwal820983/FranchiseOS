@@ -1,6 +1,6 @@
 import React from 'react';
 import { Text, View, Image, ImageBackground } from 'react-native';
-import images from '../images';
+import images from '../assets/images';
 import { commonStyle } from '../common/CommonStyle';
 
 const SplashScreen: React.FC = () => {
