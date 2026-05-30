@@ -6,17 +6,19 @@ import {
   Bell,
   Building2,
   Calendar,
-  ChevronRight,
   Clock,
   Folder,
   Headset,
-  MapPin,
+  Megaphone,
   Menu,
   Moon,
   Plus,
   TriangleAlert,
 } from 'lucide-react-native';
 import AlertCard from '../../components/AlertCard';
+import CompanyCard, { COMPANY_STATUS } from '../../components/CompnayCard';
+import SystemHealthCard from '../../components/SystemHealthCard';
+import PlatformRevenueCard from '../../components/PlatformRevenueCard';
 
 const Dashboard = () => {
   return (
@@ -127,12 +129,10 @@ const Dashboard = () => {
           <View
             style={{
               flexDirection: 'row',
-              columnGap: 16,
               marginTop: 16,
-              alignItems: 'stretch',
             }}
           >
-            <View style={{ flex: 1 }}>
+            <View style={{ flex: 1, marginRight: 8 }}>
               <DashboardStatCard
                 Icon={Activity}
                 iconColor="#22C55E"
@@ -144,7 +144,7 @@ const Dashboard = () => {
               />
             </View>
 
-            <View style={{ flex: 1 }}>
+            <View style={{ flex: 1, marginLeft: 8 }}>
               <DashboardStatCard
                 Icon={Calendar}
                 iconColor="#3B82F6"
@@ -160,12 +160,10 @@ const Dashboard = () => {
           <View
             style={{
               flexDirection: 'row',
-              columnGap: 16,
               marginTop: 16,
-              alignItems: 'stretch',
             }}
           >
-            <View style={{ flex: 1 }}>
+            <View style={{ flex: 1, marginRight: 8 }}>
               <DashboardStatCard
                 Icon={Plus}
                 iconColor="#22C55E"
@@ -178,7 +176,7 @@ const Dashboard = () => {
               />
             </View>
 
-            <View style={{ flex: 1 }}>
+            <View style={{ flex: 1, marginLeft: 8 }}>
               <DashboardStatCard
                 Icon={Moon}
                 iconColor="#EF4444"
@@ -191,6 +189,16 @@ const Dashboard = () => {
               />
             </View>
           </View>
+
+           <View style={{marginTop:16}}>
+            <SystemHealthCard />
+           </View>
+
+          <View style={{marginTop:16}}>
+             <PlatformRevenueCard />
+          </View>
+
+         
 
           <View
             style={[
@@ -297,138 +305,86 @@ const Dashboard = () => {
             </Text>
           </View>
 
-          <View
+          <CompanyCard
+            initials="TC"
+            companyName="TechCorp India"
+            ownerName="Rajesh Sharma"
+            location="Mumbai, Maharashtra"
+            status={COMPANY_STATUS.ACTIVE}
+            plan="Professional"
+            addedText="Added 2 days ago"
+          />
+
+          <CompanyCard
+            initials="RI"
+            companyName="Reliance Industries"
+            ownerName="Amit Shah"
+            location="Delhi, NCR"
+            status={COMPANY_STATUS.ACTIVE}
+            plan="Enterprise"
+            addedText="Added 5 days ago"
+          />
+
+          <CompanyCard
+            initials="AB"
+            companyName="ABC Distributors"
+            ownerName="Priya Patel"
+            location="Pune, Maharashtra"
+            status={COMPANY_STATUS.PENDING}
+            plan="Basic"
+            addedText="Added 1 week ago"
+          />
+
+          <CompanyCard
+            initials="XY"
+            companyName="XYZ Traders"
+            ownerName="Vikas Gupta"
+            location="Jaipur, Rajasthan"
+            status={COMPANY_STATUS.SUSPENDED}
+            plan="Enterprise"
+            addedText="Added 3 months ago"
+          />
+
+          <CompanyCard
+            initials="MN"
+            companyName="MN Enterprises"
+            ownerName="Neha Sharma"
+            location="Bangalore, Karnataka"
+            status={COMPANY_STATUS.INACTIVE}
+            plan="Professional"
+            addedText="Added 2 weeks ago"
+          />
+
+          <Text
             style={[
-              commonStyle.shadow,
-              {
-                padding: 16,
-                marginTop: 8,
-                borderRadius: 8,
-                flexDirection: 'row',
-                alignItems: 'center',
-                backgroundColor: colors.white,
-              },
+              commonStyle.semiBold,
+              { fontSize: 13, color: colors.black, marginTop: 16 },
             ]}
           >
-            {/* Left Section */}
-            <View
-              style={{ flex: 1, flexDirection: 'row', alignItems: 'center' }}
+            Broadcast Message
+          </Text>
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'center',
+              columnGap: 5,
+              borderWidth: 1,
+              borderRadius: 4,
+              padding: 8,
+              borderColor: colors.skyBlue,
+            }}
+          >
+            <Megaphone size={24} color={colors.skyBlue} />
+            <Text
+              style={[
+                commonStyle.medium,
+                { fontSize: 9, color: colors.skyBlue },
+              ]}
             >
-              <View
-                style={{
-                  width: 32,
-                  height: 32,
-                  borderRadius: 16,
-                  backgroundColor: colors.primary,
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                }}
-              >
-                <Text style={[commonStyle.medium, { fontSize: 15 }]}>TC</Text>
-              </View>
-
-              <View style={{ marginLeft: 10 }}>
-                <Text
-                  style={[
-                    commonStyle.medium,
-                    { fontSize: 9, color: colors.black },
-                  ]}
-                >
-                  TechCorp India
-                </Text>
-
-                <Text
-                  style={[
-                    commonStyle.regular,
-                    { fontSize: 7, color: colors.textGray },
-                  ]}
-                >
-                  Owner: Rajesh Sharma
-                </Text>
-
-                <View
-                  style={{
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    marginTop: 2,
-                  }}
-                >
-                  <MapPin size={10} color={colors.textGray} />
-
-                  <Text
-                    style={[
-                      commonStyle.regular,
-                      {
-                        fontSize: 7,
-                        color: colors.textGray,
-                        marginLeft: 3,
-                      },
-                    ]}
-                  >
-                    Mumbai, Maharashtra
-                  </Text>
-                </View>
-              </View>
-            </View>
-
-            {/* Right Section */}
-            <View
-              style={{
-                alignItems: 'flex-end',
-                marginRight: 8,
-              }}
-            >
-              <View
-                style={{
-                  paddingHorizontal: 8,
-                  paddingVertical: 3,
-                  borderRadius: 20,
-                  backgroundColor: colors.backgroundGreen,
-                }}
-              >
-                <Text
-                  style={[
-                    commonStyle.regular,
-                    {
-                      fontSize: 8,
-                      color: colors.textGreen,
-                    },
-                  ]}
-                >
-                  Active
-                </Text>
-              </View>
-
-              <Text
-                style={[
-                  commonStyle.medium,
-                  {
-                    fontSize: 6,
-                    color: colors.skyBlue,
-                    marginTop: 3,
-                  },
-                ]}
-              >
-                Plan: Professional
-              </Text>
-
-              <Text
-                style={[
-                  commonStyle.regular,
-                  {
-                    fontSize: 6,
-                    color: colors.textGray,
-                  },
-                ]}
-              >
-                Added 2 days ago
-              </Text>
-            </View>
-
-            {/* Arrow */}
-            <ChevronRight size={18} color={colors.textGray} />
+              Send Announcement to All Companies
+            </Text>
           </View>
-          
         </View>
       </View>
       <View style={{ height: 50 }} />
@@ -451,7 +407,8 @@ const DashboardStatCard = ({
       style={[
         commonStyle.shadow,
         {
-          minHeight: 120, // Add this
+          flex: 1,
+          minHeight: 120,
           padding: 16,
           borderRadius: 10,
           flexDirection: 'row',
@@ -469,13 +426,20 @@ const DashboardStatCard = ({
           justifyContent: 'center',
           alignItems: 'center',
           marginRight: 12,
+          flexShrink: 0,
         }}
       >
         <Icon size={30} color={iconColor} />
       </View>
 
-      <View style={{ flex: 1 }}>
+      <View
+        style={{
+          flex: 1,
+          justifyContent: 'center',
+        }}
+      >
         <Text
+          numberOfLines={2}
           style={[
             commonStyle.regular,
             {
@@ -495,6 +459,7 @@ const DashboardStatCard = ({
               fontSize: 27,
               color: textColor,
               lineHeight: 30,
+              marginVertical: 2,
             },
           ]}
         >
@@ -502,6 +467,7 @@ const DashboardStatCard = ({
         </Text>
 
         <Text
+          numberOfLines={1}
           style={[
             commonStyle.regular,
             {
