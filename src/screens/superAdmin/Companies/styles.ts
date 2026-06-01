@@ -1,0 +1,317 @@
+import { Dimensions, StyleSheet } from 'react-native';
+
+const { width } = Dimensions.get('window');
+const guidelineWidth = 393;
+export const scale = (size: number) => Math.round((width / guidelineWidth) * size);
+export const ms = (size: number, factor = 0.35) => Math.round(size + (scale(size) - size) * factor);
+
+export const colors = {
+  navy: '#001F63',
+  blue: '#0047FF',
+  text: '#0E1020',
+  muted: '#555A70',
+  line: '#E1E3EC',
+  bg: '#F7F8FC',
+  card: '#FFFFFF',
+  red: '#EF1B24',
+  orange: '#F97316',
+  green: '#0B8E2A',
+  purpleText: '#252543',
+};
+
+export const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    backgroundColor: colors.bg,
+  },
+  header: {
+    height: ms(64),
+    backgroundColor: colors.navy,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: ms(16),
+  },
+  headerTitle: {
+    color: '#FFFFFF',
+    fontSize: ms(21),
+    lineHeight: ms(28),
+    fontWeight: '800',
+    letterSpacing: 0.2,
+  },
+  content: {
+    paddingHorizontal: ms(15),
+    paddingTop: ms(14),
+    paddingBottom: ms(24),
+  },
+  searchBox: {
+    height: ms(39),
+    borderRadius: ms(5),
+    borderWidth: 1,
+    borderColor: '#D7D9E3',
+    backgroundColor: '#FFFFFF',
+    flexDirection: 'row',
+    alignItems: 'center',
+    overflow: 'hidden',
+  },
+  searchLeft: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingLeft: ms(14),
+  },
+  searchText: {
+    marginLeft: ms(14),
+    color: colors.muted,
+    fontSize: ms(14),
+    fontWeight: '500',
+  },
+  filterBox: {
+    width: ms(45),
+    height: '100%',
+    borderLeftWidth: 1,
+    borderLeftColor: '#D7D9E3',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  tabsRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: ms(11),
+  },
+  statusChip: {
+    height: ms(29),
+    borderRadius: ms(5),
+    borderWidth: 1,
+    borderColor: '#AEB2C4',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#FFFFFF',
+  },
+  statusChipActive: {
+    backgroundColor: colors.navy,
+    borderColor: colors.navy,
+  },
+  statusChipText: {
+    color: colors.text,
+    fontSize: ms(13),
+    fontWeight: '600',
+  },
+  statusChipTextActive: {
+    color: '#FFFFFF',
+  },
+  dateChip: {
+    height: ms(29),
+    borderRadius: ms(5),
+    borderWidth: 1,
+    borderColor: '#AEB2C4',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#FFFFFF',
+  },
+  dateChipActive: {
+    backgroundColor: colors.navy,
+    borderColor: colors.navy,
+  },
+  dateChipText: {
+    color: colors.text,
+    fontSize: ms(13),
+    fontWeight: '600',
+  },
+  dateChipTextActive: {
+    color: '#FFFFFF',
+  },
+  sortRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: ms(15),
+  },
+  sortLabel: {
+    width: ms(72),
+    color: colors.muted,
+    fontSize: ms(14),
+    fontWeight: '500',
+  },
+  sortButton: {
+    height: ms(27),
+    borderRadius: ms(5),
+    borderWidth: 1,
+    borderColor: '#C8CBD8',
+    backgroundColor: '#FFFFFF',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: ms(9),
+  },
+  sortButtonText: {
+    color: colors.text,
+    fontSize: ms(13),
+    fontWeight: '600',
+    marginRight: ms(7),
+  },
+  showingRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginTop: ms(18),
+    marginBottom: ms(14),
+  },
+  showingText: {
+    color: colors.muted,
+    fontSize: ms(14),
+    fontWeight: '500',
+  },
+  filterTextWrap: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  filterText: {
+    color: colors.blue,
+    fontSize: ms(16),
+    fontWeight: '600',
+    marginRight: ms(7),
+  },
+  card: {
+    backgroundColor: colors.card,
+    borderRadius: ms(6),
+    marginBottom: ms(10),
+    paddingHorizontal: ms(10),
+    paddingTop: ms(12),
+    paddingBottom: ms(8),
+    shadowColor: '#000',
+    shadowOpacity: 0.06,
+    shadowRadius: 8,
+    shadowOffset: { width: 0, height: 2 },
+    elevation: 2,
+  },
+  cardTopRow: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+  },
+  avatar: {
+    width: ms(44),
+    height: ms(44),
+    borderRadius: ms(22),
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  avatarText: {
+    color: '#FFFFFF',
+    fontSize: ms(20),
+    fontWeight: '800',
+    letterSpacing: 0.2,
+  },
+  companyMiddle: {
+    flex: 1,
+    marginLeft: ms(14),
+    paddingTop: ms(2),
+  },
+  companyName: {
+    color: colors.text,
+    fontSize: ms(15),
+    fontWeight: '900',
+    lineHeight: ms(20),
+    letterSpacing: 0.1,
+  },
+  ownerText: {
+    color: colors.muted,
+    fontSize: ms(12.5),
+    fontWeight: '500',
+    marginTop: ms(5),
+  },
+  statusLocation: {
+    alignItems: 'flex-end',
+    paddingTop: ms(1),
+  },
+  statusPill: {
+    minWidth: ms(58),
+    height: ms(20),
+    borderRadius: ms(10),
+    borderWidth: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: ms(8),
+  },
+  statusPillText: {
+    fontSize: ms(11.5),
+    fontWeight: '700',
+  },
+  locationText: {
+    color: colors.muted,
+    fontSize: ms(12.5),
+    fontWeight: '500',
+    marginTop: ms(14),
+  },
+  statsRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: ms(16),
+    paddingHorizontal: ms(8),
+  },
+  statItem: {
+    flex: 1,
+    alignItems: 'center',
+  },
+  statText: {
+    fontSize: ms(12.5),
+    fontWeight: '600',
+    color: colors.muted,
+  },
+  statBlue: {
+    color: colors.blue,
+  },
+  statGreen: {
+    color: colors.green,
+  },
+  statDivider: {
+    width: 1,
+    height: ms(15),
+    backgroundColor: colors.line,
+  },
+  horizontalLine: {
+    height: 1,
+    backgroundColor: colors.line,
+    marginTop: ms(14),
+  },
+  actionRow: {
+    height: ms(30),
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginTop: ms(7),
+  },
+  changeStatusText: {
+    color: colors.purpleText,
+    fontSize: ms(11),
+    fontWeight: '500',
+  },
+  bottomLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  dropdown: {
+    height: ms(23),
+    minWidth: ms(72),
+    paddingHorizontal: ms(10),
+    borderRadius: ms(4),
+    borderWidth: 1,
+    marginLeft: ms(12),
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  dropdownText: {
+    fontSize: ms(11),
+    fontWeight: '700',
+    marginRight: ms(7),
+  },
+  actionIcons: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  iconButton: {
+    width: ms(36),
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+});

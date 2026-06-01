@@ -1,36 +1,29 @@
 import React from 'react';
-import { View, Text, StyleSheet, ScrollView } from 'react-native';
-import { colors } from '../../../constants/colors';
+import { SafeAreaView, ScrollView, StatusBar } from 'react-native';
+import { styles } from './styles';
+import CompaniesHeader from './components/CompaniesHeader';
+import SearchFilterBar from './components/SearchFilterBar';
+import StatusTabs from './components/StatusTabs';
+import DateTabs from './components/DateTabs';
+import SortControls from './components/SortControls';
+import ShowingFilterRow from './components/ShowingFilterRow';
+import CompanyList from './components/CompanyList';
 
-const CompaniesScreen = () => {
+const Companies = () => {
   return (
-    <ScrollView style={styles.container}>
-      <View style={styles.content}>
-        <Text style={styles.title}>Companies</Text>
-        <Text style={styles.subtitle}>Manage all companies</Text>
-      </View>
-    </ScrollView>
+    <SafeAreaView style={styles.safeArea}>
+      <StatusBar barStyle="light-content" backgroundColor="#001F63" />
+      <CompaniesHeader />
+      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.content}>
+        <SearchFilterBar />
+        <StatusTabs />
+        <DateTabs />
+        <SortControls />
+        <ShowingFilterRow />
+        <CompanyList />
+      </ScrollView>
+    </SafeAreaView>
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: colors.white,
-  },
-  content: {
-    padding: 16,
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: '700',
-    color: colors.black,
-    marginBottom: 8,
-  },
-  subtitle: {
-    fontSize: 14,
-    color: colors.textGray,
-  },
-});
-
-export default CompaniesScreen;
+export default Companies;
