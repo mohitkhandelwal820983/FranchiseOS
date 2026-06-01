@@ -1,20 +1,30 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
+  ActivityIndicator,
+  Alert,
+  Dimensions,
   KeyboardAvoidingView,
   Platform,
+  SafeAreaView,
   ScrollView,
-  Alert,
   StatusBar,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {Eye, EyeOff, User} from 'lucide-react-native';
 
-import AppInput from '../../../components/common/AppInput';
-import AppButton from '../../../components/common/AppButton';
-import { login } from '../../../api/auth.api';
+import {login} from '../../../api/auth.api';
+
+const {width: SCREEN_WIDTH, height: SCREEN_HEIGHT} = Dimensions.get('window');
+
+const DESIGN_WIDTH = 768;
+const scale = SCREEN_WIDTH / DESIGN_WIDTH;
+const rs = (value: number) => Math.round(value * scale);
 
 const LoginScreen = () => {
   const navigation = useNavigation<any>();
@@ -38,16 +48,31 @@ const LoginScreen = () => {
     try {
       setLoading(true);
 
-      const response = await login(email.trim(), password);
+      const response: any = await login(email.trim(), password);
 
-      console.log('Login Success', response);
+      const userData = response?.data || response?.user || response;
+      const userRole =
+        response?.data?.role ||
+        response?.role ||
+        response?.data?.user?.role ||
+        '';
 
-      Alert.alert('Success', 'Login Successful', [
-        {
-          text: 'OK',
-          onPress: () => navigation.replace('SuperAdminTabs'),
-        },
-      ]);
+      if (userData?.token) {
+        await AsyncStorage.setItem('token', userData.token);
+      }
+
+      await AsyncStorage.setItem('userData', JSON.stringify(userData));
+      await AsyncStorage.setItem('role', userRole);
+
+      if (userRole === 'COMPANY' || userRole === 'COMPANY_ADMIN') {
+        navigation.replace('CompanyTabs');
+      } else if (userRole === 'STOCKIST') {
+        navigation.replace('StockistTabs');
+      } else if (userRole === 'DEALER') {
+        navigation.replace('DealerTabs');
+      } else {
+        navigation.replace('SuperAdminTabs');
+      }
     } catch (error: any) {
       Alert.alert(
         'Login Failed',
@@ -59,187 +84,291 @@ const LoginScreen = () => {
   };
 
   return (
-    <>
-      <StatusBar backgroundColor="#0D3696" barStyle="light-content" />
+    <SafeAreaView style={styles.safeArea}>
+      <StatusBar backgroundColor="#F4F8F9" barStyle="dark-content" />
 
       <KeyboardAvoidingView
-        style={styles.container}
-        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-      >
+        style={styles.keyboardView}
+        behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
         <ScrollView
-          contentContainerStyle={{
-            flexGrow: 1,
-          }}
-          keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}
-        >
-          {/* Header */}
-          <View style={styles.topSection}>
-            <View style={styles.logoRow}>
-              <View style={styles.logoBox}>
-                <Text style={styles.logoLetter}>F</Text>
+          keyboardShouldPersistTaps="handled"
+          contentContainerStyle={styles.scrollContent}>
+          <View style={styles.mainContainer}>
+            <View style={styles.blueSection}>
+              <View style={styles.logoRow}>
+                <View style={styles.logoBox}>
+                  <View style={styles.logoShape}>
+                    <View style={styles.logoLineLarge} />
+                    <View style={styles.logoLineMedium} />
+                    <View style={styles.logoLineSmall} />
+                  </View>
+                </View>
+
+                <Text style={styles.logoText}>FranchiseOS</Text>
               </View>
-
-              <Text style={styles.logoText}>FranchiseOS</Text>
             </View>
-          </View>
 
-          {/* Login Card */}
-          <View style={styles.card}>
-            <Text style={styles.heading}>Welcome Back</Text>
+            <View style={styles.bottomSection} />
 
-            <View
-              style={{
-                marginTop: 35,
-              }}
-            >
-              <AppInput
-                placeholder="Email or Phone Number"
-                value={email}
-                onChangeText={setEmail}
-                leftIcon="person-outline"
-              />
+            <View style={styles.loginCard}>
+              <Text style={styles.heading}>Welcome Back</Text>
 
-              <View
-                style={{
-                  height: 18,
-                }}
-              />
+              <View style={styles.formArea}>
+                <View style={styles.inputBox}>
+                  <User color="#606773" size={rs(28)} strokeWidth={2.1} />
 
-              <AppInput
-                placeholder="Password"
-                value={password}
-                onChangeText={setPassword}
-                secureTextEntry={secureText}
-                leftIcon="lock-closed-outline"
-                rightIcon={secureText ? 'eye-off-outline' : 'eye-outline'}
-                onRightIconPress={() => setSecureText(!secureText)}
-              />
+                  <TextInput
+                    value={email}
+                    onChangeText={setEmail}
+                    placeholder="Email or Phone Number"
+                    placeholderTextColor="#606773"
+                    keyboardType="email-address"
+                    autoCapitalize="none"
+                    autoCorrect={false}
+                    style={styles.input}
+                  />
+                </View>
 
-              <TouchableOpacity
-                onPress={() => {
-                  console.log('Forgot Password Pressed');
-                  navigation.navigate('ForgotPassword');
-                }}
-              >
-                <Text style={styles.forgotText}>Forgot Password</Text>
-              </TouchableOpacity>
+                <View style={styles.passwordBox}>
+                  <TextInput
+                    value={password}
+                    onChangeText={setPassword}
+                    placeholder="Password"
+                    placeholderTextColor="#606773"
+                    secureTextEntry={secureText}
+                    autoCapitalize="none"
+                    autoCorrect={false}
+                    style={styles.passwordInput}
+                  />
 
-              <View
-                style={{
-                  height: 35,
-                }}
-              />
+                  <TouchableOpacity
+                    activeOpacity={0.8}
+                    onPress={() => setSecureText(!secureText)}>
+                    {secureText ? (
+                      <EyeOff color="#606773" size={rs(31)} strokeWidth={2.1} />
+                    ) : (
+                      <Eye color="#606773" size={rs(31)} strokeWidth={2.1} />
+                    )}
+                  </TouchableOpacity>
+                </View>
 
-              <AppButton
-                title={loading ? 'Please Wait...' : 'Login'}
-                onPress={onLogin}
-              />
+                <TouchableOpacity
+                  activeOpacity={0.8}
+                  onPress={() => navigation.navigate('ForgotPassword')}>
+                  <Text style={styles.forgotText}>Forgot Password</Text>
+                </TouchableOpacity>
 
-              <View style={styles.divider} />
+                <TouchableOpacity
+                  activeOpacity={0.85}
+                  disabled={loading}
+                  onPress={onLogin}
+                  style={[styles.loginButton, loading && styles.disabledButton]}>
+                  {loading ? (
+                    <ActivityIndicator color="#FFFFFF" size="small" />
+                  ) : (
+                    <Text style={styles.loginButtonText}>Login</Text>
+                  )}
+                </TouchableOpacity>
 
-              <Text style={styles.footerText}>
-                First time? Contact your admin
-              </Text>
+                <View style={styles.divider} />
+
+                <Text style={styles.footerText}>First time? Contact your admin</Text>
+              </View>
             </View>
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
-    </>
+    </SafeAreaView>
   );
 };
 
 export default LoginScreen;
 
+const CARD_WIDTH = SCREEN_WIDTH - rs(148);
+const LOGIN_CARD_WIDTH = SCREEN_WIDTH - rs(202);
+
 const styles = StyleSheet.create({
-  container: {
+  safeArea: {
     flex: 1,
-    backgroundColor: '#F4F6F9',
+    backgroundColor: '#F4F8F9',
   },
-
-  topSection: {
-    height: 340,
-    backgroundColor: '#0D3696',
-    justifyContent: 'center',
+  keyboardView: {
+    flex: 1,
+  },
+  scrollContent: {
+    flexGrow: 1,
+    minHeight: SCREEN_HEIGHT,
     alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: rs(90),
   },
-
+  mainContainer: {
+    width: CARD_WIDTH,
+    minHeight: rs(1184),
+    borderRadius: rs(14),
+    backgroundColor: '#FFFFFF',
+    overflow: 'visible',
+    shadowColor: '#000000',
+    shadowOpacity: 0.14,
+    shadowRadius: rs(26),
+    shadowOffset: {width: 0, height: rs(15)},
+    elevation: 12,
+  },
+  blueSection: {
+    height: rs(368),
+    backgroundColor: '#103A94',
+    borderTopLeftRadius: rs(14),
+    borderTopRightRadius: rs(14),
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  bottomSection: {
+    flex: 1,
+    minHeight: rs(816),
+    backgroundColor: '#F7FAFB',
+    borderBottomLeftRadius: rs(14),
+    borderBottomRightRadius: rs(14),
+  },
   logoRow: {
     flexDirection: 'row',
     alignItems: 'center',
+    marginTop: -rs(24),
   },
-
   logoBox: {
-    width: 50,
-    height: 50,
-    borderRadius: 12,
+    width: rs(49),
+    height: rs(49),
+    borderRadius: rs(8),
     backgroundColor: '#FFFFFF',
-    justifyContent: 'center',
     alignItems: 'center',
-    marginRight: 12,
+    justifyContent: 'center',
+    marginRight: rs(14),
   },
-
-  logoLetter: {
-    fontSize: 26,
-    fontWeight: '700',
-    color: '#0D3696',
+  logoShape: {
+    width: rs(28),
+    height: rs(29),
+    justifyContent: 'center',
   },
-
+  logoLineLarge: {
+    width: rs(28),
+    height: rs(7),
+    backgroundColor: '#103A94',
+    borderRadius: rs(2),
+    marginBottom: rs(4),
+  },
+  logoLineMedium: {
+    width: rs(23),
+    height: rs(7),
+    backgroundColor: '#103A94',
+    borderRadius: rs(2),
+    marginBottom: rs(4),
+  },
+  logoLineSmall: {
+    width: rs(12),
+    height: rs(7),
+    backgroundColor: '#103A94',
+    borderRadius: rs(2),
+  },
   logoText: {
     color: '#FFFFFF',
-    fontSize: 30,
-    fontWeight: '700',
+    fontSize: rs(34),
+    fontWeight: '800',
+    letterSpacing: rs(0.2),
   },
-
-  card: {
+  loginCard: {
+    position: 'absolute',
+    top: rs(252),
+    left: (CARD_WIDTH - LOGIN_CARD_WIDTH) / 2,
+    width: LOGIN_CARD_WIDTH,
+    minHeight: rs(722),
     backgroundColor: '#FFFFFF',
-
-    marginHorizontal: 20,
-
-    marginTop: -100,
-
-    borderRadius: 18,
-
-    paddingHorizontal: 24,
-    paddingVertical: 32,
-
-    shadowColor: '#000',
-
-    shadowOpacity: 0.12,
-
-    shadowRadius: 16,
-
-    shadowOffset: {
-      width: 0,
-      height: 8,
-    },
-
+    borderRadius: rs(8),
+    paddingHorizontal: rs(40),
+    paddingTop: rs(42),
+    paddingBottom: rs(36),
+    shadowColor: '#000000',
+    shadowOpacity: 0.13,
+    shadowRadius: rs(18),
+    shadowOffset: {width: 0, height: rs(8)},
     elevation: 10,
   },
-
   heading: {
-    fontSize: 28,
-    fontWeight: '700',
-    color: '#0F172A',
-  },
-
-  forgotText: {
-    marginTop: 18,
-    color: '#1E4FB8',
-    fontSize: 16,
-    fontWeight: '600',
-  },
-
-  divider: {
-    marginTop: 55,
-    height: 1,
-    backgroundColor: '#E5E7EB',
-  },
-
-  footerText: {
-    marginTop: 30,
-    textAlign: 'center',
-    fontSize: 16,
     color: '#111827',
+    fontSize: rs(40),
+    fontWeight: '800',
+    marginBottom: rs(78),
+  },
+  formArea: {
+    width: '100%',
+  },
+  inputBox: {
+    height: rs(84),
+    borderWidth: 1.2,
+    borderColor: '#818894',
+    borderRadius: rs(5),
+    backgroundColor: '#FFFFFF',
+    paddingHorizontal: rs(20),
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: rs(28),
+  },
+  input: {
+    flex: 1,
+    marginLeft: rs(18),
+    color: '#111827',
+    fontSize: rs(28),
+    fontWeight: '400',
+    paddingVertical: 0,
+  },
+  passwordBox: {
+    height: rs(84),
+    borderWidth: 1.2,
+    borderColor: '#818894',
+    borderRadius: rs(5),
+    backgroundColor: '#FFFFFF',
+    paddingHorizontal: rs(20),
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: rs(20),
+  },
+  passwordInput: {
+    flex: 1,
+    color: '#111827',
+    fontSize: rs(28),
+    fontWeight: '400',
+    paddingVertical: 0,
+  },
+  forgotText: {
+    color: '#1E4F95',
+    fontSize: rs(25),
+    fontWeight: '800',
+  },
+  loginButton: {
+    height: rs(80),
+    backgroundColor: '#1F5CC1',
+    borderRadius: rs(5),
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: rs(52),
+  },
+  disabledButton: {
+    opacity: 0.7,
+  },
+  loginButtonText: {
+    color: '#FFFFFF',
+    fontSize: rs(25),
+    fontWeight: '800',
+  },
+  divider: {
+    height: 1,
+    backgroundColor: '#D5D8DE',
+    marginTop: rs(80),
+  },
+  footerText: {
+    color: '#111827',
+    fontSize: rs(25),
+    fontWeight: '400',
+    textAlign: 'center',
+    marginTop: rs(34),
   },
 });

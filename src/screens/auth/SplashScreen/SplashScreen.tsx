@@ -10,16 +10,44 @@ import {
 
 import {useNavigation} from '@react-navigation/native';
 import images from '../../../assets/images';
+import { authService } from '../../../services/authService';
 
 const SplashScreen = () => {
   const navigation = useNavigation<any>();
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      navigation.replace('Login');
-    }, 2000);
+    let mounted = true;
 
-    return () => clearTimeout(timer);
+    const checkAuth = async () => {
+      try {
+        const authenticated = await authService.isAuthenticated();
+        if (!mounted) return;
+
+        if (!authenticated) {
+          navigation.replace('Login');
+          return;
+        }
+
+        const user = await authService.getUser();
+        const role = user?.role || '';
+
+        if (role === 'COMPANY' || role === 'COMPANY_ADMIN') {
+          navigation.replace('CompanyTabs');
+        } else if (role === 'STOCKIST') {
+          navigation.replace('StockistTabs');
+        } else {
+          navigation.replace('SuperAdminTabs');
+        }
+      } catch (error) {
+        navigation.replace('Login');
+      }
+    };
+
+    checkAuth();
+
+    return () => {
+      mounted = false;
+    };
   }, [navigation]);
 
   return (

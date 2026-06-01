@@ -1,25 +1,104 @@
 import React from 'react';
-import { View, Text } from 'react-native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import {
+  Home,
+  Globe2,
+  Package,
+  IndianRupee,
+  User,
+} from 'lucide-react-native';
 
-const Stack = createNativeStackNavigator();
+import CompanyDashboardScreen from '../screens/company/CompanyDashboard';
+import NetworkScreen from '../screens/company/NetworkScreen';
+import NetworkDetailScreen from '../screens/company/NetworkDetailScreen';
+import OrdersScreen from '../screens/company/OrderScreen';
+import FinanceScreen from '../screens/company/FinanceScreen';
+import ProfileScreen from '../screens/company/ProfileScreen';
 
-// Placeholder component
-const CompanyDashboard = () => (
-  <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-    <Text>Company Dashboard</Text>
-  </View>
-);
+const Tab = createBottomTabNavigator();
+const NetworkStack = createNativeStackNavigator();
+
+const NetworkStackScreen = () => {
+  return (
+    <NetworkStack.Navigator screenOptions={{headerShown: false}}>
+      <NetworkStack.Screen name="NetworkMain" component={NetworkScreen} />
+      <NetworkStack.Screen name="NetworkDetail" component={NetworkDetailScreen} />
+    </NetworkStack.Navigator>
+  );
+};
 
 const CompanyNavigator = () => {
   return (
-    <Stack.Navigator
+    <Tab.Navigator
       screenOptions={{
         headerShown: false,
-      }}
-    >
-      <Stack.Screen name="CompanyDashboard" component={CompanyDashboard} />
-    </Stack.Navigator>
+        tabBarActiveTintColor: '#1557F5',
+        tabBarInactiveTintColor: '#6B6B7A',
+        tabBarStyle: {
+          height: 65,
+          paddingBottom: 8,
+          paddingTop: 6,
+          backgroundColor: '#FFFFFF',
+          borderTopWidth: 0,
+          elevation: 12,
+          shadowColor: '#000',
+          shadowOpacity: 0.08,
+          shadowRadius: 12,
+          shadowOffset: {width: 0, height: -2},
+        },
+        tabBarLabelStyle: {
+          fontSize: 12,
+          fontWeight: '500',
+        },
+      }}>
+      <Tab.Screen
+        name="CompanyDashboard"
+        component={CompanyDashboardScreen}
+        options={{
+          tabBarLabel: 'Home',
+          tabBarIcon: ({color, size}) => <Home color={color} size={size} />,
+        }}
+      />
+
+      <Tab.Screen
+        name="CompanyNetwork"
+        component={NetworkStackScreen}
+        options={{
+          tabBarLabel: 'Network',
+          tabBarIcon: ({color, size}) => <Globe2 color={color} size={size} />,
+        }}
+      />
+
+      <Tab.Screen
+        name="CompanyOrders"
+        component={OrdersScreen}
+        options={{
+          tabBarLabel: 'Orders',
+          tabBarIcon: ({color, size}) => <Package color={color} size={size} />,
+        }}
+      />
+
+      <Tab.Screen
+        name="CompanyFinance"
+        component={FinanceScreen}
+        options={{
+          tabBarLabel: 'Finance',
+          tabBarIcon: ({color, size}) => (
+            <IndianRupee color={color} size={size} />
+          ),
+        }}
+      />
+
+      <Tab.Screen
+        name="CompanyProfile"
+        component={ProfileScreen}
+        options={{
+          tabBarLabel: 'Profile',
+          tabBarIcon: ({color, size}) => <User color={color} size={size} />,
+        }}
+      />
+    </Tab.Navigator>
   );
 };
 
