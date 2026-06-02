@@ -6,7 +6,8 @@ const {width} = Dimensions.get('window');
 const ratio = width / BASE_WIDTH;
 
 export const s = (value: number) => Math.round(value * ratio);
-export const fs = (value: number) => Math.max(8, Math.round(value * ratio));
+export const fs = (value: number) =>
+  Math.max(9, Math.round(value * ratio * 1.08));
 
 export const makeStyles = () =>
   StyleSheet.create({
@@ -24,7 +25,7 @@ export const makeStyles = () =>
     },
     headerTitle: {
       color: C.white,
-      fontSize: fs(28),
+      fontSize: fs(32),
       fontWeight: '900',
       letterSpacing: s(0.4),
     },
@@ -79,7 +80,7 @@ export const makeStyles = () =>
     },
     welcomeTitle: {
       color: C.text,
-      fontSize: fs(25),
+      fontSize: fs(28),
       fontWeight: '900',
       letterSpacing: s(0.3),
     },

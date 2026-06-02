@@ -16,7 +16,7 @@ const PlatformOverview = ({styles, total, smallCards}: Props) => {
     <>
       <View style={styles.totalCard}>
         <View style={styles.totalIconBox}>
-          <Building2 color={C.blue} fill={C.blue} size={s(90)} strokeWidth={1.8} />
+          <Building2 color={C.blue}  size={s(90)} strokeWidth={1.8} />
         </View>
         <OverviewText styles={styles} item={total} total />
       </View>

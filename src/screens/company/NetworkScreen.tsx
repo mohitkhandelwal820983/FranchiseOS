@@ -1,7 +1,8 @@
-import React, {useEffect, useMemo, useState} from 'react';
+import React, {useCallback, useEffect, useMemo, useState} from 'react';
 import {
   ActivityIndicator,
   Dimensions,
+  RefreshControl,
   SafeAreaView,
   ScrollView,
   StatusBar,
@@ -22,195 +23,17 @@ import {
   Search,
 } from 'lucide-react-native';
 import {useNavigation} from '@react-navigation/native';
+import { CompanyNetworkData, DirectDealer, FilterChip, filterChips, SortOption, Stockist } from '../../api/mock/company/companyNetwork.mock';
+import { getCompanyNetwork } from '../../api/company/companyNetwork.api';
 
 const {width: SCREEN_WIDTH} = Dimensions.get('window');
 const DESIGN_WIDTH = 928;
 const scale = SCREEN_WIDTH / DESIGN_WIDTH;
 const rs = (value: number) => Math.round(value * scale);
 
-type NetworkStatus = 'Active' | 'Inactive' | 'Overdue' | 'At Risk';
-
-type Stockist = {
-  id: string;
-  type: 'stockist';
-  initials: string;
-  name: string;
-  city: string;
-  zone: string;
-  dealers: number;
-  revenue: number;
-  revenueLabel: string;
-  target: number;
-  targetLabel: string;
-  score: number;
-  status: NetworkStatus;
-  payment: string;
-  lastActive: string;
-  color: string;
-  statusColor: string;
-  statusBg: string;
-  statusBorder: string;
-  progressColor: string;
-  riskNote?: string;
-  orders: number;
-  pinCode: string;
-};
-
-type DirectDealer = {
-  id: string;
-  type: 'dealer';
-  initials: string;
-  name: string;
-  city: string;
-  revenue: number;
-  revenueLabel: string;
-  status: NetworkStatus;
-  color: string;
-  orders: number;
-  score: number;
-  pinCode: string;
-};
-
-type NetworkData = {
-  notificationCount: string;
-  stockists: Stockist[];
-  dealers: DirectDealer[];
-};
-
-type FilterChip = {
-  id: string;
-  label: string;
-  value: 'all' | 'stockists' | 'dealers' | 'active' | 'inactive' | 'overdue' | 'risk';
-};
-
-type SortOption = 'revenue' | 'name' | 'score' | 'orders';
 
 
 
-const mockNetworkData: NetworkData = {
-  notificationCount: '8',
-  stockists: [
-    {
-      id: 'stockist-a',
-      type: 'stockist',
-      initials: 'SA',
-      name: 'Stockist A',
-      city: 'Mumbai',
-      zone: 'Zone A',
-      dealers: 12,
-      revenue: 24,
-      revenueLabel: '₹24L MTD',
-      target: 85,
-      targetLabel: '85% target',
-      score: 88,
-      status: 'Active',
-      payment: 'All Clear',
-      lastActive: '2 hours ago',
-      color: '#061B66',
-      statusColor: '#087A22',
-      statusBg: '#EAF8EC',
-      statusBorder: '#BEE7C5',
-      progressColor: '#173CFF',
-      orders: 42,
-      pinCode: '400001',
-    },
-    {
-      id: 'stockist-b',
-      type: 'stockist',
-      initials: 'SB',
-      name: 'Stockist B',
-      city: 'Delhi',
-      zone: 'Zone B',
-      dealers: 8,
-      revenue: 18,
-      revenueLabel: '₹18L MTD',
-      target: 75,
-      targetLabel: '75% target',
-      score: 82,
-      status: 'Active',
-      payment: 'All Clear',
-      lastActive: '4 hours ago',
-      color: '#7412D9',
-      statusColor: '#087A22',
-      statusBg: '#EAF8EC',
-      statusBorder: '#BEE7C5',
-      progressColor: '#173CFF',
-      orders: 35,
-      pinCode: '110001',
-    },
-    {
-      id: 'stockist-c',
-      type: 'stockist',
-      initials: 'SC',
-      name: 'Stockist C',
-      city: 'Chennai',
-      zone: 'Zone C',
-      dealers: 15,
-      revenue: 3.8,
-      revenueLabel: '₹3.8L MTD',
-      target: 48,
-      targetLabel: '48% target',
-      score: 38,
-      status: 'At Risk',
-      payment: 'Pending',
-      lastActive: '2 months ago',
-      color: '#C80016',
-      statusColor: '#D90014',
-      statusBg: '#FFF0F0',
-      statusBorder: '#FFC7C7',
-      progressColor: '#E00014',
-      riskNote: 'Below target 2 months — action needed',
-      orders: 9,
-      pinCode: '600001',
-    },
-  ],
-  dealers: [
-    {
-      id: 'dealer-1',
-      type: 'dealer',
-      initials: 'DD1',
-      name: 'Direct Dealer 1',
-      city: 'Pune',
-      revenue: 6,
-      revenueLabel: '₹6L',
-      status: 'Active',
-      color: '#173CFF',
-      orders: 18,
-      score: 79,
-      pinCode: '411001',
-    },
-    {
-      id: 'dealer-2',
-      type: 'dealer',
-      initials: 'DD2',
-      name: 'Direct Dealer 2',
-      city: 'Nashik',
-      revenue: 4.2,
-      revenueLabel: '₹4.2L',
-      status: 'Active',
-      color: '#173CFF',
-      orders: 13,
-      score: 73,
-      pinCode: '422001',
-    },
-  ],
-};
-
-const mockNetworkApi = async (): Promise<NetworkData> => {
-  return new Promise(resolve => {
-    setTimeout(() => resolve(mockNetworkData), 300);
-  });
-};
-
-const filterChips: FilterChip[] = [
-  {id: '1', label: 'All 108', value: 'all'},
-  {id: '2', label: 'Stockists 12', value: 'stockists'},
-  {id: '3', label: 'Dealers 96', value: 'dealers'},
-  {id: '4', label: 'Active', value: 'active'},
-  {id: '5', label: 'Inactive', value: 'inactive'},
-  {id: '6', label: 'Overdue', value: 'overdue'},
-  {id: '7', label: 'At Risk', value: 'risk'},
-];
 
 
 
@@ -475,152 +298,212 @@ const DirectDealerRow = ({
 
 const NetworkScreen = () => {
   const navigation = useNavigation<any>();
-  const [data, setData] = useState<NetworkData | null>(null);
+
+  const [data, setData] = useState<CompanyNetworkData | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [refreshing, setRefreshing] = useState<boolean>(false);
+  const [error, setError] = useState<string>('');
+
   const [search, setSearch] = useState('');
   const [activeFilter, setActiveFilter] = useState<FilterChip['value']>('all');
   const [activeSort, setActiveSort] = useState<SortOption>('revenue');
 
-  useEffect(() => {
-    mockNetworkApi().then(setData);
+  const loadNetwork = useCallback(async () => {
+    try {
+      setError('');
+
+      const response = await getCompanyNetwork();
+
+      setData(response);
+    } catch (err) {
+      console.log('Company Network API Error:', err);
+      setError('Unable to load company network');
+    } finally {
+      setLoading(false);
+      setRefreshing(false);
+    }
   }, []);
 
- const filteredStockists = useMemo(() => {
-  if (!data) {
-    return [];
-  }
+  useEffect(() => {
+    loadNetwork();
+  }, [loadNetwork]);
 
-  const query = search.trim().toLowerCase();
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    loadNetwork();
+  }, [loadNetwork]);
 
-  let list = data.stockists.filter(item => {
-    const matchesSearch =
-      item.name.toLowerCase().includes(query) ||
-      item.city.toLowerCase().includes(query) ||
-      item.zone.toLowerCase().includes(query) ||
-      item.pinCode.includes(query);
-
-    if (!matchesSearch) {
-      return false;
+  const filteredStockists = useMemo(() => {
+    if (!data) {
+      return [];
     }
 
-    switch (activeFilter) {
-      case 'all':
-      case 'stockists':
-        return true;
+    const query = search.trim().toLowerCase();
 
-      case 'active':
-        return item.status === 'Active';
+    let list = data.stockists.filter(item => {
+      const matchesSearch =
+        item.name.toLowerCase().includes(query) ||
+        item.city.toLowerCase().includes(query) ||
+        item.zone.toLowerCase().includes(query) ||
+        item.pinCode.includes(query);
 
-      case 'inactive':
-        return item.status === 'Inactive';
-
-      case 'overdue':
-        return item.status === 'Overdue';
-
-      case 'risk':
-        return item.status === 'At Risk';
-
-      case 'dealers':
+      if (!matchesSearch) {
         return false;
+      }
 
-      default:
-        return true;
+      switch (activeFilter) {
+        case 'all':
+        case 'stockists':
+          return true;
+
+        case 'active':
+          return item.status === 'Active';
+
+        case 'inactive':
+          return item.status === 'Inactive';
+
+        case 'overdue':
+          return item.status === 'Overdue';
+
+        case 'risk':
+          return item.status === 'At Risk';
+
+        case 'dealers':
+          return false;
+
+        default:
+          return true;
+      }
+    });
+
+    list = [...list].sort((a, b) => {
+      if (activeSort === 'name') {
+        return a.name.localeCompare(b.name);
+      }
+
+      if (activeSort === 'score') {
+        return b.score - a.score;
+      }
+
+      if (activeSort === 'orders') {
+        return b.orders - a.orders;
+      }
+
+      return b.revenue - a.revenue;
+    });
+
+    return list;
+  }, [data, search, activeFilter, activeSort]);
+
+  const filteredDealers = useMemo(() => {
+    if (!data) {
+      return [];
     }
-  });
 
-  list = [...list].sort((a, b) => {
-    if (activeSort === 'name') {
-      return a.name.localeCompare(b.name);
-    }
+    const query = search.trim().toLowerCase();
 
-    if (activeSort === 'score') {
-      return b.score - a.score;
-    }
+    let list = data.dealers.filter(item => {
+      const matchesSearch =
+        item.name.toLowerCase().includes(query) ||
+        item.city.toLowerCase().includes(query) ||
+        item.pinCode.includes(query);
 
-    if (activeSort === 'orders') {
-      return b.orders - a.orders;
-    }
-
-    return b.revenue - a.revenue;
-  });
-
-  return list;
-}, [data, search, activeFilter, activeSort]);
-
-const filteredDealers = useMemo(() => {
-  if (!data) {
-    return [];
-  }
-
-  const query = search.trim().toLowerCase();
-
-  let list = data.dealers.filter(item => {
-    const matchesSearch =
-      item.name.toLowerCase().includes(query) ||
-      item.city.toLowerCase().includes(query) ||
-      item.pinCode.includes(query);
-
-    if (!matchesSearch) {
-      return false;
-    }
-
-    switch (activeFilter) {
-      case 'all':
-      case 'dealers':
-        return true;
-
-      case 'active':
-        return item.status === 'Active';
-
-      case 'inactive':
-        return item.status === 'Inactive';
-
-      case 'overdue':
-        return item.status === 'Overdue';
-
-      case 'risk':
-        return item.status === 'At Risk';
-
-      case 'stockists':
+      if (!matchesSearch) {
         return false;
+      }
 
-      default:
-        return true;
-    }
-  });
+      switch (activeFilter) {
+        case 'all':
+        case 'dealers':
+          return true;
 
-  list = [...list].sort((a, b) => {
-    if (activeSort === 'name') {
-      return a.name.localeCompare(b.name);
-    }
+        case 'active':
+          return item.status === 'Active';
 
-    if (activeSort === 'score') {
-      return b.score - a.score;
-    }
+        case 'inactive':
+          return item.status === 'Inactive';
 
-    if (activeSort === 'orders') {
-      return b.orders - a.orders;
-    }
+        case 'overdue':
+          return item.status === 'Overdue';
 
-    return b.revenue - a.revenue;
-  });
+        case 'risk':
+          return item.status === 'At Risk';
 
-  return list;
-}, [data, search, activeFilter, activeSort]);
+        case 'stockists':
+          return false;
 
-  
+        default:
+          return true;
+      }
+    });
 
- const openDetail = (item: Stockist | DirectDealer) => {
-  navigation.navigate('NetworkDetail', {
-    id: item.id,
-    type: item.type,
-  });
-};
+    list = [...list].sort((a, b) => {
+      if (activeSort === 'name') {
+        return a.name.localeCompare(b.name);
+      }
 
-  if (!data) {
+      if (activeSort === 'score') {
+        return b.score - a.score;
+      }
+
+      if (activeSort === 'orders') {
+        return b.orders - a.orders;
+      }
+
+      return b.revenue - a.revenue;
+    });
+
+    return list;
+  }, [data, search, activeFilter, activeSort]);
+
+  const openDetail = (item: Stockist | DirectDealer) => {
+    navigation.navigate('NetworkDetail', {
+      id: item.id,
+      type: item.type,
+    });
+  };
+
+  const handleRetry = () => {
+    setLoading(true);
+    loadNetwork();
+  };
+
+  if (loading) {
     return (
       <SafeAreaView style={styles.loaderScreen}>
         <StatusBar backgroundColor="#061B66" barStyle="light-content" />
         <ActivityIndicator size="large" color="#173CFF" />
+      </SafeAreaView>
+    );
+  }
+
+  if (error || !data) {
+    return (
+      <SafeAreaView style={styles.loaderScreen}>
+        <StatusBar backgroundColor="#061B66" barStyle="light-content" />
+
+        <Text
+          style={{
+            color: '#061247',
+            fontSize: rs(18),
+            fontWeight: '700',
+            marginBottom: rs(18),
+            textAlign: 'center',
+          }}>
+          {error || 'Something went wrong'}
+        </Text>
+
+        <TouchableOpacity
+          activeOpacity={0.85}
+          onPress={handleRetry}
+          style={{
+            backgroundColor: '#061B66',
+            paddingHorizontal: rs(28),
+            paddingVertical: rs(14),
+            borderRadius: rs(8),
+          }}>
+          <Text style={{color: '#FFFFFF', fontWeight: '800'}}>Retry</Text>
+        </TouchableOpacity>
       </SafeAreaView>
     );
   }
@@ -634,7 +517,10 @@ const filteredDealers = useMemo(() => {
       <ScrollView
         style={styles.scrollView}
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={styles.scrollContent}>
+        contentContainerStyle={styles.scrollContent}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }>
         <SearchAndFilter search={search} onSearchChange={setSearch} />
 
         <FilterChips activeFilter={activeFilter} onChange={setActiveFilter} />
@@ -659,7 +545,9 @@ const filteredDealers = useMemo(() => {
         <View style={styles.directHeader}>
           <View>
             <Text style={styles.directTitle}>Direct Dealers</Text>
-            <Text style={styles.directSubtitle}>{filteredDealers.length} Dealers</Text>
+            <Text style={styles.directSubtitle}>
+              {filteredDealers.length} Dealers
+            </Text>
           </View>
 
           <TouchableOpacity activeOpacity={0.8} style={styles.viewAllRow}>
@@ -672,13 +560,13 @@ const filteredDealers = useMemo(() => {
           {filteredDealers.map((item, index) => (
             <View key={item.id}>
               <DirectDealerRow item={item} onPress={openDetail} />
-              {index !== filteredDealers.length - 1 && <View style={styles.dealerDivider} />}
+              {index !== filteredDealers.length - 1 && (
+                <View style={styles.dealerDivider} />
+              )}
             </View>
           ))}
         </View>
       </ScrollView>
-
-     
     </SafeAreaView>
   );
 };

@@ -1,8 +1,8 @@
-import React, {useEffect, useMemo, useState} from 'react';
+import React, {useCallback, useEffect, useMemo, useState} from 'react';
 import {
   ActivityIndicator,
   Dimensions,
-  SafeAreaView,
+  RefreshControl,
   ScrollView,
   StatusBar,
   StyleSheet,
@@ -22,6 +22,9 @@ import {
   Menu,
   Search,
 } from 'lucide-react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { CompanyOrdersData, FilterState, OrderItem, OrderStatus } from '../../api/mock/company/companyOrders.mock';
+import { getCompanyOrders } from '../../api/company/companyOrders.api';
 
 const {width: SCREEN_WIDTH} = Dimensions.get('window');
 
@@ -29,119 +32,9 @@ const DESIGN_WIDTH = 832;
 const scale = SCREEN_WIDTH / DESIGN_WIDTH;
 const rs = (value: number) => Math.round(value * scale);
 
-type OrderStatus = 'All' | 'Approved' | 'Shipped' | 'Delivered' | 'Cancelled';
 
-type OrderItem = {
-  id: string;
-  orderNo: string;
-  date: string;
-  flow: string;
-  product: string;
-  quantity: number;
-  amount: string;
-  status: Exclude<OrderStatus, 'All'>;
-  commission?: string;
-  reason?: string;
-  franchise: string;
-  zone: string;
-  valueType: 'low' | 'medium' | 'high';
-};
 
-type OrdersData = {
-  totalMTD: string;
-  completed: string;
-  orders: OrderItem[];
-};
 
-type FilterState = {
-  franchise: string;
-  zone: string;
-  date: string;
-  value: string;
-};
-
-const mockOrdersData: OrdersData = {
-  totalMTD: '342',
-  completed: '298',
-  orders: [
-    {
-      id: '1',
-      orderNo: '#ORD-003',
-      date: '15 Jan 2026',
-      flow: 'Dealer 2  →  Stockist A  →  Company',
-      product: 'Product A',
-      quantity: 200,
-      amount: '₹1,60,000',
-      status: 'Delivered',
-      commission: 'Commission: ₹8,000 earned',
-      franchise: 'Stockist A',
-      zone: 'Mumbai',
-      valueType: 'high',
-    },
-    {
-      id: '2',
-      orderNo: '#ORD-004',
-      date: '14 Jan 2026',
-      flow: 'Direct Dealer 1  →  Company',
-      product: 'Product B',
-      quantity: 50,
-      amount: '₹45,000',
-      status: 'Shipped',
-      commission: 'Commission: ₹1,350 earned',
-      franchise: 'Direct Dealer 1',
-      zone: 'Pune',
-      valueType: 'medium',
-    },
-    {
-      id: '3',
-      orderNo: '#ORD-005',
-      date: '13 Jan 2026',
-      flow: 'Dealer 5  →  Stockist B',
-      product: 'Product C',
-      quantity: 30,
-      amount: '₹36,000',
-      status: 'Cancelled',
-      reason: 'Reason: Out of stock',
-      franchise: 'Stockist B',
-      zone: 'Delhi',
-      valueType: 'low',
-    },
-    {
-      id: '4',
-      orderNo: '#ORD-006',
-      date: '12 Jan 2026',
-      flow: 'Dealer 8  →  Stockist C  →  Company',
-      product: 'Product D',
-      quantity: 110,
-      amount: '₹92,000',
-      status: 'Approved',
-      commission: 'Commission: ₹4,600 earned',
-      franchise: 'Stockist C',
-      zone: 'Chennai',
-      valueType: 'high',
-    },
-    {
-      id: '5',
-      orderNo: '#ORD-007',
-      date: '11 Jan 2026',
-      flow: 'Direct Dealer 2  →  Company',
-      product: 'Product E',
-      quantity: 25,
-      amount: '₹22,000',
-      status: 'Delivered',
-      commission: 'Commission: ₹1,100 earned',
-      franchise: 'Direct Dealer 2',
-      zone: 'Nashik',
-      valueType: 'low',
-    },
-  ],
-};
-
-const mockOrdersApi = async (): Promise<OrdersData> => {
-  return new Promise(resolve => {
-    setTimeout(() => resolve(mockOrdersData), 300);
-  });
-};
 
 const Header = () => {
   return (
@@ -180,7 +73,7 @@ const SearchBox = ({
   );
 };
 
-const SummaryCards = ({data}: {data: OrdersData}) => {
+const SummaryCards = ({data}: {data: CompanyOrdersData}) => {
   return (
     <View style={styles.summaryRow}>
       <View style={styles.summaryCard}>
@@ -423,7 +316,7 @@ const OrdersList = ({orders}: {orders: OrderItem[]}) => {
 };
 
 const OrdersScreen = () => {
-  const [data, setData] = useState<OrdersData | null>(null);
+  const [data, setData] = useState<CompanyOrdersData | null>(null);
   const [search, setSearch] = useState('');
   const [activeStatus, setActiveStatus] = useState<OrderStatus>('All');
   const [filters, setFilters] = useState<FilterState>({
@@ -433,9 +326,34 @@ const OrdersScreen = () => {
     value: 'All',
   });
 
-  useEffect(() => {
-    mockOrdersApi().then(setData);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [refreshing, setRefreshing] = useState<boolean>(false);
+  const [error, setError] = useState<string>('');
+
+  const loadOrders = useCallback(async () => {
+    try {
+      setError('');
+
+      const response = await getCompanyOrders();
+
+      setData(response);
+    } catch (err) {
+      console.log('Company Orders API Error:', err);
+      setError('Unable to load company orders');
+    } finally {
+      setLoading(false);
+      setRefreshing(false);
+    }
   }, []);
+
+  useEffect(() => {
+    loadOrders();
+  }, [loadOrders]);
+
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    loadOrders();
+  }, [loadOrders]);
 
   const filteredOrders = useMemo(() => {
     if (!data) {
@@ -477,11 +395,47 @@ const OrdersScreen = () => {
     });
   }, [data, search, activeStatus, filters]);
 
-  if (!data) {
+  const handleRetry = () => {
+    setLoading(true);
+    loadOrders();
+  };
+
+  if (loading) {
     return (
       <SafeAreaView style={styles.loaderScreen}>
         <StatusBar backgroundColor="#061B66" barStyle="light-content" />
         <ActivityIndicator size="large" color="#173CFF" />
+      </SafeAreaView>
+    );
+  }
+
+  if (error || !data) {
+    return (
+      <SafeAreaView style={styles.loaderScreen}>
+        <StatusBar backgroundColor="#061B66" barStyle="light-content" />
+
+        <Text
+          style={{
+            color: '#061247',
+            fontSize: rs(18),
+            fontWeight: '700',
+            marginBottom: rs(18),
+            textAlign: 'center',
+          }}>
+          {error || 'Something went wrong'}
+        </Text>
+
+        <TouchableOpacity
+          activeOpacity={0.85}
+          onPress={handleRetry}
+          style={{
+            backgroundColor: '#061B66',
+            paddingHorizontal: rs(28),
+            paddingVertical: rs(14),
+            borderRadius: rs(8),
+          }}>
+          <Text style={{color: '#FFFFFF', fontWeight: '800'}}>Retry</Text>
+        </TouchableOpacity>
       </SafeAreaView>
     );
   }
@@ -495,7 +449,10 @@ const OrdersScreen = () => {
       <ScrollView
         style={styles.scrollView}
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={styles.scrollContent}>
+        contentContainerStyle={styles.scrollContent}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }>
         <SearchBox value={search} onChangeText={setSearch} />
 
         <SummaryCards data={data} />

@@ -1,9 +1,9 @@
-import React, {useEffect, useMemo, useState} from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   ActivityIndicator,
   Alert,
   Dimensions,
-  SafeAreaView,
+  RefreshControl,
   ScrollView,
   StatusBar,
   StyleSheet,
@@ -12,6 +12,8 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+
 import {
   Building2,
   ChevronDown,
@@ -25,106 +27,29 @@ import {
   Trash2,
 } from 'lucide-react-native';
 
-const {width: SCREEN_WIDTH} = Dimensions.get('window');
+import { getCompanies } from '../../../api/superadmin/companies.api';
+import {
+  statusOptions,
+  type CompaniesData,
+  type Company,
+  type CompanyStatus,
+} from '../../../api/mock/superadmin/companies.mock';
+
+const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
 const DESIGN_WIDTH = 832;
 const scale = SCREEN_WIDTH / DESIGN_WIDTH;
 const rs = (value: number) => Math.round(value * scale);
 
-type CompanyStatus = 'Active' | 'Pending' | 'Inactive' | 'Suspended';
 type StatusFilter = 'All' | CompanyStatus;
-type RangeFilter = 'This Month' | 'Last Month' | 'Last 3 Months' | 'Custom Range';
+type RangeFilter =
+  | 'This Month'
+  | 'Last Month'
+  | 'Last 3 Months'
+  | 'Custom Range';
 type SortType = 'Name' | 'Date Added' | 'Revenue';
 
-type Company = {
-  id: string;
-  name: string;
-  owner: string;
-  city: string;
-  initials: string;
-  avatarColor: string;
-  status: CompanyStatus;
-  franchises: number;
-  revenue: number;
-  revenueLabel: string;
-  addedLabel: string;
-  addedDaysAgo: number;
-};
-
-type CompaniesData = {
-  companies: Company[];
-};
-
-const mockCompaniesData: CompaniesData = {
-  companies: [
-    {
-      id: '1',
-      name: 'TechCorp India',
-      owner: 'Rajesh Sharma',
-      city: 'Mumbai',
-      initials: 'TC',
-      avatarColor: '#061B66',
-      status: 'Active',
-      franchises: 24,
-      revenue: 2400000,
-      revenueLabel: '₹24L MTD',
-      addedLabel: 'Jan 2024',
-      addedDaysAgo: 120,
-    },
-    {
-      id: '2',
-      name: 'Reliance Industries',
-      owner: 'Amit Shah',
-      city: 'Delhi',
-      initials: 'RI',
-      avatarColor: '#008A36',
-      status: 'Pending',
-      franchises: 0,
-      revenue: 0,
-      revenueLabel: '₹0 MTD',
-      addedLabel: '3 days ago',
-      addedDaysAgo: 3,
-    },
-    {
-      id: '3',
-      name: 'ABC Distributors',
-      owner: 'Priya Patel',
-      city: 'Pune',
-      initials: 'AB',
-      avatarColor: '#E00014',
-      status: 'Suspended',
-      franchises: 12,
-      revenue: 800000,
-      revenueLabel: '₹8L MTD',
-      addedLabel: 'Oct 2023',
-      addedDaysAgo: 220,
-    },
-    {
-      id: '4',
-      name: 'MNO Brands',
-      owner: 'Suresh Kumar',
-      city: 'Chennai',
-      initials: 'MN',
-      avatarColor: '#5C28B8',
-      status: 'Inactive',
-      franchises: 6,
-      revenue: 200000,
-      revenueLabel: '₹2L MTD',
-      addedLabel: 'Aug 2023',
-      addedDaysAgo: 280,
-    },
-  ],
-};
-
-export const mockCompaniesApi = async (): Promise<CompaniesData> => {
-  return new Promise(resolve => {
-    setTimeout(() => resolve(mockCompaniesData), 300);
-  });
-};
-
-const statusOptions: CompanyStatus[] = ['Active', 'Pending', 'Inactive', 'Suspended'];
-
-const Header = ({onAdd}: {onAdd: () => void}) => {
+const Header = ({ onAdd }: { onAdd: () => void }) => {
   return (
     <View style={styles.header}>
       <TouchableOpacity activeOpacity={0.8}>
@@ -161,7 +86,11 @@ const SearchBox = ({
         style={styles.searchInput}
       />
 
-      <TouchableOpacity activeOpacity={0.85} onPress={onFilterPress} style={styles.filterBox}>
+      <TouchableOpacity
+        activeOpacity={0.85}
+        onPress={onFilterPress}
+        style={styles.filterBox}
+      >
         <Filter color="#44465F" size={rs(32)} strokeWidth={2.2} />
       </TouchableOpacity>
     </View>
@@ -175,7 +104,13 @@ const StatusFilters = ({
   active: StatusFilter;
   onChange: (filter: StatusFilter) => void;
 }) => {
-  const filters: StatusFilter[] = ['All', 'Active', 'Pending', 'Inactive', 'Suspended'];
+  const filters: StatusFilter[] = [
+    'All',
+    'Active',
+    'Pending',
+    'Inactive',
+    'Suspended',
+  ];
 
   return (
     <View style={styles.statusRow}>
@@ -187,8 +122,11 @@ const StatusFilters = ({
             key={item}
             activeOpacity={0.85}
             onPress={() => onChange(item)}
-            style={[styles.statusChip, isActive && styles.activeChip]}>
-            <Text style={[styles.statusChipText, isActive && styles.activeChipText]}>
+            style={[styles.statusChip, isActive && styles.activeChip]}
+          >
+            <Text
+              style={[styles.statusChipText, isActive && styles.activeChipText]}
+            >
               {item}
             </Text>
           </TouchableOpacity>
@@ -222,7 +160,8 @@ const RangeFilters = ({
             key={item}
             activeOpacity={0.85}
             onPress={() => onChange(item)}
-            style={[styles.rangeChip, isActive && styles.activeChip]}>
+            style={[styles.rangeChip, isActive && styles.activeChip]}
+          >
             <Text style={[styles.rangeText, isActive && styles.activeChipText]}>
               {item}
             </Text>
@@ -251,7 +190,11 @@ const SortBar = ({
           key={item}
           activeOpacity={0.85}
           onPress={() => onSortChange(item)}
-          style={[styles.sortButton, sortBy === item && styles.selectedSortButton]}>
+          style={[
+            styles.sortButton,
+            sortBy === item && styles.selectedSortButton,
+          ]}
+        >
           <Text style={styles.sortButtonText}>{item}</Text>
           <ChevronDown color="#061247" size={rs(18)} strokeWidth={2.2} />
         </TouchableOpacity>
@@ -260,7 +203,7 @@ const SortBar = ({
   );
 };
 
-const StatusBadge = ({status}: {status: CompanyStatus}) => {
+const StatusBadge = ({ status }: { status: CompanyStatus }) => {
   const isActive = status === 'Active';
   const isPending = status === 'Pending';
   const isSuspended = status === 'Suspended';
@@ -274,7 +217,8 @@ const StatusBadge = ({status}: {status: CompanyStatus}) => {
         isPending && styles.pendingBadge,
         isSuspended && styles.suspendedBadge,
         isInactive && styles.inactiveBadge,
-      ]}>
+      ]}
+    >
       <Text
         style={[
           styles.badgeText,
@@ -282,7 +226,8 @@ const StatusBadge = ({status}: {status: CompanyStatus}) => {
           isPending && styles.pendingBadgeText,
           isSuspended && styles.suspendedBadgeText,
           isInactive && styles.inactiveBadgeText,
-        ]}>
+        ]}
+      >
         {status}
       </Text>
     </View>
@@ -298,7 +243,9 @@ const StatusDropdown = ({
 }) => {
   const getNextStatus = () => {
     const currentIndex = statusOptions.indexOf(status);
-    const nextIndex = currentIndex === statusOptions.length - 1 ? 0 : currentIndex + 1;
+    const nextIndex =
+      currentIndex === statusOptions.length - 1 ? 0 : currentIndex + 1;
+
     onChange(statusOptions[nextIndex]);
   };
 
@@ -312,6 +259,7 @@ const StatusDropdown = ({
       : '#061247';
 
   const bg = status === 'Active' ? '#061B66' : '#FFFFFF';
+
   const border =
     status === 'Active'
       ? '#061B66'
@@ -325,8 +273,15 @@ const StatusDropdown = ({
     <TouchableOpacity
       activeOpacity={0.85}
       onPress={getNextStatus}
-      style={[styles.dropdownButton, {backgroundColor: bg, borderColor: border}]}>
-      <Text style={[styles.dropdownText, {color}]}>{status}</Text>
+      style={[
+        styles.dropdownButton,
+        {
+          backgroundColor: bg,
+          borderColor: border,
+        },
+      ]}
+    >
+      <Text style={[styles.dropdownText, { color }]}>{status}</Text>
       <ChevronDown color={color} size={rs(18)} strokeWidth={2.2} />
     </TouchableOpacity>
   );
@@ -346,13 +301,18 @@ const CompanyCard = ({
   onDelete: (item: Company) => void;
 }) => {
   const franchiseColor = item.franchises === 0 ? '#061247' : '#173CFF';
+
   const revenueColor =
-    item.revenue === 0 ? '#061247' : item.status === 'Suspended' ? '#173CFF' : '#138A36';
+    item.revenue === 0
+      ? '#061247'
+      : item.status === 'Suspended'
+      ? '#173CFF'
+      : '#138A36';
 
   return (
     <View style={styles.companyCard}>
       <View style={styles.companyTopRow}>
-        <View style={[styles.avatar, {backgroundColor: item.avatarColor}]}>
+        <View style={[styles.avatar, { backgroundColor: item.avatarColor }]}>
           <Text style={styles.avatarText}>{item.initials}</Text>
         </View>
 
@@ -369,7 +329,7 @@ const CompanyCard = ({
 
       <View style={styles.metricsRow}>
         <View style={styles.metricBox}>
-          <Text style={[styles.metricText, {color: franchiseColor}]}>
+          <Text style={[styles.metricText, { color: franchiseColor }]}>
             {item.franchises} Franchises
           </Text>
         </View>
@@ -377,7 +337,7 @@ const CompanyCard = ({
         <View style={styles.metricDivider} />
 
         <View style={styles.metricBox}>
-          <Text style={[styles.metricText, {color: revenueColor}]}>
+          <Text style={[styles.metricText, { color: revenueColor }]}>
             {item.revenueLabel}
           </Text>
         </View>
@@ -417,14 +377,39 @@ const CompanyCard = ({
 
 const CompaniesScreen = () => {
   const [data, setData] = useState<CompaniesData | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [refreshing, setRefreshing] = useState<boolean>(false);
+  const [error, setError] = useState<string>('');
+
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState<StatusFilter>('All');
   const [rangeFilter, setRangeFilter] = useState<RangeFilter>('This Month');
   const [sortBy, setSortBy] = useState<SortType>('Name');
 
-  useEffect(() => {
-    mockCompaniesApi().then(setData);
+  const loadCompanies = useCallback(async () => {
+    try {
+      setError('');
+
+      const response = await getCompanies();
+
+      setData(response);
+    } catch (err) {
+      console.log('Companies API Error:', err);
+      setError('Unable to load companies');
+    } finally {
+      setLoading(false);
+      setRefreshing(false);
+    }
   }, []);
+
+  useEffect(() => {
+    loadCompanies();
+  }, [loadCompanies]);
+
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    loadCompanies();
+  }, [loadCompanies]);
 
   const filteredCompanies = useMemo(() => {
     if (!data) {
@@ -475,14 +460,17 @@ const CompaniesScreen = () => {
     setData({
       ...data,
       companies: data.companies.map(company =>
-        company.id === id ? {...company, status} : company,
+        company.id === id ? { ...company, status } : company,
       ),
     });
   };
 
   const deleteCompany = (company: Company) => {
     Alert.alert('Delete Company', `Delete ${company.name}?`, [
-      {text: 'Cancel', style: 'cancel'},
+      {
+        text: 'Cancel',
+        style: 'cancel',
+      },
       {
         text: 'Delete',
         style: 'destructive',
@@ -500,7 +488,12 @@ const CompaniesScreen = () => {
     ]);
   };
 
-  if (!data) {
+  const handleRetry = () => {
+    setLoading(true);
+    loadCompanies();
+  };
+
+  if (loading) {
     return (
       <SafeAreaView style={styles.loaderScreen}>
         <StatusBar backgroundColor="#061B66" barStyle="light-content" />
@@ -509,16 +502,55 @@ const CompaniesScreen = () => {
     );
   }
 
+  if (error || !data) {
+    return (
+      <SafeAreaView style={styles.loaderScreen}>
+        <StatusBar backgroundColor="#061B66" barStyle="light-content" />
+
+        <Text
+          style={{
+            color: '#061247',
+            fontSize: rs(18),
+            fontWeight: '700',
+            marginBottom: rs(18),
+            textAlign: 'center',
+          }}
+        >
+          {error || 'Something went wrong'}
+        </Text>
+
+        <TouchableOpacity
+          activeOpacity={0.85}
+          onPress={handleRetry}
+          style={{
+            backgroundColor: '#061B66',
+            paddingHorizontal: rs(28),
+            paddingVertical: rs(14),
+            borderRadius: rs(8),
+          }}
+        >
+          <Text style={{ color: '#FFFFFF', fontWeight: '800' }}>Retry</Text>
+        </TouchableOpacity>
+      </SafeAreaView>
+    );
+  }
+
   return (
     <SafeAreaView style={styles.safeArea}>
       <StatusBar backgroundColor="#061B66" barStyle="light-content" />
 
-      <Header onAdd={() => Alert.alert('Add Company', 'Add company screen opened.')} />
+      <Header
+        onAdd={() => Alert.alert('Add Company', 'Add company screen opened.')}
+      />
 
       <ScrollView
         style={styles.scrollView}
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={styles.scrollContent}>
+        contentContainerStyle={styles.scrollContent}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
+      >
         <SearchBox
           value={search}
           onChangeText={setSearch}
@@ -741,7 +773,10 @@ const styles = StyleSheet.create({
     shadowColor: '#000000',
     shadowOpacity: 0.05,
     shadowRadius: rs(14),
-    shadowOffset: {width: 0, height: rs(5)},
+    shadowOffset: {
+      width: 0,
+      height: rs(5),
+    },
     elevation: 3,
   },
   companyTopRow: {

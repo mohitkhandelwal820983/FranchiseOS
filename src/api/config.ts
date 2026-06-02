@@ -1,12 +1,20 @@
-// src/api/config.ts
-
 export const API_CONFIG = {
-  IS_DEMO: true,
+  /**
+   * true  = use local dummy/static data
+   * false = call real backend API
+   */
+  USE_DUMMY_API: true,
 
-  DEMO_BASE_URL: 'https://dummyjson.com',
-  LIVE_BASE_URL: 'https://yourdomain.com/api',
+  LIVE_BASE_URL: 'https://your-domain.com/api',
+
+  ENDPOINTS: {
+    SUPER_ADMIN_DASHBOARD: '/super-admin/dashboard',
+    SUPER_ADMIN_COMPANIES: '/super-admin/companies',
+    SUPER_ADMIN_PAYMENTS: '/super-admin/payments',
+    COMPANY_DASHBOARD: '/company/dashboard',
+    COMPANY_NETWORK: '/company/network',
+    COMPANY_NETWORK_DETAIL: '/company/network/detail',
+    COMPANY_ORDERS: '/company/orders',
+    COMPANY_FINANCE: '/company/finance',
+  },
 };
-
-export const BASE_URL = API_CONFIG.IS_DEMO
-  ? API_CONFIG.DEMO_BASE_URL
-  : API_CONFIG.LIVE_BASE_URL;

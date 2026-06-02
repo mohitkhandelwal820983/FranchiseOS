@@ -5,7 +5,6 @@ import {
   Dimensions,
   KeyboardAvoidingView,
   Platform,
-  SafeAreaView,
   ScrollView,
   StatusBar,
   StyleSheet,
@@ -19,6 +18,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {Eye, EyeOff, User} from 'lucide-react-native';
 
 import {login} from '../../../api/auth.api';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const {width: SCREEN_WIDTH, height: SCREEN_HEIGHT} = Dimensions.get('window');
 
