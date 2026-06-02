@@ -31,6 +31,7 @@ const {width: SCREEN_WIDTH} = Dimensions.get('window');
 const DESIGN_WIDTH = 832;
 const scale = SCREEN_WIDTH / DESIGN_WIDTH;
 const rs = (value: number) => Math.round(value * scale);
+const fs = (value: number) => rs(value + 3);
 
 
 
@@ -179,47 +180,52 @@ const FilterSection = ({
     }));
   };
 
+  const clearFilters = () => {
+    setFilters({
+      franchise: 'All',
+      zone: 'All',
+      date: 'All',
+      value: 'All',
+    });
+  };
+
   return (
     <View style={styles.filterSection}>
       <Text style={styles.filterLabel}>Filter by:</Text>
 
-      <FilterButton
-        label={filters.franchise === 'All' ? 'Franchise' : filters.franchise}
-        active={filters.franchise !== 'All'}
-        onPress={() => toggleFilter('franchise', 'Stockist A')}
-      />
+      <View style={styles.filterButtonsWrap}>
+        <FilterButton
+          label={filters.franchise === 'All' ? 'Franchise' : filters.franchise}
+          active={filters.franchise !== 'All'}
+          onPress={() => toggleFilter('franchise', 'Stockist A')}
+        />
 
-      <FilterButton
-        label={filters.zone === 'All' ? 'Zone' : filters.zone}
-        active={filters.zone !== 'All'}
-        onPress={() => toggleFilter('zone', 'Mumbai')}
-      />
+        <FilterButton
+          label={filters.zone === 'All' ? 'Zone' : filters.zone}
+          active={filters.zone !== 'All'}
+          onPress={() => toggleFilter('zone', 'Mumbai')}
+        />
 
-      <FilterButton
-        label={filters.date === 'All' ? 'Date' : filters.date}
-        active={filters.date !== 'All'}
-        onPress={() => toggleFilter('date', '15 Jan 2026')}
-      />
+        <FilterButton
+          label={filters.date === 'All' ? 'Date' : filters.date}
+          active={filters.date !== 'All'}
+          onPress={() => toggleFilter('date', '15 Jan 2026')}
+        />
 
-      <FilterButton
-        label={filters.value === 'All' ? 'Value' : filters.value}
-        active={filters.value !== 'All'}
-        onPress={() => toggleFilter('value', 'High Value')}
-      />
+        <FilterButton
+          label={filters.value === 'All' ? 'Value' : filters.value}
+          active={filters.value !== 'All'}
+          onPress={() => toggleFilter('value', 'High Value')}
+        />
 
-      <TouchableOpacity
-        activeOpacity={0.8}
-        onPress={() =>
-          setFilters({
-            franchise: 'All',
-            zone: 'All',
-            date: 'All',
-            value: 'All',
-          })
-        }
-        style={styles.clearFilterButton}>
-        <ChevronDown color="#061247" size={rs(28)} strokeWidth={2.4} />
-      </TouchableOpacity>
+        <TouchableOpacity
+          activeOpacity={0.8}
+          onPress={clearFilters}
+          style={styles.clearFilterButton}
+        >
+          <Text style={styles.clearFilterText}>Clear</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };
@@ -417,7 +423,7 @@ const OrdersScreen = () => {
         <Text
           style={{
             color: '#061247',
-            fontSize: rs(18),
+            fontSize: fs(18),
             fontWeight: '700',
             marginBottom: rs(18),
             textAlign: 'center',
@@ -434,7 +440,7 @@ const OrdersScreen = () => {
             paddingVertical: rs(14),
             borderRadius: rs(8),
           }}>
-          <Text style={{color: '#FFFFFF', fontWeight: '800'}}>Retry</Text>
+          <Text style={{color: '#FFFFFF', fontSize: fs(14), fontWeight: '800'}}>Retry</Text>
         </TouchableOpacity>
       </SafeAreaView>
     );
@@ -493,7 +499,7 @@ const styles = StyleSheet.create({
   },
   headerTitle: {
     color: '#FFFFFF',
-    fontSize: rs(34),
+    fontSize: fs(34),
     fontWeight: '800',
   },
   scrollView: {
@@ -519,7 +525,7 @@ const styles = StyleSheet.create({
     flex: 1,
     marginLeft: rs(20),
     color: '#111737',
-    fontSize: rs(22),
+    fontSize: fs(22),
     fontWeight: '500',
     paddingVertical: 0,
   },
@@ -562,7 +568,7 @@ const styles = StyleSheet.create({
   },
   totalNumber: {
     color: '#173CFF',
-    fontSize: rs(42),
+    fontSize: fs(42),
     lineHeight: rs(48),
     fontWeight: '900',
     letterSpacing: rs(5),
@@ -572,14 +578,14 @@ const styles = StyleSheet.create({
   },
   completedNumber: {
     color: '#138A36',
-    fontSize: rs(42),
+    fontSize: fs(42),
     lineHeight: rs(48),
     fontWeight: '900',
     letterSpacing: rs(5),
   },
   summaryLabel: {
     color: '#2E314A',
-    fontSize: rs(18),
+    fontSize: fs(18),
     fontWeight: '500',
     marginTop: rs(10),
   },
@@ -605,68 +611,85 @@ const styles = StyleSheet.create({
   },
   statusTabText: {
     color: '#061247',
-    fontSize: rs(20),
+    fontSize: fs(20),
     fontWeight: '600',
   },
   activeStatusTabText: {
     color: '#FFFFFF',
     fontWeight: '800',
   },
-  filterSection: {
-    minHeight: rs(98),
-    borderWidth: 1,
-    borderColor: '#EEF0F6',
-    backgroundColor: '#FFFFFF',
-    borderRadius: rs(10),
-    paddingHorizontal: rs(24),
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: rs(28),
-    shadowColor: '#000000',
-    shadowOpacity: 0.03,
-    shadowRadius: rs(10),
-    shadowOffset: {width: 0, height: rs(4)},
-    elevation: 2,
-  },
-  filterLabel: {
-    color: '#111327',
-    fontSize: rs(24),
-    fontWeight: '700',
-    marginRight: rs(22),
-  },
-  filterChip: {
-    height: rs(54),
-    minWidth: rs(112),
-    borderWidth: 1,
-    borderColor: '#D9DCE8',
-    borderRadius: rs(6),
-    backgroundColor: '#FFFFFF',
-    paddingHorizontal: rs(18),
-    marginRight: rs(16),
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
+ 
+ 
   activeFilterChip: {
     backgroundColor: '#061B66',
     borderColor: '#061B66',
   },
   filterChipText: {
     color: '#061247',
-    fontSize: rs(17),
+    fontSize: fs(17),
     fontWeight: '700',
     marginRight: rs(10),
   },
   activeFilterChipText: {
     color: '#FFFFFF',
   },
-  clearFilterButton: {
-    marginLeft: 'auto',
-    width: rs(42),
-    height: rs(42),
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
+  filterSection: {
+  minHeight: rs(98),
+  borderWidth: 1,
+  borderColor: '#EEF0F6',
+  backgroundColor: '#FFFFFF',
+  borderRadius: rs(10),
+  paddingHorizontal: rs(20),
+  paddingVertical: rs(16),
+  marginBottom: rs(28),
+  shadowColor: '#000000',
+  shadowOpacity: 0.03,
+  shadowRadius: rs(10),
+  shadowOffset: {width: 0, height: rs(4)},
+  elevation: 2,
+},
+filterLabel: {
+  color: '#111327',
+  fontSize: fs(24),
+  fontWeight: '700',
+  marginBottom: rs(14),
+},
+filterButtonsWrap: {
+  flexDirection: 'row',
+  flexWrap: 'wrap',
+  alignItems: 'center',
+},
+filterChip: {
+  height: rs(54),
+  minWidth: rs(112),
+  borderWidth: 1,
+  borderColor: '#D9DCE8',
+  borderRadius: rs(6),
+  backgroundColor: '#FFFFFF',
+  paddingHorizontal: rs(16),
+  marginRight: rs(12),
+  marginBottom: rs(12),
+  flexDirection: 'row',
+  alignItems: 'center',
+  justifyContent: 'space-between',
+},
+clearFilterButton: {
+  height: rs(54),
+  minWidth: rs(82),
+  borderWidth: 1,
+  borderColor: '#D9DCE8',
+  borderRadius: rs(6),
+  backgroundColor: '#FFFFFF',
+  alignItems: 'center',
+  justifyContent: 'center',
+  paddingHorizontal: rs(16),
+  marginBottom: rs(12),
+},
+clearFilterText: {
+  color: '#061247',
+  fontSize: fs(16),
+  fontWeight: '800',
+},
   ordersCard: {
     backgroundColor: '#FFFFFF',
     borderWidth: 1,
@@ -690,7 +713,7 @@ const styles = StyleSheet.create({
   },
   ordersTitle: {
     color: '#111327',
-    fontSize: rs(24),
+    fontSize: fs(24),
     fontWeight: '900',
   },
   exportButton: {
@@ -699,7 +722,7 @@ const styles = StyleSheet.create({
   },
   exportText: {
     color: '#173CFF',
-    fontSize: rs(22),
+    fontSize: fs(22),
     fontWeight: '700',
     marginRight: rs(10),
   },
@@ -717,7 +740,7 @@ const styles = StyleSheet.create({
   },
   orderNo: {
     color: '#173CFF',
-    fontSize: rs(26),
+    fontSize: fs(26),
     fontWeight: '900',
     marginBottom: rs(20),
   },
@@ -728,19 +751,19 @@ const styles = StyleSheet.create({
   },
   flowText: {
     color: '#222640',
-    fontSize: rs(17),
+    fontSize: fs(17),
     fontWeight: '600',
     marginRight: rs(10),
   },
   productText: {
     color: '#5D607E',
-    fontSize: rs(17),
+    fontSize: fs(17),
     fontWeight: '600',
     marginBottom: rs(20),
   },
   amountText: {
     color: '#111327',
-    fontSize: rs(28),
+    fontSize: fs(28),
     fontWeight: '900',
   },
   orderRight: {
@@ -750,7 +773,7 @@ const styles = StyleSheet.create({
   },
   dateText: {
     color: '#5D607E',
-    fontSize: rs(18),
+    fontSize: fs(18),
     fontWeight: '600',
     marginBottom: rs(42),
   },
@@ -780,7 +803,7 @@ const styles = StyleSheet.create({
     borderColor: '#FFB6B6',
   },
   orderStatusText: {
-    fontSize: rs(18),
+    fontSize: fs(18),
     fontWeight: '700',
   },
   deliveredText: {
@@ -797,12 +820,12 @@ const styles = StyleSheet.create({
   },
   commissionText: {
     color: '#087A22',
-    fontSize: rs(17),
+    fontSize: fs(17),
     fontWeight: '700',
   },
   reasonText: {
     color: '#E00014',
-    fontSize: rs(17),
+    fontSize: fs(17),
     fontWeight: '700',
   },
   listFooter: {
@@ -812,12 +835,12 @@ const styles = StyleSheet.create({
   },
   showingText: {
     color: '#5D607E',
-    fontSize: rs(17),
+    fontSize: fs(17),
     fontWeight: '600',
   },
   loadMoreText: {
     color: '#173CFF',
-    fontSize: rs(20),
+    fontSize: fs(20),
     fontWeight: '800',
     textAlign: 'center',
     marginTop: rs(34),

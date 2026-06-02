@@ -3,7 +3,6 @@ import {
   ActivityIndicator,
   Alert,
   Dimensions,
-  SafeAreaView,
   ScrollView,
   StatusBar,
   StyleSheet,
@@ -12,6 +11,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { CommonActions, useNavigation } from '@react-navigation/native';
 import {
@@ -37,301 +37,20 @@ import {
   Plus,
   Laptop,
 } from 'lucide-react-native';
+import { BusinessDetail, CommissionRule, CompanyProfileData, DocumentItem, HelpItem, NotificationItem, SecurityItem, TargetItem } from '../../api/mock/company/companyProfile.mock';
+import { getCompanyProfile } from '../../api/company/companyProfile.api';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
 const DESIGN_WIDTH = 832;
 const scale = SCREEN_WIDTH / DESIGN_WIDTH;
 const rs = (value: number) => Math.round(value * scale);
+const fs = (value: number) => rs(value + 3);
 
 const LOGIN_ROUTE_NAME = 'Auth';
 
-type BusinessDetail = {
-  id: string;
-  label: string;
-  value: string;
-  icon: 'company' | 'owner' | 'email' | 'phone' | 'location' | 'gst' | 'pan';
-  verified?: boolean;
-};
 
-type CommissionRule = {
-  id: string;
-  category: string;
-  stockist: string;
-  dealer: string;
-};
 
-type TargetItem = {
-  id: string;
-  label: string;
-  value: string;
-};
-
-type DocumentItem = {
-  id: string;
-  name: string;
-  verified: boolean;
-};
-
-type SecurityItem = {
-  id: string;
-  title: string;
-  icon: 'password' | '2fa' | 'otp' | 'sessions' | 'history';
-  type: 'arrow' | 'switch';
-  enabled?: boolean;
-};
-
-type NotificationItem = {
-  id: string;
-  title: string;
-  enabled: boolean;
-};
-
-type HelpItem = {
-  id: string;
-  title: string;
-  subtitle?: string;
-  icon: 'ticket' | 'docs' | 'contact' | 'version';
-  arrow?: boolean;
-};
-
-type ProfileData = {
-  company: {
-    initials: string;
-    name: string;
-    role: string;
-    status: string;
-    plan: string;
-    memberSince: string;
-  };
-  businessDetails: BusinessDetail[];
-  commissionRules: CommissionRule[];
-  networkTargets: TargetItem[];
-  plan: {
-    name: string;
-    price: string;
-    renewal: string;
-    status: string;
-  };
-  documents: DocumentItem[];
-  security: SecurityItem[];
-  notifications: NotificationItem[];
-  help: HelpItem[];
-  footerText: string;
-};
-
-const mockProfileData: ProfileData = {
-  company: {
-    initials: 'RI',
-    name: 'Reliance Industries',
-    role: 'Company Admin',
-    status: 'Active',
-    plan: 'Enterprise',
-    memberSince: 'January 2023',
-  },
-  businessDetails: [
-    {
-      id: '1',
-      label: 'Company Name',
-      value: 'Reliance Industries',
-      icon: 'company',
-    },
-    {
-      id: '2',
-      label: 'Owner Name',
-      value: 'Amit Shah',
-      icon: 'owner',
-    },
-    {
-      id: '3',
-      label: 'Business Email',
-      value: 'admin@reliance.com',
-      icon: 'email',
-      verified: true,
-    },
-    {
-      id: '4',
-      label: 'Phone Number',
-      value: '+91 98765 43210',
-      icon: 'phone',
-      verified: true,
-    },
-    {
-      id: '5',
-      label: 'Headquarters',
-      value: 'Mumbai, Maharashtra',
-      icon: 'location',
-    },
-    {
-      id: '6',
-      label: 'GST Number',
-      value: '27ABCDE1234F1Z5',
-      icon: 'gst',
-    },
-    {
-      id: '7',
-      label: 'PAN Number',
-      value: 'ABCDE1234F',
-      icon: 'pan',
-    },
-  ],
-  commissionRules: [
-    {
-      id: '1',
-      category: 'Category A — Electronics',
-      stockist: 'Stockist 5%',
-      dealer: 'Dealer 3%',
-    },
-    {
-      id: '2',
-      category: 'Category B — FMCG',
-      stockist: 'Stockist 4%',
-      dealer: 'Dealer 2.5%',
-    },
-    {
-      id: '3',
-      category: 'Category C — Others',
-      stockist: 'Stockist 3%',
-      dealer: 'Dealer 2%',
-    },
-  ],
-  networkTargets: [
-    {
-      id: '1',
-      label: 'Overall Network Target',
-      value: '₹60,00,000/month',
-    },
-    {
-      id: '2',
-      label: 'Per Stockist Average',
-      value: '₹5,00,000/month',
-    },
-    {
-      id: '3',
-      label: 'Per Dealer Average',
-      value: '₹62,500/month',
-    },
-  ],
-  plan: {
-    name: 'Enterprise Plan',
-    price: '₹40,000/month',
-    renewal: 'Renewal: 30 Jun 2026',
-    status: 'Active',
-  },
-  documents: [
-    {
-      id: '1',
-      name: 'GST Certificate',
-      verified: true,
-    },
-    {
-      id: '2',
-      name: 'PAN Card',
-      verified: true,
-    },
-    {
-      id: '3',
-      name: 'Bank Details',
-      verified: true,
-    },
-  ],
-  security: [
-    {
-      id: '1',
-      title: 'Change Password',
-      icon: 'password',
-      type: 'arrow',
-    },
-    {
-      id: '2',
-      title: 'Two Factor Auth',
-      icon: '2fa',
-      type: 'switch',
-      enabled: true,
-    },
-    {
-      id: '3',
-      title: 'Login OTP',
-      icon: 'otp',
-      type: 'switch',
-      enabled: true,
-    },
-    {
-      id: '4',
-      title: 'Active Sessions — 3 devices',
-      icon: 'sessions',
-      type: 'arrow',
-    },
-    {
-      id: '5',
-      title: 'Login History',
-      icon: 'history',
-      type: 'arrow',
-    },
-  ],
-  notifications: [
-    {
-      id: '1',
-      title: 'New Order Alerts',
-      enabled: true,
-    },
-    {
-      id: '2',
-      title: 'Payment Overdue',
-      enabled: true,
-    },
-    {
-      id: '3',
-      title: 'Incentive Qualified',
-      enabled: true,
-    },
-    {
-      id: '4',
-      title: 'Daily Summary Report',
-      enabled: true,
-    },
-    {
-      id: '5',
-      title: 'Weekly Performance Report',
-      enabled: true,
-    },
-  ],
-  help: [
-    {
-      id: '1',
-      title: 'Support Tickets',
-      subtitle: '1 open',
-      icon: 'ticket',
-      arrow: true,
-    },
-    {
-      id: '2',
-      title: 'Help Documentation',
-      icon: 'docs',
-      arrow: true,
-    },
-    {
-      id: '3',
-      title: 'Contact FranchiseOS',
-      icon: 'contact',
-      arrow: true,
-    },
-    {
-      id: '4',
-      title: 'App Version',
-      subtitle: 'v1.0.0',
-      icon: 'version',
-      arrow: false,
-    },
-  ],
-  footerText: 'FranchiseOS v1.0 — Company Admin',
-};
-
-const mockProfileApi = async (): Promise<ProfileData> => {
-  return new Promise(resolve => {
-    setTimeout(() => resolve(mockProfileData), 300);
-  });
-};
 
 const Header = () => {
   return (
@@ -347,7 +66,7 @@ const Header = () => {
   );
 };
 
-const ProfileHero = ({ data }: { data: ProfileData }) => {
+const ProfileHero = ({ data }: { data: CompanyProfileData }) => {
   return (
     <View style={styles.profileHero}>
       <View style={styles.logoWrap}>
@@ -517,7 +236,7 @@ const NetworkTargetsCard = ({ targets }: { targets: TargetItem[] }) => {
   );
 };
 
-const PlanCard = ({ plan }: { plan: ProfileData['plan'] }) => {
+const PlanCard = ({ plan }: { plan: CompanyProfileData['plan'] }) => {
   return (
     <View style={styles.halfCard}>
       <Text style={styles.sectionTitle}>Your Plan</Text>
@@ -805,17 +524,76 @@ const LogoutButton = () => {
 };
 
 const ProfileScreen = () => {
-  const [data, setData] = useState<ProfileData | null>(null);
+  const [data, setData] = useState<CompanyProfileData | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string>('');
+
+  const loadProfile = async () => {
+    try {
+      setLoading(true);
+      setError('');
+
+      const response = await getCompanyProfile();
+      setData(response);
+    } catch (err) {
+      console.log('Company Profile API Error:', err);
+      setError('Unable to load company profile');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    mockProfileApi().then(setData);
+    loadProfile();
   }, []);
 
-  if (!data) {
+  const handleRetry = () => {
+    loadProfile();
+  };
+
+  if (loading) {
     return (
       <SafeAreaView style={styles.loaderScreen}>
         <StatusBar backgroundColor="#061B66" barStyle="light-content" />
         <ActivityIndicator size="large" color="#173CFF" />
+      </SafeAreaView>
+    );
+  }
+
+  if (error || !data) {
+    return (
+      <SafeAreaView style={styles.loaderScreen}>
+        <StatusBar backgroundColor="#061B66" barStyle="light-content" />
+
+        <Text
+          style={{
+            color: '#061247',
+            fontSize: fs(18),
+            fontWeight: '700',
+            marginBottom: rs(18),
+            textAlign: 'center',
+          }}>
+          {error || 'Something went wrong'}
+        </Text>
+
+        <TouchableOpacity
+          activeOpacity={0.85}
+          onPress={handleRetry}
+          style={{
+            backgroundColor: '#061B66',
+            paddingHorizontal: rs(28),
+            paddingVertical: rs(14),
+            borderRadius: rs(8),
+          }}>
+          <Text
+            style={{
+              color: '#FFFFFF',
+              fontSize: fs(14),
+              fontWeight: '800',
+            }}>
+            Retry
+          </Text>
+        </TouchableOpacity>
       </SafeAreaView>
     );
   }
@@ -829,8 +607,7 @@ const ProfileScreen = () => {
       <ScrollView
         style={styles.scrollView}
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={styles.scrollContent}
-      >
+        contentContainerStyle={styles.scrollContent}>
         <ProfileHero data={data} />
 
         <BusinessDetailsCard details={data.businessDetails} />
@@ -859,12 +636,9 @@ const ProfileScreen = () => {
     </SafeAreaView>
   );
 };
-
 export default ProfileScreen;
 
 const PAGE_PADDING = rs(22);
-const CARD_GAP = rs(10);
-const HALF_WIDTH = (SCREEN_WIDTH - PAGE_PADDING * 2 - CARD_GAP) / 2;
 
 const styles = StyleSheet.create({
   safeArea: {
@@ -897,7 +671,7 @@ const styles = StyleSheet.create({
   },
   headerTitle: {
     color: '#FFFFFF',
-    fontSize: rs(27),
+    fontSize: fs(27),
     fontWeight: '800',
   },
   scrollView: {
@@ -933,7 +707,7 @@ const styles = StyleSheet.create({
   },
   logoText: {
     color: '#061247',
-    fontSize: rs(74),
+    fontSize: fs(74),
     fontWeight: '900',
     letterSpacing: rs(2),
   },
@@ -950,13 +724,15 @@ const styles = StyleSheet.create({
   },
   companyName: {
     color: '#FFFFFF',
-    fontSize: rs(33),
+    fontSize: fs(33),
+    lineHeight: rs(39),
     fontWeight: '800',
     marginTop: rs(10),
   },
   companyRole: {
     color: '#FFFFFF',
-    fontSize: rs(17),
+    fontSize: fs(17),
+    lineHeight: rs(23),
     fontWeight: '500',
     marginTop: rs(8),
   },
@@ -985,7 +761,7 @@ const styles = StyleSheet.create({
   },
   statusPillText: {
     color: '#FFFFFF',
-    fontSize: rs(15),
+    fontSize: fs(15),
     fontWeight: '700',
   },
   planPill: {
@@ -999,12 +775,12 @@ const styles = StyleSheet.create({
   },
   planPillText: {
     color: '#FFFFFF',
-    fontSize: rs(15),
+    fontSize: fs(15),
     fontWeight: '700',
   },
   memberSince: {
     color: '#FFFFFF',
-    fontSize: rs(16),
+    fontSize: fs(16),
     fontWeight: '500',
     marginTop: rs(12),
   },
@@ -1021,7 +797,7 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
   halfCard: {
-    width: HALF_WIDTH,
+    width: '100%',
     backgroundColor: '#FFFFFF',
     borderRadius: rs(8),
     paddingHorizontal: rs(16),
@@ -1034,8 +810,7 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
   twoColumnRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: 'column',
   },
   sectionHeader: {
     height: rs(26),
@@ -1046,18 +821,20 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     color: '#111327',
-    fontSize: rs(18),
+    fontSize: fs(18),
+    lineHeight: rs(25),
     fontWeight: '900',
   },
   sectionActionText: {
     color: '#173CFF',
-    fontSize: rs(14),
+    fontSize: fs(14),
     fontWeight: '800',
   },
   businessRow: {
-    minHeight: rs(36),
+    minHeight: rs(44),
     flexDirection: 'row',
     alignItems: 'center',
+    paddingVertical: rs(6),
   },
   businessIcon: {
     width: rs(30),
@@ -1065,13 +842,15 @@ const styles = StyleSheet.create({
   businessLabel: {
     width: rs(205),
     color: '#5D607E',
-    fontSize: rs(14),
+    fontSize: fs(14),
+    lineHeight: rs(21),
     fontWeight: '600',
   },
   businessValue: {
     flex: 1,
     color: '#111327',
-    fontSize: rs(15),
+    fontSize: fs(15),
+    lineHeight: rs(22),
     fontWeight: '800',
   },
   verifiedWrap: {
@@ -1085,12 +864,12 @@ const styles = StyleSheet.create({
   },
   verifiedText: {
     color: '#138A36',
-    fontSize: rs(13),
+    fontSize: fs(13),
     fontWeight: '800',
     marginRight: rs(8),
   },
   ruleRow: {
-    minHeight: rs(50),
+    minHeight: rs(62),
     borderWidth: 1,
     borderColor: '#EEF0F6',
     borderRadius: rs(6),
@@ -1103,12 +882,14 @@ const styles = StyleSheet.create({
   },
   ruleCategory: {
     color: '#111327',
-    fontSize: rs(14),
+    fontSize: fs(14),
+    lineHeight: rs(21),
     fontWeight: '900',
   },
   ruleSubText: {
     color: '#5D607E',
-    fontSize: rs(12),
+    fontSize: fs(12),
+    lineHeight: rs(19),
     fontWeight: '600',
     marginTop: rs(2),
   },
@@ -1120,12 +901,12 @@ const styles = StyleSheet.create({
   },
   addRuleText: {
     color: '#173CFF',
-    fontSize: rs(15),
+    fontSize: fs(15),
     fontWeight: '800',
     marginLeft: rs(6),
   },
   targetRow: {
-    minHeight: rs(45),
+    minHeight: rs(56),
     borderBottomWidth: 1,
     borderBottomColor: '#EEF0F6',
     flexDirection: 'row',
@@ -1134,17 +915,19 @@ const styles = StyleSheet.create({
   },
   targetLabel: {
     color: '#111327',
-    fontSize: rs(14),
+    fontSize: fs(14),
+    lineHeight: rs(21),
     fontWeight: '700',
   },
   targetValue: {
     color: '#111327',
-    fontSize: rs(14),
+    fontSize: fs(14),
+    lineHeight: rs(21),
     fontWeight: '800',
   },
   setTargetText: {
     color: '#173CFF',
-    fontSize: rs(14),
+    fontSize: fs(14),
     fontWeight: '800',
     textAlign: 'center',
     marginTop: rs(14),
@@ -1158,18 +941,18 @@ const styles = StyleSheet.create({
   },
   planName: {
     color: '#FFFFFF',
-    fontSize: rs(22),
+    fontSize: fs(22),
     fontWeight: '900',
   },
   planPrice: {
     color: '#FFFFFF',
-    fontSize: rs(16),
+    fontSize: fs(16),
     fontWeight: '700',
     marginTop: rs(6),
   },
   renewalText: {
     color: '#FFFFFF',
-    fontSize: rs(13),
+    fontSize: fs(13),
     fontWeight: '500',
     marginTop: rs(6),
   },
@@ -1190,7 +973,7 @@ const styles = StyleSheet.create({
   },
   activePlanText: {
     color: '#138A36',
-    fontSize: rs(13),
+    fontSize: fs(13),
     fontWeight: '900',
     marginRight: rs(6),
   },
@@ -1205,14 +988,14 @@ const styles = StyleSheet.create({
   },
   viewPlanText: {
     color: '#FFFFFF',
-    fontSize: rs(13),
+    fontSize: fs(13),
     fontWeight: '800',
   },
   documentList: {
     marginTop: rs(12),
   },
   documentRow: {
-    minHeight: rs(45),
+    minHeight: rs(56),
     borderWidth: 1,
     borderColor: '#EEF0F6',
     borderRadius: rs(6),
@@ -1223,49 +1006,51 @@ const styles = StyleSheet.create({
   documentName: {
     flex: 1,
     color: '#111327',
-    fontSize: rs(14),
+    fontSize: fs(14),
     fontWeight: '800',
     marginLeft: rs(10),
   },
   documentVerified: {
     color: '#138A36',
-    fontSize: rs(13),
+    fontSize: fs(13),
     fontWeight: '800',
     marginRight: rs(8),
   },
   documentView: {
     color: '#173CFF',
-    fontSize: rs(13),
+    fontSize: fs(13),
     fontWeight: '800',
     marginLeft: rs(22),
   },
   settingRow: {
-    minHeight: rs(32),
+    minHeight: rs(46),
     flexDirection: 'row',
     alignItems: 'center',
   },
   settingTitle: {
     flex: 1,
     color: '#111327',
-    fontSize: rs(14),
+    fontSize: fs(14),
+    lineHeight: rs(21),
     fontWeight: '700',
     marginLeft: rs(14),
   },
   helpRow: {
-    minHeight: rs(30),
+    minHeight: rs(44),
     flexDirection: 'row',
     alignItems: 'center',
   },
   helpTitle: {
     color: '#111327',
-    fontSize: rs(14),
+    fontSize: fs(14),
+    lineHeight: rs(21),
     fontWeight: '700',
     marginLeft: rs(14),
   },
   helpSubtitle: {
     flex: 1,
     color: '#5D607E',
-    fontSize: rs(14),
+    fontSize: fs(14),
     fontWeight: '700',
     marginLeft: rs(8),
   },
@@ -1288,13 +1073,14 @@ const styles = StyleSheet.create({
   },
   logoutText: {
     color: '#E00014',
-    fontSize: rs(17),
+    fontSize: fs(17),
     fontWeight: '800',
     marginLeft: rs(12),
   },
   footerText: {
     color: '#5D607E',
-    fontSize: rs(13),
+    fontSize: fs(13),
+    lineHeight: rs(19),
     fontWeight: '600',
     textAlign: 'center',
     marginTop: rs(12),

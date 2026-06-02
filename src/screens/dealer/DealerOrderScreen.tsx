@@ -3,7 +3,6 @@ import {
   ActivityIndicator,
   Alert,
   Dimensions,
-  SafeAreaView,
   ScrollView,
   StatusBar,
   StyleSheet,
@@ -12,6 +11,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import {
   Box,
   CalendarDays,
@@ -31,149 +31,24 @@ import {
   WalletCards,
   X,
 } from 'lucide-react-native';
+import {   CustomerOrder,
+  CustomerOrderStatus,
+  DealerOrdersData,
+  MainTab,
+  OrderFilter,
+  StockOrder,
+  StockOrderStatus,
+  SummaryItem,} from '../../api/mock/dealer/dealerOrders.mock';
+import { getDealerOrders } from '../../api/dealer/dealerOrders.api';
 
 const {width: SCREEN_WIDTH} = Dimensions.get('window');
 
 const DESIGN_WIDTH = 832;
 const scale = SCREEN_WIDTH / DESIGN_WIDTH;
 const rs = (value: number) => Math.round(value * scale);
+const fs = (value: number) => rs(value + 3);
 
-type MainTab = 'customer' | 'stock';
-type OrderFilter = 'All' | 'Pending' | 'Processing' | 'Delivered' | 'Cancelled';
 
-type CustomerOrderStatus = 'Processing' | 'Delivered' | 'Cancelled';
-
-type StockOrderStatus = 'In Transit' | 'Approval Pending' | 'Delivered' | 'Cancelled';
-
-type CustomerOrder = {
-  id: string;
-  customer: string;
-  location: string;
-  status: CustomerOrderStatus;
-  amount: string;
-  date: string;
-  items: string;
-  paymentStatus: string;
-  invoice: string;
-};
-
-type StockOrder = {
-  id: string;
-  stockist: string;
-  location: string;
-  status: StockOrderStatus;
-  amount: string;
-  dateLabel: string;
-  sku: string;
-  orderStatus: string;
-  expectedDelivery: string;
-};
-
-type SummaryItem = {
-  id: string;
-  label: string;
-  value: string;
-  icon: 'customer' | 'pending' | 'inventory' | 'cancelled';
-  color: string;
-  bg: string;
-};
-
-type DealerOrdersData = {
-  customerOrders: CustomerOrder[];
-  stockOrders: StockOrder[];
-  summary: SummaryItem[];
-};
-
-const mockDealerOrdersData: DealerOrdersData = {
-  customerOrders: [
-    {
-      id: '#CUST-2201',
-      customer: 'Rahul Kirana Store',
-      location: 'Jaipur, Rajasthan',
-      status: 'Processing',
-      amount: '₹4,200',
-      date: '21 May 2026, 10:30 AM',
-      items: '8 items',
-      paymentStatus: 'Partial Paid',
-      invoice: '#INV-2201',
-    },
-    {
-      id: '#CUST-2200',
-      customer: 'Sharma General Store',
-      location: 'Jaipur, Rajasthan',
-      status: 'Delivered',
-      amount: '₹6,850',
-      date: '20 May 2026, 06:15 PM',
-      items: '12 items',
-      paymentStatus: 'Paid Full',
-      invoice: '#INV-2200',
-    },
-  ],
-  stockOrders: [
-    {
-      id: '#PO-8821',
-      stockist: 'Rajesh Stockist',
-      location: 'Jaipur, Rajasthan',
-      status: 'In Transit',
-      amount: '₹42,000',
-      dateLabel: 'Expected: Tomorrow',
-      sku: '32 SKUs',
-      orderStatus: 'In Transit',
-      expectedDelivery: '22 May 2026',
-    },
-    {
-      id: '#PO-8820',
-      stockist: 'Mohan Stockist',
-      location: 'Jaipur, Rajasthan',
-      status: 'Approval Pending',
-      amount: '₹18,750',
-      dateLabel: 'Placed: 21 May 2026',
-      sku: '24 SKUs',
-      orderStatus: 'Approval Pending',
-      expectedDelivery: '--',
-    },
-  ],
-  summary: [
-    {
-      id: '1',
-      label: 'Customer Orders Today',
-      value: '18',
-      icon: 'customer',
-      color: '#173CFF',
-      bg: '#173CFF',
-    },
-    {
-      id: '2',
-      label: 'Pending Deliveries',
-      value: '7',
-      icon: 'pending',
-      color: '#F06419',
-      bg: '#F06419',
-    },
-    {
-      id: '3',
-      label: 'Incoming Inventory',
-      value: '₹68,500',
-      icon: 'inventory',
-      color: '#138A36',
-      bg: '#138A36',
-    },
-    {
-      id: '4',
-      label: 'Cancelled Orders',
-      value: '2',
-      icon: 'cancelled',
-      color: '#E00014',
-      bg: '#E00014',
-    },
-  ],
-};
-
-const mockDealerOrdersApi = async (): Promise<DealerOrdersData> => {
-  return new Promise(resolve => {
-    setTimeout(() => resolve(mockDealerOrdersData), 300);
-  });
-};
 
 const Header = () => {
   return (
@@ -644,9 +519,23 @@ const DealerOrderScreen = () => {
   const [activeTab, setActiveTab] = useState<MainTab>('customer');
   const [activeFilter, setActiveFilter] = useState<OrderFilter>('All');
   const [search, setSearch] = useState('');
+  const [loading, setLoading] = useState<boolean>(true);
+
+  const loadDealerOrders = async () => {
+    try {
+      setLoading(true);
+
+      const response = await getDealerOrders();
+      setData(response);
+    } catch (error) {
+      console.log('Dealer Orders API Error:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    mockDealerOrdersApi().then(setData);
+    loadDealerOrders();
   }, []);
 
   const filteredCustomerOrders = useMemo(() => {
@@ -735,7 +624,7 @@ const DealerOrderScreen = () => {
     Alert.alert('Create Stock Order', 'Stock order form opened.');
   };
 
-  if (!data) {
+  if (loading || !data) {
     return (
       <SafeAreaView style={styles.loaderScreen}>
         <StatusBar backgroundColor="#061B66" barStyle="light-content" />
@@ -756,7 +645,9 @@ const DealerOrderScreen = () => {
         contentContainerStyle={styles.scrollContent}>
         <MainTabs activeTab={activeTab} onChange={handleTabChange} />
 
-        <Text style={styles.subTitle}>Manage customer sales and stock purchases</Text>
+        <Text style={styles.subTitle}>
+          Manage customer sales and stock purchases
+        </Text>
 
         <SearchBox value={search} onChangeText={setSearch} />
 
@@ -836,7 +727,7 @@ const styles = StyleSheet.create({
   },
   headerTitle: {
     color: '#FFFFFF',
-    fontSize: rs(31),
+    fontSize: fs(31),
     fontWeight: '900',
   },
   scrollView: {
@@ -867,7 +758,7 @@ const styles = StyleSheet.create({
   },
   mainTabText: {
     color: '#5D607E',
-    fontSize: rs(18),
+    fontSize: fs(18),
     fontWeight: '800',
   },
   activeMainTabText: {
@@ -875,7 +766,7 @@ const styles = StyleSheet.create({
   },
   subTitle: {
     color: '#5D607E',
-    fontSize: rs(16),
+    fontSize: fs(16),
     fontWeight: '700',
     marginLeft: rs(12),
     marginBottom: rs(18),
@@ -894,7 +785,7 @@ const styles = StyleSheet.create({
   searchInput: {
     flex: 1,
     color: '#111327',
-    fontSize: rs(17),
+    fontSize: fs(17),
     fontWeight: '500',
     paddingVertical: 0,
     marginLeft: rs(16),
@@ -920,7 +811,7 @@ const styles = StyleSheet.create({
   },
   filterText: {
     color: '#061247',
-    fontSize: rs(15),
+    fontSize: fs(15),
     fontWeight: '800',
   },
   activeFilterText: {
@@ -939,7 +830,7 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     color: '#061247',
-    fontSize: rs(23),
+    fontSize: fs(23),
     fontWeight: '900',
   },
   orderCard: {
@@ -986,12 +877,12 @@ const styles = StyleSheet.create({
   },
   orderId: {
     color: '#061247',
-    fontSize: rs(24),
+    fontSize: fs(24),
     fontWeight: '900',
   },
   orderName: {
     color: '#061247',
-    fontSize: rs(16),
+    fontSize: fs(16),
     fontWeight: '900',
     marginTop: rs(8),
   },
@@ -1002,7 +893,7 @@ const styles = StyleSheet.create({
   },
   locationText: {
     color: '#5D607E',
-    fontSize: rs(13),
+    fontSize: fs(13),
     fontWeight: '700',
     marginLeft: rs(8),
   },
@@ -1012,13 +903,13 @@ const styles = StyleSheet.create({
   },
   orderAmount: {
     color: '#061247',
-    fontSize: rs(24),
+    fontSize: fs(24),
     fontWeight: '900',
     marginTop: rs(10),
   },
   orderDate: {
     color: '#5D607E',
-    fontSize: rs(13),
+    fontSize: fs(13),
     fontWeight: '700',
     marginTop: rs(8),
   },
@@ -1046,7 +937,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFF0F0',
   },
   statusText: {
-    fontSize: rs(13),
+    fontSize: fs(13),
     fontWeight: '900',
   },
   deliveredText: {
@@ -1080,12 +971,12 @@ const styles = StyleSheet.create({
   },
   metricValue: {
     color: '#061247',
-    fontSize: rs(16),
+    fontSize: fs(16),
     fontWeight: '900',
   },
   metricLabel: {
     color: '#5D607E',
-    fontSize: rs(12),
+    fontSize: fs(12),
     fontWeight: '700',
     marginTop: rs(4),
   },
@@ -1119,7 +1010,7 @@ const styles = StyleSheet.create({
   },
   primaryActionText: {
     color: '#FFFFFF',
-    fontSize: rs(15),
+    fontSize: fs(15),
     fontWeight: '900',
     marginLeft: rs(10),
   },
@@ -1145,7 +1036,7 @@ const styles = StyleSheet.create({
   },
   outlineActionText: {
     color: '#173CFF',
-    fontSize: rs(15),
+    fontSize: fs(15),
     fontWeight: '900',
     marginLeft: rs(10),
   },
@@ -1161,7 +1052,7 @@ const styles = StyleSheet.create({
   },
   greenOutlineText: {
     color: '#138A36',
-    fontSize: rs(15),
+    fontSize: fs(15),
     fontWeight: '900',
     marginLeft: rs(10),
   },
@@ -1177,7 +1068,7 @@ const styles = StyleSheet.create({
   },
   orangeOutlineText: {
     color: '#F06419',
-    fontSize: rs(15),
+    fontSize: fs(15),
     fontWeight: '900',
     marginLeft: rs(10),
   },
@@ -1193,7 +1084,7 @@ const styles = StyleSheet.create({
   },
   dangerOutlineText: {
     color: '#E00014',
-    fontSize: rs(15),
+    fontSize: fs(15),
     fontWeight: '900',
     marginLeft: rs(10),
   },
@@ -1216,7 +1107,7 @@ const styles = StyleSheet.create({
   },
   summaryTitle: {
     color: '#061247',
-    fontSize: rs(20),
+    fontSize: fs(20),
     fontWeight: '900',
     marginLeft: rs(12),
   },
@@ -1240,12 +1131,12 @@ const styles = StyleSheet.create({
   },
   summaryValue: {
     color: '#061247',
-    fontSize: rs(23),
+    fontSize: fs(23),
     fontWeight: '900',
   },
   summaryLabel: {
     color: '#5D607E',
-    fontSize: rs(12),
+    fontSize: fs(12),
     fontWeight: '700',
     marginTop: rs(4),
   },
@@ -1279,7 +1170,7 @@ const styles = StyleSheet.create({
   },
   floatingText: {
     color: '#FFFFFF',
-    fontSize: rs(15),
+    fontSize: fs(15),
     fontWeight: '900',
     marginLeft: rs(10),
     lineHeight: rs(18),

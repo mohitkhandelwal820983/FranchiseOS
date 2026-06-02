@@ -3,7 +3,6 @@ import {
   ActivityIndicator,
   Dimensions,
   RefreshControl,
-  SafeAreaView,
   ScrollView,
   StatusBar,
   StyleSheet,
@@ -11,6 +10,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import {
   AlertTriangle,
   BarChart3,
@@ -31,6 +31,7 @@ const {width: SCREEN_WIDTH} = Dimensions.get('window');
 const DESIGN_WIDTH = 832;
 const scale = SCREEN_WIDTH / DESIGN_WIDTH;
 const rs = (value: number) => Math.round(value * scale);
+const fs = (value: number) => rs(value + 2);
 
 
 const Header = () => {
@@ -631,7 +632,7 @@ const FinanceScreen = () => {
         <Text
           style={{
             color: '#061247',
-            fontSize: rs(18),
+            fontSize: fs(18),
             fontWeight: '700',
             marginBottom: rs(18),
             textAlign: 'center',
@@ -648,7 +649,7 @@ const FinanceScreen = () => {
             paddingVertical: rs(14),
             borderRadius: rs(8),
           }}>
-          <Text style={{color: '#FFFFFF', fontWeight: '800'}}>Retry</Text>
+          <Text style={{color: '#FFFFFF', fontSize: fs(14), fontWeight: '800'}}>Retry</Text>
         </TouchableOpacity>
       </SafeAreaView>
     );
@@ -735,7 +736,7 @@ const styles = StyleSheet.create({
   },
   headerTitle: {
     color: '#FFFFFF',
-    fontSize: rs(27),
+    fontSize: fs(27),
     fontWeight: '800',
   },
   scrollView: {
@@ -768,7 +769,7 @@ const styles = StyleSheet.create({
   },
   periodText: {
     color: '#061247',
-    fontSize: rs(15),
+    fontSize: fs(15),
     fontWeight: '700',
   },
   activePeriodText: {
@@ -808,17 +809,17 @@ const styles = StyleSheet.create({
   },
   kpiTitle: {
     color: '#5D607E',
-    fontSize: rs(16),
+    fontSize: fs(16),
     fontWeight: '700',
   },
   kpiValue: {
-    fontSize: rs(31),
+    fontSize: fs(31),
     fontWeight: '900',
     letterSpacing: rs(5),
     marginTop: rs(9),
   },
   kpiSubtitle: {
-    fontSize: rs(16),
+    fontSize: fs(16),
     fontWeight: '600',
     marginTop: rs(8),
   },
@@ -843,7 +844,7 @@ const styles = StyleSheet.create({
   },
   financeTabText: {
     color: '#061247',
-    fontSize: rs(15),
+    fontSize: fs(15),
     fontWeight: '700',
   },
   activeFinanceTabText: {
@@ -868,7 +869,7 @@ const styles = StyleSheet.create({
   },
   cardTitle: {
     color: '#111327',
-    fontSize: rs(16),
+    fontSize: fs(16),
     fontWeight: '900',
   },
   donutWrap: {
@@ -896,12 +897,12 @@ const styles = StyleSheet.create({
   },
   donutAmount: {
     color: '#061247',
-    fontSize: rs(30),
+    fontSize: fs(30),
     fontWeight: '900',
   },
   donutLabel: {
     color: '#5D607E',
-    fontSize: rs(14),
+    fontSize: fs(14),
     fontWeight: '600',
     marginTop: rs(5),
   },
@@ -910,7 +911,7 @@ const styles = StyleSheet.create({
     right: -rs(32),
     top: rs(48),
     color: '#FFFFFF',
-    fontSize: rs(18),
+    fontSize: fs(18),
     fontWeight: '800',
   },
   donutPercentLeft: {
@@ -918,7 +919,7 @@ const styles = StyleSheet.create({
     left: -rs(22),
     bottom: rs(34),
     color: '#FFFFFF',
-    fontSize: rs(18),
+    fontSize: fs(18),
     fontWeight: '800',
   },
   legendWrap: {
@@ -946,12 +947,12 @@ const styles = StyleSheet.create({
   legendLabel: {
     flex: 1,
     color: '#061247',
-    fontSize: rs(14),
+    fontSize: fs(14),
     fontWeight: '600',
   },
   legendValue: {
     color: '#111327',
-    fontSize: rs(14),
+    fontSize: fs(14),
     fontWeight: '900',
   },
   stockistRevenueCard: {
@@ -973,7 +974,7 @@ const styles = StyleSheet.create({
   },
   viewAllText: {
     color: '#173CFF',
-    fontSize: rs(15),
+    fontSize: fs(15),
     fontWeight: '800',
   },
   stockistBlock: {
@@ -996,7 +997,7 @@ const styles = StyleSheet.create({
   },
   avatarText: {
     color: '#FFFFFF',
-    fontSize: rs(19),
+    fontSize: fs(19),
     fontWeight: '900',
   },
   stockistInfo: {
@@ -1004,12 +1005,12 @@ const styles = StyleSheet.create({
   },
   stockistName: {
     color: '#111327',
-    fontSize: rs(16),
+    fontSize: fs(16),
     fontWeight: '900',
   },
   stockistTargetText: {
     color: '#4D506E',
-    fontSize: rs(13),
+    fontSize: fs(13),
     fontWeight: '600',
     marginTop: rs(8),
   },
@@ -1031,7 +1032,7 @@ const styles = StyleSheet.create({
   },
   progressText: {
     color: '#4D506E',
-    fontSize: rs(13),
+    fontSize: fs(13),
     fontWeight: '700',
     marginLeft: rs(14),
   },
@@ -1041,7 +1042,7 @@ const styles = StyleSheet.create({
   },
   stockistRevenue: {
     color: '#138A36',
-    fontSize: rs(18),
+    fontSize: fs(18),
     fontWeight: '900',
   },
   showDealerButton: {
@@ -1057,7 +1058,7 @@ const styles = StyleSheet.create({
   },
   showDealerText: {
     color: '#061247',
-    fontSize: rs(12),
+    fontSize: fs(12),
     fontWeight: '800',
     marginLeft: rs(6),
   },
@@ -1083,13 +1084,13 @@ const styles = StyleSheet.create({
   },
   dealerAvatarText: {
     color: '#FFFFFF',
-    fontSize: rs(12),
+    fontSize: fs(12),
     fontWeight: '900',
   },
   dealerName: {
     flex: 1,
     color: '#111327',
-    fontSize: rs(14),
+    fontSize: fs(14),
     fontWeight: '800',
   },
   dealerAmountBox: {
@@ -1098,17 +1099,17 @@ const styles = StyleSheet.create({
   },
   dealerRevenue: {
     color: '#138A36',
-    fontSize: rs(16),
+    fontSize: fs(16),
     fontWeight: '900',
   },
   dealerTarget: {
-    fontSize: rs(12),
+    fontSize: fs(12),
     fontWeight: '700',
     marginTop: rs(3),
   },
   moreDealersText: {
     color: '#173CFF',
-    fontSize: rs(15),
+    fontSize: fs(15),
     fontWeight: '800',
     textAlign: 'center',
     marginTop: rs(10),
@@ -1127,12 +1128,12 @@ const styles = StyleSheet.create({
   },
   directDealerTitle: {
     color: '#111327',
-    fontSize: rs(14),
+    fontSize: fs(14),
     fontWeight: '900',
   },
   directDealerAmount: {
     color: '#138A36',
-    fontSize: rs(14),
+    fontSize: fs(14),
     fontWeight: '900',
   },
   directDealerRow: {
@@ -1153,18 +1154,18 @@ const styles = StyleSheet.create({
   },
   directDealerAvatarText: {
     color: '#FFFFFF',
-    fontSize: rs(12),
+    fontSize: fs(12),
     fontWeight: '900',
   },
   directDealerName: {
     flex: 1,
     color: '#111327',
-    fontSize: rs(14),
+    fontSize: fs(14),
     fontWeight: '800',
   },
   directDealerRevenue: {
     color: '#138A36',
-    fontSize: rs(14),
+    fontSize: fs(14),
     fontWeight: '900',
     marginRight: rs(12),
   },
@@ -1208,7 +1209,7 @@ const styles = StyleSheet.create({
   },
   chartLegendText: {
     color: '#5D607E',
-    fontSize: rs(10),
+    fontSize: fs(10),
     fontWeight: '600',
   },
   fakeChart: {
@@ -1223,7 +1224,7 @@ const styles = StyleSheet.create({
   },
   axisText: {
     color: '#5D607E',
-    fontSize: rs(10),
+    fontSize: fs(10),
     fontWeight: '500',
   },
   chartArea: {
@@ -1247,7 +1248,7 @@ const styles = StyleSheet.create({
   },
   monthLabel: {
     color: '#5D607E',
-    fontSize: rs(9),
+    fontSize: fs(9),
     fontWeight: '500',
   },
   lineOne: {
@@ -1301,19 +1302,19 @@ const styles = StyleSheet.create({
   },
   commissionLabel: {
     color: '#5D607E',
-    fontSize: rs(11),
+    fontSize: fs(11),
     fontWeight: '600',
     marginBottom: rs(7),
   },
   commissionBlue: {
     color: '#173CFF',
-    fontSize: rs(21),
+    fontSize: fs(21),
     fontWeight: '900',
     letterSpacing: rs(4),
   },
   commissionOrange: {
     color: '#F06419',
-    fontSize: rs(21),
+    fontSize: fs(21),
     fontWeight: '900',
     letterSpacing: rs(4),
   },
@@ -1337,7 +1338,7 @@ const styles = StyleSheet.create({
   },
   approveButtonText: {
     color: '#FFFFFF',
-    fontSize: rs(15),
+    fontSize: fs(15),
     fontWeight: '800',
     marginRight: rs(8),
   },
@@ -1351,7 +1352,7 @@ const styles = StyleSheet.create({
   tableHeaderText: {
     flex: 1,
     color: '#5D607E',
-    fontSize: rs(12),
+    fontSize: fs(12),
     fontWeight: '700',
   },
   commissionRow: {
@@ -1364,13 +1365,13 @@ const styles = StyleSheet.create({
   entityText: {
     flex: 1,
     color: '#111327',
-    fontSize: rs(14),
+    fontSize: fs(14),
     fontWeight: '800',
   },
   amountColumn: {
     flex: 1,
     color: '#111327',
-    fontSize: rs(14),
+    fontSize: fs(14),
     fontWeight: '600',
   },
   payoutBadge: {
@@ -1392,7 +1393,7 @@ const styles = StyleSheet.create({
     borderColor: '#FFD4B6',
   },
   payoutText: {
-    fontSize: rs(12),
+    fontSize: fs(12),
     fontWeight: '800',
     marginRight: rs(4),
   },
@@ -1423,12 +1424,12 @@ const styles = StyleSheet.create({
   },
   infoLabel: {
     color: '#111327',
-    fontSize: rs(15),
+    fontSize: fs(15),
     fontWeight: '700',
   },
   infoValue: {
     color: '#173CFF',
-    fontSize: rs(16),
+    fontSize: fs(16),
     fontWeight: '900',
   },
   financeActions: {
@@ -1448,7 +1449,7 @@ const styles = StyleSheet.create({
   },
   reportButtonText: {
     color: '#061B66',
-    fontSize: rs(15),
+    fontSize: fs(15),
     fontWeight: '800',
     marginLeft: rs(12),
   },
@@ -1463,7 +1464,7 @@ const styles = StyleSheet.create({
   },
   excelButtonText: {
     color: '#FFFFFF',
-    fontSize: rs(15),
+    fontSize: fs(15),
     fontWeight: '800',
     marginLeft: rs(12),
   },

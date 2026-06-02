@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   ActivityIndicator,
   Alert,
@@ -12,7 +12,7 @@ import {
   View,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {CommonActions, useNavigation} from '@react-navigation/native';
+import { CommonActions, useNavigation } from '@react-navigation/native';
 import {
   Bell,
   Building2,
@@ -46,349 +46,19 @@ import {
   CheckCircle2,
 } from 'lucide-react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { getProfile } from '../../../api/superadmin/profile.api';
+import { AdminDetail, AdminUser, DeveloperSetting, HelpInfo, LoginItem, PlatformControl, ProfileData, SecurityItem, SettingItem } from '../../../api/mock/superadmin/profile.mock';
 
-const {width: SCREEN_WIDTH} = Dimensions.get('window');
+const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
 const DESIGN_WIDTH = 832;
 const scale = SCREEN_WIDTH / DESIGN_WIDTH;
 const rs = (value: number) => Math.round(value * scale);
+const fs = (value: number) => Math.round((value + 6) * scale);
 
 const LOGIN_ROUTE_NAME = 'Auth';
 
-type AdminDetail = {
-  id: string;
-  label: string;
-  value: string;
-  icon: 'user' | 'email' | 'phone' | 'organization' | 'calendar' | 'shield';
-  verified?: boolean;
-  blue?: boolean;
-};
 
-type SecurityItem = {
-  id: string;
-  title: string;
-  subtitle: string;
-  icon: 'password' | '2fa' | 'otp' | 'ip' | 'sessions' | 'history';
-  type: 'arrow' | 'switch';
-  value?: string;
-  enabled?: boolean;
-};
-
-type LoginItem = {
-  id: string;
-  device: string;
-  location: string;
-  time: string;
-  status: 'success' | 'blocked';
-};
-
-type PlatformControl = {
-  id: string;
-  title: string;
-  subtitle: string;
-  icon: 'lock' | 'maintenance' | 'force';
-  action: string;
-  color: string;
-  bg: string;
-};
-
-type AdminUser = {
-  id: string;
-  initials: string;
-  name: string;
-  role: string;
-  status?: string;
-};
-
-type DeveloperSetting = {
-  id: string;
-  title: string;
-  value: string;
-  icon: 'api' | 'webhook' | 'health';
-  green?: boolean;
-};
-
-type SettingItem = {
-  id: string;
-  title: string;
-  value?: string;
-  icon: 'push' | 'dark' | 'language' | 'default';
-  type: 'switch' | 'arrow';
-  enabled?: boolean;
-};
-
-type HelpInfo = {
-  id: string;
-  title: string;
-  value?: string;
-  icon: 'help' | 'ticket' | 'terms' | 'privacy' | 'version';
-  orange?: boolean;
-};
-
-type ProfileData = {
-  profile: {
-    initials: string;
-    name: string;
-    role: string;
-    platform: string;
-    memberSince: string;
-  };
-  adminDetails: AdminDetail[];
-  security: SecurityItem[];
-  logins: LoginItem[];
-  controls: PlatformControl[];
-  admins: AdminUser[];
-  developerSettings: DeveloperSetting[];
-  settings: SettingItem[];
-  helpInfo: HelpInfo[];
-};
-
-const mockProfileData: ProfileData = {
-  profile: {
-    initials: 'SA',
-    name: 'Rajesh Kumar',
-    role: 'Super Administrator',
-    platform: 'FranchiseOS Platform',
-    memberSince: 'January 2023',
-  },
-  adminDetails: [
-    {
-      id: '1',
-      label: 'Full Name',
-      value: 'Rajesh Kumar',
-      icon: 'user',
-    },
-    {
-      id: '2',
-      label: 'Email Address',
-      value: 'admin@franchiseos.com',
-      icon: 'email',
-      verified: true,
-    },
-    {
-      id: '3',
-      label: 'Phone Number',
-      value: '+91 98765 43210',
-      icon: 'phone',
-      verified: true,
-    },
-    {
-      id: '4',
-      label: 'Organization',
-      value: 'FranchiseOS Platform',
-      icon: 'organization',
-    },
-    {
-      id: '5',
-      label: 'Member Since',
-      value: 'January 2023',
-      icon: 'calendar',
-    },
-    {
-      id: '6',
-      label: 'Admin Level',
-      value: 'Super Administrator',
-      icon: 'shield',
-      blue: true,
-    },
-  ],
-  security: [
-    {
-      id: '1',
-      title: 'Change Password',
-      subtitle: 'Last changed 30 days ago',
-      icon: 'password',
-      type: 'arrow',
-    },
-    {
-      id: '2',
-      title: 'Two Factor Auth',
-      subtitle: 'Enabled via SMS',
-      icon: '2fa',
-      type: 'switch',
-      enabled: true,
-    },
-    {
-      id: '3',
-      title: 'Login OTP Required',
-      subtitle: 'Every login requires OTP',
-      icon: 'otp',
-      type: 'switch',
-      enabled: true,
-    },
-    {
-      id: '4',
-      title: 'IP Whitelist',
-      subtitle: 'Only whitelisted IPs can login',
-      value: '3 IPs allowed',
-      icon: 'ip',
-      type: 'arrow',
-    },
-    {
-      id: '5',
-      title: 'Active Sessions',
-      subtitle: '',
-      value: '2 active devices',
-      icon: 'sessions',
-      type: 'arrow',
-    },
-    {
-      id: '6',
-      title: 'Login History',
-      subtitle: 'Last 10 logins',
-      icon: 'history',
-      type: 'arrow',
-    },
-  ],
-  logins: [
-    {
-      id: '1',
-      device: 'iPhone 14 Pro',
-      location: 'Mumbai — 192.168.1.100',
-      time: 'Today 9:00 AM',
-      status: 'success',
-    },
-    {
-      id: '2',
-      device: 'MacBook Pro',
-      location: 'Mumbai — 192.168.1.101',
-      time: 'Yesterday 6:30 PM',
-      status: 'success',
-    },
-    {
-      id: '3',
-      device: 'Unknown Device',
-      location: 'Delhi — 203.x.x.x',
-      time: '2 days ago — Blocked',
-      status: 'blocked',
-    },
-  ],
-  controls: [
-    {
-      id: '1',
-      title: 'Emergency Platform Lockdown',
-      subtitle: 'Blocks all user access instantly',
-      icon: 'lock',
-      action: 'Activate',
-      color: '#E00014',
-      bg: '#FFF1F1',
-    },
-    {
-      id: '2',
-      title: 'Maintenance Mode',
-      subtitle: 'Shows maintenance page to all users',
-      icon: 'maintenance',
-      action: 'Schedule',
-      color: '#F06419',
-      bg: '#FFF3E9',
-    },
-    {
-      id: '3',
-      title: 'Force Logout All Users',
-      subtitle: 'Logs out all active sessions',
-      icon: 'force',
-      action: 'Execute',
-      color: '#173CFF',
-      bg: '#F1F5FF',
-    },
-  ],
-  admins: [
-    {
-      id: '1',
-      initials: 'AK',
-      name: 'Amit Kumar',
-      role: 'Super Admin',
-      status: 'Active',
-    },
-  ],
-  developerSettings: [
-    {
-      id: '1',
-      title: 'API Keys',
-      value: '2 active keys',
-      icon: 'api',
-    },
-    {
-      id: '2',
-      title: 'Webhook URLs',
-      value: '3 configured',
-      icon: 'webhook',
-    },
-    {
-      id: '3',
-      title: 'Integration Health',
-      value: 'All Connected',
-      icon: 'health',
-      green: true,
-    },
-  ],
-  settings: [
-    {
-      id: '1',
-      title: 'Push Notifications',
-      icon: 'push',
-      type: 'switch',
-      enabled: true,
-    },
-    {
-      id: '2',
-      title: 'Dark Mode',
-      icon: 'dark',
-      type: 'switch',
-      enabled: false,
-    },
-    {
-      id: '3',
-      title: 'Language',
-      value: 'English',
-      icon: 'language',
-      type: 'arrow',
-    },
-    {
-      id: '4',
-      title: 'Default Tab',
-      value: 'Home',
-      icon: 'default',
-      type: 'arrow',
-    },
-  ],
-  helpInfo: [
-    {
-      id: '1',
-      title: 'Help & Support',
-      icon: 'help',
-    },
-    {
-      id: '2',
-      title: 'Support Tickets',
-      value: '5 open',
-      icon: 'ticket',
-      orange: true,
-    },
-    {
-      id: '3',
-      title: 'Terms of Service',
-      icon: 'terms',
-    },
-    {
-      id: '4',
-      title: 'Privacy Policy',
-      icon: 'privacy',
-    },
-    {
-      id: '5',
-      title: 'App Version',
-      value: 'v1.0.0 (Build 100)',
-      icon: 'version',
-    },
-  ],
-};
-
-const mockProfileApi = async (): Promise<ProfileData> => {
-  return new Promise(resolve => {
-    setTimeout(() => resolve(mockProfileData), 300);
-  });
-};
 
 const Header = () => {
   return (
@@ -406,7 +76,7 @@ const Header = () => {
   );
 };
 
-const ProfileHero = ({data}: {data: ProfileData}) => {
+const ProfileHero = ({ data }: { data: ProfileData }) => {
   return (
     <View style={styles.heroCard}>
       <View style={styles.avatarWrap}>
@@ -433,7 +103,7 @@ const ProfileHero = ({data}: {data: ProfileData}) => {
   );
 };
 
-const AdminDetailIcon = ({type}: {type: AdminDetail['icon']}) => {
+const AdminDetailIcon = ({ type }: { type: AdminDetail['icon'] }) => {
   const color = '#5D607E';
   const size = rs(20);
 
@@ -460,13 +130,7 @@ const AdminDetailIcon = ({type}: {type: AdminDetail['icon']}) => {
   return <Shield color={color} size={size} strokeWidth={2} />;
 };
 
-const CardHeader = ({
-  title,
-  edit,
-}: {
-  title: string;
-  edit?: boolean;
-}) => {
+const CardHeader = ({ title, edit }: { title: string; edit?: boolean }) => {
   return (
     <View style={styles.cardHeader}>
       <Text style={styles.cardTitle}>{title}</Text>
@@ -480,7 +144,7 @@ const CardHeader = ({
   );
 };
 
-const AdminDetailsCard = ({items}: {items: AdminDetail[]}) => {
+const AdminDetailsCard = ({ items }: { items: AdminDetail[] }) => {
   return (
     <View style={styles.halfCard}>
       <CardHeader title="Admin Details" edit />
@@ -514,26 +178,26 @@ const AdminDetailsCard = ({items}: {items: AdminDetail[]}) => {
   );
 };
 
-const PlatformLogoCard = () => {
-  return (
-    <View style={styles.halfCard}>
-      <Text style={styles.cardTitle}>Platform Logo</Text>
+// const PlatformLogoCard = () => {
+//   return (
+//     <View style={styles.halfCard}>
+//       <Text style={styles.cardTitle}>Platform Logo</Text>
 
-      <View style={styles.logoBox}>
-        <Text style={styles.logoMark}>F</Text>
-        <Text style={styles.logoText}>FranchiseOS</Text>
-      </View>
+//       <View style={styles.logoBox}>
+//         <Text style={styles.logoMark}>F</Text>
+//         <Text style={styles.logoText}>FranchiseOS</Text>
+//       </View>
 
-      <Text style={styles.tapLogoText}>Tap to change logo</Text>
+//       <Text style={styles.tapLogoText}>Tap to change logo</Text>
 
-      <TouchableOpacity activeOpacity={0.8} style={styles.uploadButton}>
-        <Text style={styles.uploadButtonText}>Upload New Logo</Text>
-      </TouchableOpacity>
-    </View>
-  );
-};
+//       <TouchableOpacity activeOpacity={0.8} style={styles.uploadButton}>
+//         <Text style={styles.uploadButtonText}>Upload New Logo</Text>
+//       </TouchableOpacity>
+//     </View>
+//   );
+// };
 
-const SecurityIcon = ({type}: {type: SecurityItem['icon']}) => {
+const SecurityIcon = ({ type }: { type: SecurityItem['icon'] }) => {
   const color = '#5D607E';
   const size = rs(24);
 
@@ -560,13 +224,13 @@ const SecurityIcon = ({type}: {type: SecurityItem['icon']}) => {
   return <Clock3 color={color} size={size} strokeWidth={2} />;
 };
 
-const AccountSecurityCard = ({items}: {items: SecurityItem[]}) => {
+const AccountSecurityCard = ({ items }: { items: SecurityItem[] }) => {
   const [securityItems, setSecurityItems] = useState(items);
 
   const toggle = (id: string) => {
     setSecurityItems(prev =>
       prev.map(item =>
-        item.id === id ? {...item, enabled: !item.enabled} : item,
+        item.id === id ? { ...item, enabled: !item.enabled } : item,
       ),
     );
   };
@@ -586,7 +250,8 @@ const AccountSecurityCard = ({items}: {items: SecurityItem[]}) => {
                 style={[
                   styles.securitySubtitle,
                   item.enabled && styles.greenText,
-                ]}>
+                ]}
+              >
                 {item.subtitle}
               </Text>
             )}
@@ -600,7 +265,7 @@ const AccountSecurityCard = ({items}: {items: SecurityItem[]}) => {
             <Switch
               value={!!item.enabled}
               onValueChange={() => toggle(item.id)}
-              trackColor={{false: '#D9DCE8', true: '#173CFF'}}
+              trackColor={{ false: '#D9DCE8', true: '#173CFF' }}
               thumbColor="#FFFFFF"
             />
           ) : (
@@ -612,7 +277,7 @@ const AccountSecurityCard = ({items}: {items: SecurityItem[]}) => {
   );
 };
 
-const RecentLoginsCard = ({items}: {items: LoginItem[]}) => {
+const RecentLoginsCard = ({ items }: { items: LoginItem[] }) => {
   return (
     <View style={styles.halfCard}>
       <Text style={styles.cardTitle}>Recent Logins</Text>
@@ -625,7 +290,7 @@ const RecentLoginsCard = ({items}: {items: LoginItem[]}) => {
             <View
               style={[
                 styles.loginDot,
-                {backgroundColor: blocked ? '#E00014' : '#138A36'},
+                { backgroundColor: blocked ? '#E00014' : '#138A36' },
               ]}
             />
 
@@ -642,7 +307,10 @@ const RecentLoginsCard = ({items}: {items: LoginItem[]}) => {
               </Text>
 
               {blocked ? (
-                <TouchableOpacity activeOpacity={0.8} style={styles.reviewButton}>
+                <TouchableOpacity
+                  activeOpacity={0.8}
+                  style={styles.reviewButton}
+                >
                   <Text style={styles.reviewText}>Review</Text>
                 </TouchableOpacity>
               ) : null}
@@ -663,8 +331,12 @@ const SecurityAlertCard = () => {
         <ShieldAlert color="#F06419" size={rs(30)} fill="#F06419" />
 
         <View style={styles.alertTextBox}>
-          <Text style={styles.alertTitle}>3 failed login attempts detected</Text>
-          <Text style={styles.alertSubtitle}>From IP: 203.x.x.x — 2 days ago</Text>
+          <Text style={styles.alertTitle}>
+            3 failed login attempts detected
+          </Text>
+          <Text style={styles.alertSubtitle}>
+            From IP: 203.x.x.x — 2 days ago
+          </Text>
         </View>
 
         <TouchableOpacity activeOpacity={0.8} style={styles.blockButton}>
@@ -675,18 +347,20 @@ const SecurityAlertCard = () => {
   );
 };
 
-const PlatformControlsCard = ({items}: {items: PlatformControl[]}) => {
+const PlatformControlsCard = ({ items }: { items: PlatformControl[] }) => {
   return (
     <View style={styles.halfCard}>
       <View style={styles.emergencyLine} />
 
       <Text style={styles.cardTitle}>Platform Controls</Text>
 
-      <Text style={styles.emergencyNote}>⚠ Use only in emergency situations</Text>
+      <Text style={styles.emergencyNote}>
+        ⚠ Use only in emergency situations
+      </Text>
 
       {items.map(item => (
         <View key={item.id} style={styles.controlRow}>
-          <View style={[styles.controlIconBox, {backgroundColor: item.bg}]}>
+          <View style={[styles.controlIconBox, { backgroundColor: item.bg }]}>
             {item.icon === 'lock' && (
               <Lock color={item.color} size={rs(22)} strokeWidth={2.3} />
             )}
@@ -699,7 +373,7 @@ const PlatformControlsCard = ({items}: {items: PlatformControl[]}) => {
           </View>
 
           <View style={styles.controlInfo}>
-            <Text style={[styles.controlTitle, {color: item.color}]}>
+            <Text style={[styles.controlTitle, { color: item.color }]}>
               {item.title}
             </Text>
             <Text style={styles.controlSubtitle}>{item.subtitle}</Text>
@@ -707,8 +381,9 @@ const PlatformControlsCard = ({items}: {items: PlatformControl[]}) => {
 
           <TouchableOpacity
             activeOpacity={0.8}
-            style={[styles.controlButton, {borderColor: item.color}]}>
-            <Text style={[styles.controlButtonText, {color: item.color}]}>
+            style={[styles.controlButton, { borderColor: item.color }]}
+          >
+            <Text style={[styles.controlButtonText, { color: item.color }]}>
               {item.action}
             </Text>
           </TouchableOpacity>
@@ -718,7 +393,7 @@ const PlatformControlsCard = ({items}: {items: PlatformControl[]}) => {
   );
 };
 
-const OtherAdminsCard = ({admins}: {admins: AdminUser[]}) => {
+const OtherAdminsCard = ({ admins }: { admins: AdminUser[] }) => {
   return (
     <View style={styles.halfCard}>
       <Text style={styles.cardTitle}>Other Admins</Text>
@@ -758,7 +433,7 @@ const OtherAdminsCard = ({admins}: {admins: AdminUser[]}) => {
   );
 };
 
-const DeveloperIcon = ({type}: {type: DeveloperSetting['icon']}) => {
+const DeveloperIcon = ({ type }: { type: DeveloperSetting['icon'] }) => {
   const color = '#5D607E';
   const size = rs(20);
 
@@ -773,7 +448,7 @@ const DeveloperIcon = ({type}: {type: DeveloperSetting['icon']}) => {
   return <RefreshCw color={color} size={size} strokeWidth={2} />;
 };
 
-const DeveloperSettingsCard = ({items}: {items: DeveloperSetting[]}) => {
+const DeveloperSettingsCard = ({ items }: { items: DeveloperSetting[] }) => {
   return (
     <View style={styles.halfCard}>
       <Text style={styles.cardTitle}>Developer Settings</Text>
@@ -828,7 +503,7 @@ const AnnouncementsCard = () => {
   );
 };
 
-const SettingIcon = ({type}: {type: SettingItem['icon']}) => {
+const SettingIcon = ({ type }: { type: SettingItem['icon'] }) => {
   const color = '#5D607E';
   const size = rs(20);
 
@@ -847,13 +522,13 @@ const SettingIcon = ({type}: {type: SettingItem['icon']}) => {
   return <RefreshCw color={color} size={size} strokeWidth={2} />;
 };
 
-const SettingsCard = ({items}: {items: SettingItem[]}) => {
+const SettingsCard = ({ items }: { items: SettingItem[] }) => {
   const [settings, setSettings] = useState(items);
 
   const toggle = (id: string) => {
     setSettings(prev =>
       prev.map(item =>
-        item.id === id ? {...item, enabled: !item.enabled} : item,
+        item.id === id ? { ...item, enabled: !item.enabled } : item,
       ),
     );
   };
@@ -872,7 +547,7 @@ const SettingsCard = ({items}: {items: SettingItem[]}) => {
             <Switch
               value={!!item.enabled}
               onValueChange={() => toggle(item.id)}
-              trackColor={{false: '#D9DCE8', true: '#173CFF'}}
+              trackColor={{ false: '#D9DCE8', true: '#173CFF' }}
               thumbColor="#FFFFFF"
             />
           ) : (
@@ -887,7 +562,7 @@ const SettingsCard = ({items}: {items: SettingItem[]}) => {
   );
 };
 
-const HelpIcon = ({type}: {type: HelpInfo['icon']}) => {
+const HelpIcon = ({ type }: { type: HelpInfo['icon'] }) => {
   const color = '#5D607E';
   const size = rs(18);
 
@@ -910,7 +585,7 @@ const HelpIcon = ({type}: {type: HelpInfo['icon']}) => {
   return <Clock3 color={color} size={size} strokeWidth={2} />;
 };
 
-const HelpInfoCard = ({items}: {items: HelpInfo[]}) => {
+const HelpInfoCard = ({ items }: { items: HelpInfo[] }) => {
   return (
     <View style={styles.halfCard}>
       <Text style={styles.cardTitle}>Help & Info</Text>
@@ -988,7 +663,7 @@ const LogoutButton = () => {
             resetToLogin();
           } catch (error) {
             setIsLoggingOut(false);
-            Alert.alert('Logout failed', 'Please try again.'+error);
+            Alert.alert('Logout failed', 'Please try again.' + error);
           }
         },
       },
@@ -1000,7 +675,8 @@ const LogoutButton = () => {
       activeOpacity={0.8}
       disabled={isLoggingOut}
       onPress={handleLogout}
-      style={[styles.logoutButton, isLoggingOut && styles.disabledButton]}>
+      style={[styles.logoutButton, isLoggingOut && styles.disabledButton]}
+    >
       <LogOut color="#E00014" size={rs(24)} strokeWidth={2.3} />
       <Text style={styles.logoutText}>
         {isLoggingOut ? 'Logging out...' : 'Logout'}
@@ -1011,16 +687,79 @@ const LogoutButton = () => {
 
 const ProfileScreen = () => {
   const [data, setData] = useState<ProfileData | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string>('');
+
+  const loadProfile = async () => {
+    try {
+      setLoading(true);
+      setError('');
+
+      const response = await getProfile();
+
+      setData(response);
+    } catch (err) {
+      console.log('Profile API Error:', err);
+      setError('Unable to load profile data');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    mockProfileApi().then(setData);
+    loadProfile();
   }, []);
 
-  if (!data) {
+  const handleRetry = () => {
+    loadProfile();
+  };
+
+  if (loading) {
     return (
       <SafeAreaView style={styles.loaderScreen}>
         <StatusBar backgroundColor="#061B66" barStyle="light-content" />
         <ActivityIndicator size="large" color="#173CFF" />
+      </SafeAreaView>
+    );
+  }
+
+  if (error || !data) {
+    return (
+      <SafeAreaView style={styles.loaderScreen}>
+        <StatusBar backgroundColor="#061B66" barStyle="light-content" />
+
+        <Text
+          style={{
+            color: '#061247',
+            fontSize: fs(16),
+            fontWeight: '800',
+            marginBottom: rs(18),
+            textAlign: 'center',
+          }}
+        >
+          {error || 'Something went wrong'}
+        </Text>
+
+        <TouchableOpacity
+          activeOpacity={0.85}
+          onPress={handleRetry}
+          style={{
+            backgroundColor: '#061B66',
+            paddingHorizontal: rs(28),
+            paddingVertical: rs(14),
+            borderRadius: rs(8),
+          }}
+        >
+          <Text
+            style={{
+              color: '#FFFFFF',
+              fontSize: fs(14),
+              fontWeight: '800',
+            }}
+          >
+            Retry
+          </Text>
+        </TouchableOpacity>
       </SafeAreaView>
     );
   }
@@ -1034,37 +773,24 @@ const ProfileScreen = () => {
       <ScrollView
         style={styles.scrollView}
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={styles.scrollContent}>
+        contentContainerStyle={styles.scrollContent}
+      >
         <ProfileHero data={data} />
 
-        <View style={styles.twoColumnRow}>
-          <AdminDetailsCard items={data.adminDetails} />
-          <PlatformLogoCard />
-        </View>
+        <AdminDetailsCard items={data.adminDetails} />
 
-        <View style={styles.twoColumnRow}>
-          <AccountSecurityCard items={data.security} />
+        <AccountSecurityCard items={data.security} />
+        <RecentLoginsCard items={data.logins} />
+        <SecurityAlertCard />
 
-          <View style={styles.rightStack}>
-            <RecentLoginsCard items={data.logins} />
-            <SecurityAlertCard />
-          </View>
-        </View>
+        <PlatformControlsCard items={data.controls} />
+        <OtherAdminsCard admins={data.admins} />
 
-        <View style={styles.twoColumnRow}>
-          <PlatformControlsCard items={data.controls} />
-          <OtherAdminsCard admins={data.admins} />
-        </View>
+        <DeveloperSettingsCard items={data.developerSettings} />
+        <AnnouncementsCard />
 
-        <View style={styles.twoColumnRow}>
-          <DeveloperSettingsCard items={data.developerSettings} />
-          <AnnouncementsCard />
-        </View>
-
-        <View style={styles.twoColumnRow}>
-          <SettingsCard items={data.settings} />
-          <HelpInfoCard items={data.helpInfo} />
-        </View>
+        <SettingsCard items={data.settings} />
+        <HelpInfoCard items={data.helpInfo} />
 
         <LogoutButton />
 
@@ -1077,8 +803,7 @@ const ProfileScreen = () => {
 export default ProfileScreen;
 
 const PAGE_PADDING = rs(20);
-const CARD_GAP = rs(12);
-const HALF_WIDTH = (SCREEN_WIDTH - PAGE_PADDING * 2 - CARD_GAP) / 2;
+const FULL_WIDTH = SCREEN_WIDTH - PAGE_PADDING * 2;
 
 const styles = StyleSheet.create({
   safeArea: {
@@ -1102,7 +827,7 @@ const styles = StyleSheet.create({
   },
   headerTitle: {
     color: '#FFFFFF',
-    fontSize: rs(28),
+    fontSize: fs(28),
     fontWeight: '800',
   },
   scrollView: {
@@ -1114,7 +839,7 @@ const styles = StyleSheet.create({
     paddingBottom: rs(34),
   },
   heroCard: {
-    minHeight: rs(294),
+    minHeight: rs(318),
     backgroundColor: '#061B66',
     borderRadius: rs(8),
     alignItems: 'center',
@@ -1139,7 +864,7 @@ const styles = StyleSheet.create({
   },
   avatarText: {
     color: '#FFFFFF',
-    fontSize: rs(54),
+    fontSize: fs(54),
     fontWeight: '900',
     letterSpacing: rs(6),
   },
@@ -1156,19 +881,19 @@ const styles = StyleSheet.create({
   },
   profileName: {
     color: '#FFFFFF',
-    fontSize: rs(30),
+    fontSize: fs(30),
     fontWeight: '800',
     marginTop: rs(14),
   },
   profileRole: {
     color: '#FFFFFF',
-    fontSize: rs(15),
+    fontSize: fs(15),
     fontWeight: '600',
     marginTop: rs(6),
   },
   platformPill: {
-    minWidth: rs(205),
-    height: rs(30),
+    minWidth: rs(230),
+    minHeight: rs(36),
     borderRadius: rs(15),
     borderWidth: 1,
     borderColor: '#FFFFFF',
@@ -1178,66 +903,67 @@ const styles = StyleSheet.create({
   },
   platformText: {
     color: '#FFFFFF',
-    fontSize: rs(14),
+    fontSize: fs(14),
     fontWeight: '700',
   },
   memberSince: {
     color: '#FFFFFF',
-    fontSize: rs(15),
+    fontSize: fs(15),
     fontWeight: '500',
     marginTop: rs(10),
   },
   twoColumnRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    width: '100%',
   },
   halfCard: {
-    width: HALF_WIDTH,
+    width: FULL_WIDTH,
     backgroundColor: '#FFFFFF',
-    borderRadius: rs(8),
-    paddingHorizontal: rs(16),
-    paddingVertical: rs(12),
-    marginBottom: rs(12),
+    borderRadius: rs(10),
+    paddingHorizontal: rs(18),
+    paddingVertical: rs(16),
+    marginBottom: rs(14),
     shadowColor: '#000000',
     shadowOpacity: 0.04,
     shadowRadius: rs(10),
-    shadowOffset: {width: 0, height: rs(4)},
+    shadowOffset: { width: 0, height: rs(4) },
     elevation: 3,
   },
   rightStack: {
-    width: HALF_WIDTH,
+    width: FULL_WIDTH,
   },
   cardHeader: {
-    height: rs(25),
+    minHeight: rs(34),
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    marginBottom: rs(8),
   },
   cardTitle: {
     color: '#111327',
-    fontSize: rs(18),
+    fontSize: fs(18),
     fontWeight: '900',
   },
   detailRow: {
-    minHeight: rs(37),
+    minHeight: rs(56),
     borderBottomWidth: 1,
     borderBottomColor: '#EEF0F6',
     flexDirection: 'row',
     alignItems: 'center',
   },
   detailIconBox: {
-    width: rs(32),
+    width: rs(38),
   },
   detailLabel: {
-    width: rs(110),
+    width: rs(125),
     color: '#5D607E',
-    fontSize: rs(12),
+    fontSize: fs(12),
     fontWeight: '600',
   },
   detailValue: {
     flex: 1,
+    flexShrink: 1,
     color: '#111327',
-    fontSize: rs(13),
+    fontSize: fs(13),
     fontWeight: '900',
   },
   blueText: {
@@ -1249,7 +975,7 @@ const styles = StyleSheet.create({
   },
   verifiedText: {
     color: '#138A36',
-    fontSize: rs(12),
+    fontSize: fs(12),
     fontWeight: '800',
     marginRight: rs(6),
   },
@@ -1266,25 +992,25 @@ const styles = StyleSheet.create({
   },
   logoMark: {
     color: '#173CFF',
-    fontSize: rs(58),
+    fontSize: fs(58),
     fontWeight: '900',
-    lineHeight: rs(58),
+    lineHeight: fs(58),
   },
   logoText: {
     color: '#061247',
-    fontSize: rs(28),
+    fontSize: fs(28),
     fontWeight: '800',
     marginTop: rs(4),
   },
   tapLogoText: {
     color: '#5D607E',
-    fontSize: rs(13),
+    fontSize: fs(13),
     textAlign: 'center',
     marginTop: rs(12),
   },
   uploadButton: {
-    width: rs(202),
-    height: rs(34),
+    width: rs(220),
+    minHeight: rs(42),
     borderWidth: 1,
     borderColor: '#173CFF',
     borderRadius: rs(4),
@@ -1295,11 +1021,11 @@ const styles = StyleSheet.create({
   },
   uploadButtonText: {
     color: '#173CFF',
-    fontSize: rs(14),
+    fontSize: fs(14),
     fontWeight: '800',
   },
   securityRow: {
-    minHeight: rs(48),
+    minHeight: rs(66),
     borderBottomWidth: 1,
     borderBottomColor: '#EEF0F6',
     flexDirection: 'row',
@@ -1311,18 +1037,18 @@ const styles = StyleSheet.create({
   },
   securityTitle: {
     color: '#111327',
-    fontSize: rs(14),
+    fontSize: fs(14),
     fontWeight: '900',
   },
   securitySubtitle: {
     color: '#5D607E',
-    fontSize: rs(12),
+    fontSize: fs(12),
     fontWeight: '600',
-    marginTop: rs(2),
+    marginTop: rs(4),
   },
   securityValue: {
     color: '#173CFF',
-    fontSize: rs(12),
+    fontSize: fs(12),
     fontWeight: '800',
     marginRight: rs(10),
   },
@@ -1330,7 +1056,7 @@ const styles = StyleSheet.create({
     color: '#138A36',
   },
   loginRow: {
-    minHeight: rs(58),
+    minHeight: rs(72),
     borderBottomWidth: 1,
     borderBottomColor: '#EEF0F6',
     flexDirection: 'row',
@@ -1347,12 +1073,12 @@ const styles = StyleSheet.create({
   },
   loginDevice: {
     color: '#111327',
-    fontSize: rs(14),
+    fontSize: fs(14),
     fontWeight: '900',
   },
   loginLocation: {
     color: '#5D607E',
-    fontSize: rs(12),
+    fontSize: fs(12),
     fontWeight: '600',
     marginTop: rs(4),
   },
@@ -1361,7 +1087,7 @@ const styles = StyleSheet.create({
   },
   loginTime: {
     color: '#5D607E',
-    fontSize: rs(12),
+    fontSize: fs(12),
     fontWeight: '600',
   },
   redText: {
@@ -1379,23 +1105,24 @@ const styles = StyleSheet.create({
   },
   reviewText: {
     color: '#173CFF',
-    fontSize: rs(12),
+    fontSize: fs(12),
     fontWeight: '800',
   },
   alertCard: {
+    width: FULL_WIDTH,
     backgroundColor: '#FFFFFF',
-    borderRadius: rs(8),
-    paddingHorizontal: rs(16),
-    paddingVertical: rs(12),
-    marginBottom: rs(12),
+    borderRadius: rs(10),
+    paddingHorizontal: rs(18),
+    paddingVertical: rs(16),
+    marginBottom: rs(14),
     shadowColor: '#000000',
     shadowOpacity: 0.04,
     shadowRadius: rs(10),
-    shadowOffset: {width: 0, height: rs(4)},
+    shadowOffset: { width: 0, height: rs(4) },
     elevation: 3,
   },
   alertBox: {
-    minHeight: rs(65),
+    minHeight: rs(78),
     borderWidth: 1,
     borderColor: '#F8C9A8',
     backgroundColor: '#FFF4EA',
@@ -1411,27 +1138,28 @@ const styles = StyleSheet.create({
   },
   alertTitle: {
     color: '#F06419',
-    fontSize: rs(13),
+    fontSize: fs(13),
     fontWeight: '900',
   },
   alertSubtitle: {
     color: '#5D607E',
-    fontSize: rs(11),
+    fontSize: fs(11),
     fontWeight: '600',
     marginTop: rs(4),
   },
   blockButton: {
-    width: rs(94),
-    height: rs(34),
+    width: rs(118),
+    minHeight: rs(40),
     borderWidth: 1,
     borderColor: '#E00014',
     borderRadius: rs(4),
     alignItems: 'center',
     justifyContent: 'center',
+    paddingHorizontal: rs(8),
   },
   blockButtonText: {
     color: '#E00014',
-    fontSize: rs(12),
+    fontSize: fs(12),
     fontWeight: '800',
   },
   emergencyLine: {
@@ -1446,13 +1174,13 @@ const styles = StyleSheet.create({
   },
   emergencyNote: {
     color: '#E00014',
-    fontSize: rs(12),
+    fontSize: fs(12),
     fontWeight: '700',
     marginTop: rs(8),
     marginBottom: rs(8),
   },
   controlRow: {
-    minHeight: rs(48),
+    minHeight: rs(68),
     flexDirection: 'row',
     alignItems: 'center',
   },
@@ -1468,29 +1196,30 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   controlTitle: {
-    fontSize: rs(13),
+    fontSize: fs(13),
     fontWeight: '900',
   },
   controlSubtitle: {
     color: '#5D607E',
-    fontSize: rs(11),
+    fontSize: fs(11),
     fontWeight: '600',
     marginTop: rs(3),
   },
   controlButton: {
-    width: rs(72),
-    height: rs(32),
+    width: rs(90),
+    minHeight: rs(38),
     borderWidth: 1,
     borderRadius: rs(4),
     alignItems: 'center',
     justifyContent: 'center',
+    paddingHorizontal: rs(6),
   },
   controlButtonText: {
-    fontSize: rs(12),
+    fontSize: fs(12),
     fontWeight: '800',
   },
   adminRow: {
-    minHeight: rs(68),
+    minHeight: rs(78),
     borderBottomWidth: 1,
     borderBottomColor: '#EEF0F6',
     flexDirection: 'row',
@@ -1507,7 +1236,7 @@ const styles = StyleSheet.create({
   },
   adminAvatarText: {
     color: '#FFFFFF',
-    fontSize: rs(18),
+    fontSize: fs(18),
     fontWeight: '900',
   },
   adminInfo: {
@@ -1515,18 +1244,18 @@ const styles = StyleSheet.create({
   },
   adminName: {
     color: '#111327',
-    fontSize: rs(14),
+    fontSize: fs(14),
     fontWeight: '900',
   },
   blueSmallText: {
     color: '#173CFF',
-    fontSize: rs(12),
+    fontSize: fs(12),
     fontWeight: '700',
     marginTop: rs(4),
   },
   activeBadge: {
-    width: rs(62),
-    height: rs(28),
+    width: rs(78),
+    minHeight: rs(34),
     borderRadius: rs(7),
     backgroundColor: '#EAF8EC',
     borderWidth: 1,
@@ -1534,24 +1263,26 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: rs(12),
+    paddingHorizontal: rs(6),
   },
   activeBadgeText: {
     color: '#138A36',
-    fontSize: rs(12),
+    fontSize: fs(12),
     fontWeight: '800',
   },
   manageButton: {
-    width: rs(76),
-    height: rs(32),
+    width: rs(90),
+    minHeight: rs(38),
     borderWidth: 1,
     borderColor: '#173CFF',
     borderRadius: rs(4),
     alignItems: 'center',
     justifyContent: 'center',
+    paddingHorizontal: rs(6),
   },
   manageText: {
     color: '#173CFF',
-    fontSize: rs(12),
+    fontSize: fs(12),
     fontWeight: '800',
   },
   addAdminCircle: {
@@ -1565,17 +1296,17 @@ const styles = StyleSheet.create({
   },
   addAdminText: {
     color: '#173CFF',
-    fontSize: rs(16),
+    fontSize: fs(16),
     fontWeight: '900',
   },
   adminSubtitle: {
     color: '#5D607E',
-    fontSize: rs(12),
+    fontSize: fs(12),
     fontWeight: '600',
     marginTop: rs(4),
   },
   simpleRow: {
-    minHeight: rs(36),
+    minHeight: rs(56),
     borderBottomWidth: 1,
     borderBottomColor: '#EEF0F6',
     flexDirection: 'row',
@@ -1584,19 +1315,19 @@ const styles = StyleSheet.create({
   simpleTitle: {
     flex: 1,
     color: '#111327',
-    fontSize: rs(13),
+    fontSize: fs(13),
     fontWeight: '800',
     marginLeft: rs(12),
   },
   simpleValue: {
     color: '#173CFF',
-    fontSize: rs(12),
+    fontSize: fs(12),
     fontWeight: '800',
     marginRight: rs(10),
   },
   grayValue: {
     color: '#5D607E',
-    fontSize: rs(12),
+    fontSize: fs(12),
     fontWeight: '700',
     marginRight: rs(10),
   },
@@ -1604,7 +1335,7 @@ const styles = StyleSheet.create({
     color: '#F06419',
   },
   broadcastButton: {
-    height: rs(38),
+    minHeight: rs(46),
     borderWidth: 1,
     borderColor: '#173CFF',
     borderRadius: rs(4),
@@ -1615,7 +1346,7 @@ const styles = StyleSheet.create({
   },
   broadcastText: {
     color: '#173CFF',
-    fontSize: rs(14),
+    fontSize: fs(14),
     fontWeight: '900',
     marginLeft: rs(10),
   },
@@ -1628,16 +1359,16 @@ const styles = StyleSheet.create({
   },
   announcementTitle: {
     color: '#111327',
-    fontSize: rs(13),
+    fontSize: fs(13),
     fontWeight: '800',
   },
   announcementSubtitle: {
     color: '#5D607E',
-    fontSize: rs(12),
+    fontSize: fs(12),
     marginTop: rs(6),
   },
   logoutButton: {
-    height: rs(44),
+    minHeight: rs(52),
     borderWidth: 1,
     borderColor: '#E00014',
     borderRadius: rs(5),
@@ -1652,14 +1383,14 @@ const styles = StyleSheet.create({
   },
   logoutText: {
     color: '#E00014',
-    fontSize: rs(17),
+    fontSize: fs(17),
     fontWeight: '800',
     marginLeft: rs(12),
   },
   footerText: {
     color: '#5D607E',
     textAlign: 'center',
-    fontSize: rs(13),
+    fontSize: fs(13),
     fontWeight: '600',
     marginTop: rs(10),
   },

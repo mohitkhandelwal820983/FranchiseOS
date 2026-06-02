@@ -40,6 +40,7 @@ const { width: SCREEN_WIDTH } = Dimensions.get('window');
 const DESIGN_WIDTH = 832;
 const scale = SCREEN_WIDTH / DESIGN_WIDTH;
 const rs = (value: number) => Math.round(value * scale);
+const fs = (value: number) => rs(value + 5);
 
 type StatusFilter = 'All' | CompanyStatus;
 type RangeFilter =
@@ -622,7 +623,7 @@ const styles = StyleSheet.create({
   },
   headerTitle: {
     color: '#FFFFFF',
-    fontSize: rs(31),
+    fontSize: fs(31),
     fontWeight: '900',
   },
   scrollView: {
@@ -648,7 +649,7 @@ const styles = StyleSheet.create({
   searchInput: {
     flex: 1,
     color: '#111327',
-    fontSize: rs(20),
+    fontSize: fs(20),
     fontWeight: '500',
     marginLeft: rs(24),
     paddingVertical: 0,
@@ -683,7 +684,7 @@ const styles = StyleSheet.create({
   },
   statusChipText: {
     color: '#061247',
-    fontSize: rs(18),
+    fontSize: fs(18),
     fontWeight: '700',
   },
   activeChipText: {
@@ -707,7 +708,7 @@ const styles = StyleSheet.create({
   },
   rangeText: {
     color: '#061247',
-    fontSize: rs(18),
+    fontSize: fs(18),
     fontWeight: '700',
   },
   sortRow: {
@@ -717,7 +718,7 @@ const styles = StyleSheet.create({
   },
   sortLabel: {
     color: '#5D607E',
-    fontSize: rs(21),
+    fontSize: fs(21),
     fontWeight: '600',
     marginRight: rs(42),
   },
@@ -739,7 +740,7 @@ const styles = StyleSheet.create({
   },
   sortButtonText: {
     color: '#061247',
-    fontSize: rs(18),
+    fontSize: fs(18),
     fontWeight: '700',
   },
   showingRow: {
@@ -750,7 +751,7 @@ const styles = StyleSheet.create({
   showingText: {
     flex: 1,
     color: '#5D607E',
-    fontSize: rs(21),
+    fontSize: fs(21),
     fontWeight: '600',
   },
   filterTextButton: {
@@ -759,7 +760,7 @@ const styles = StyleSheet.create({
   },
   filterText: {
     color: '#173CFF',
-    fontSize: rs(22),
+    fontSize: fs(22),
     fontWeight: '700',
     marginRight: rs(12),
   },
@@ -793,7 +794,7 @@ const styles = StyleSheet.create({
   },
   avatarText: {
     color: '#FFFFFF',
-    fontSize: rs(34),
+    fontSize: fs(34),
     fontWeight: '900',
   },
   companyInfo: {
@@ -801,13 +802,13 @@ const styles = StyleSheet.create({
   },
   companyName: {
     color: '#111111',
-    fontSize: rs(25),
+    fontSize: fs(25),
     fontWeight: '900',
     marginBottom: rs(14),
   },
   ownerText: {
     color: '#5D607E',
-    fontSize: rs(18),
+    fontSize: fs(18),
     fontWeight: '600',
   },
   rightInfo: {
@@ -815,7 +816,7 @@ const styles = StyleSheet.create({
   },
   cityText: {
     color: '#44465F',
-    fontSize: rs(18),
+    fontSize: fs(18),
     fontWeight: '600',
     marginTop: rs(18),
   },
@@ -845,7 +846,7 @@ const styles = StyleSheet.create({
     borderColor: '#D5D5D5',
   },
   badgeText: {
-    fontSize: rs(17),
+    fontSize: fs(17),
     fontWeight: '800',
   },
   activeBadgeText: {
@@ -874,7 +875,7 @@ const styles = StyleSheet.create({
   },
   metricText: {
     color: '#5D607E',
-    fontSize: rs(18),
+    fontSize: fs(18),
     fontWeight: '700',
   },
   metricDivider: {
@@ -890,7 +891,7 @@ const styles = StyleSheet.create({
   },
   changeStatusText: {
     color: '#44465F',
-    fontSize: rs(16),
+    fontSize: fs(16),
     fontWeight: '600',
     marginRight: rs(22),
   },
@@ -905,7 +906,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: rs(12),
   },
   dropdownText: {
-    fontSize: rs(15),
+    fontSize: fs(15),
     fontWeight: '800',
     marginRight: rs(10),
   },
@@ -919,7 +920,7 @@ const styles = StyleSheet.create({
   },
   emptyText: {
     color: '#5D607E',
-    fontSize: rs(17),
+    fontSize: fs(17),
     fontWeight: '700',
     marginTop: rs(12),
   },

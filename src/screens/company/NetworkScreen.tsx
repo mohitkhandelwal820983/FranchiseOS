@@ -3,7 +3,6 @@ import {
   ActivityIndicator,
   Dimensions,
   RefreshControl,
-  SafeAreaView,
   ScrollView,
   StatusBar,
   StyleSheet,
@@ -12,6 +11,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import {
   Bell,
   ChevronDown,
@@ -30,10 +30,7 @@ const {width: SCREEN_WIDTH} = Dimensions.get('window');
 const DESIGN_WIDTH = 928;
 const scale = SCREEN_WIDTH / DESIGN_WIDTH;
 const rs = (value: number) => Math.round(value * scale);
-
-
-
-
+const fs = (value: number) => rs(value + 3);
 
 
 
@@ -485,7 +482,7 @@ const NetworkScreen = () => {
         <Text
           style={{
             color: '#061247',
-            fontSize: rs(18),
+            fontSize: fs(18),
             fontWeight: '700',
             marginBottom: rs(18),
             textAlign: 'center',
@@ -502,7 +499,7 @@ const NetworkScreen = () => {
             paddingVertical: rs(14),
             borderRadius: rs(8),
           }}>
-          <Text style={{color: '#FFFFFF', fontWeight: '800'}}>Retry</Text>
+          <Text style={{color: '#FFFFFF', fontSize: fs(14), fontWeight: '800'}}>Retry</Text>
         </TouchableOpacity>
       </SafeAreaView>
     );
@@ -597,7 +594,7 @@ const styles = StyleSheet.create({
   },
   headerTitle: {
     color: '#FFFFFF',
-    fontSize: rs(38),
+    fontSize: fs(38),
     fontWeight: '800',
     letterSpacing: 0.2,
   },
@@ -620,7 +617,7 @@ const styles = StyleSheet.create({
   },
   notificationText: {
     color: '#FFFFFF',
-    fontSize: rs(16),
+    fontSize: fs(16),
     fontWeight: '900',
   },
   scrollView: {
@@ -651,7 +648,7 @@ const styles = StyleSheet.create({
     flex: 1,
     marginLeft: rs(24),
     color: '#111737',
-    fontSize: rs(22),
+    fontSize: fs(22),
     fontWeight: '500',
     paddingVertical: 0,
   },
@@ -688,7 +685,7 @@ const styles = StyleSheet.create({
   },
   filterChipText: {
     color: '#061247',
-    fontSize: rs(18),
+    fontSize: fs(18),
     fontWeight: '800',
   },
   activeFilterText: {
@@ -701,7 +698,7 @@ const styles = StyleSheet.create({
   },
   sortLabel: {
     color: '#5D607E',
-    fontSize: rs(20),
+    fontSize: fs(20),
     fontWeight: '600',
     marginRight: rs(42),
   },
@@ -729,7 +726,7 @@ const styles = StyleSheet.create({
   },
   sortButtonText: {
     color: '#061247',
-    fontSize: rs(18),
+    fontSize: fs(18),
     fontWeight: '700',
   },
   activeSortButtonText: {
@@ -744,7 +741,7 @@ const styles = StyleSheet.create({
   },
   showingText: {
     color: '#5D607E',
-    fontSize: rs(20),
+    fontSize: fs(20),
     fontWeight: '700',
   },
   exportButton: {
@@ -753,7 +750,7 @@ const styles = StyleSheet.create({
   },
   exportText: {
     color: '#173CFF',
-    fontSize: rs(20),
+    fontSize: fs(20),
     fontWeight: '800',
     marginRight: rs(12),
   },
@@ -785,7 +782,7 @@ const styles = StyleSheet.create({
   },
   avatarText: {
     color: '#FFFFFF',
-    fontSize: rs(46),
+    fontSize: fs(46),
     fontWeight: '800',
   },
   stockistMainInfo: {
@@ -794,7 +791,7 @@ const styles = StyleSheet.create({
   },
   stockistName: {
     color: '#071033',
-    fontSize: rs(30),
+    fontSize: fs(30),
     fontWeight: '900',
     marginBottom: rs(18),
   },
@@ -806,7 +803,7 @@ const styles = StyleSheet.create({
   locationText: {
     marginLeft: rs(12),
     color: '#5D607E',
-    fontSize: rs(18),
+    fontSize: fs(18),
     fontWeight: '600',
   },
   metaRow: {
@@ -815,12 +812,12 @@ const styles = StyleSheet.create({
   },
   blueMeta: {
     color: '#173CFF',
-    fontSize: rs(18),
+    fontSize: fs(18),
     fontWeight: '800',
   },
   greenMeta: {
     color: '#087A22',
-    fontSize: rs(18),
+    fontSize: fs(18),
     fontWeight: '800',
   },
   redMeta: {
@@ -849,7 +846,7 @@ const styles = StyleSheet.create({
     marginBottom: rs(22),
   },
   statusText: {
-    fontSize: rs(18),
+    fontSize: fs(18),
     fontWeight: '800',
   },
   riskDot: {
@@ -871,7 +868,7 @@ const styles = StyleSheet.create({
   },
   scoreText: {
     color: '#FFFFFF',
-    fontSize: rs(20),
+    fontSize: fs(20),
     fontWeight: '800',
   },
   paymentRow: {
@@ -881,12 +878,12 @@ const styles = StyleSheet.create({
   },
   paymentLabel: {
     color: '#5D607E',
-    fontSize: rs(18),
+    fontSize: fs(18),
     fontWeight: '700',
   },
   paymentValue: {
     color: '#087A22',
-    fontSize: rs(20),
+    fontSize: fs(20),
     fontWeight: '800',
   },
   checkCircle: {
@@ -900,12 +897,12 @@ const styles = StyleSheet.create({
   },
   checkText: {
     color: '#FFFFFF',
-    fontSize: rs(15),
+    fontSize: fs(15),
     fontWeight: '900',
   },
   lastActiveText: {
     color: '#5D607E',
-    fontSize: rs(18),
+    fontSize: fs(18),
     fontWeight: '600',
   },
   progressRow: {
@@ -925,13 +922,13 @@ const styles = StyleSheet.create({
   },
   progressValue: {
     color: '#5D607E',
-    fontSize: rs(18),
+    fontSize: fs(18),
     fontWeight: '700',
     marginLeft: rs(30),
   },
   riskNote: {
     color: '#D90014',
-    fontSize: rs(18),
+    fontSize: fs(18),
     fontWeight: '700',
     marginTop: rs(22),
   },
@@ -945,12 +942,12 @@ const styles = StyleSheet.create({
   },
   directTitle: {
     color: '#071033',
-    fontSize: rs(22),
+    fontSize: fs(22),
     fontWeight: '900',
   },
   directSubtitle: {
     color: '#5D607E',
-    fontSize: rs(20),
+    fontSize: fs(20),
     fontWeight: '600',
     marginTop: rs(4),
   },
@@ -960,7 +957,7 @@ const styles = StyleSheet.create({
   },
   viewAllText: {
     color: '#173CFF',
-    fontSize: rs(20),
+    fontSize: fs(20),
     fontWeight: '800',
     marginRight: rs(12),
   },
@@ -992,7 +989,7 @@ const styles = StyleSheet.create({
   },
   dealerAvatarText: {
     color: '#FFFFFF',
-    fontSize: rs(18),
+    fontSize: fs(18),
     fontWeight: '900',
   },
   dealerInfo: {
@@ -1000,7 +997,7 @@ const styles = StyleSheet.create({
   },
   dealerName: {
     color: '#071033',
-    fontSize: rs(20),
+    fontSize: fs(20),
     fontWeight: '900',
   },
   dealerLocationRow: {
@@ -1010,13 +1007,13 @@ const styles = StyleSheet.create({
   },
   dealerCity: {
     color: '#5D607E',
-    fontSize: rs(16),
+    fontSize: fs(16),
     fontWeight: '600',
     marginLeft: rs(8),
   },
   dealerRevenue: {
     color: '#087A22',
-    fontSize: rs(18),
+    fontSize: fs(18),
     fontWeight: '800',
     marginRight: rs(42),
   },
@@ -1033,7 +1030,7 @@ const styles = StyleSheet.create({
   },
   dealerStatusText: {
     color: '#087A22',
-    fontSize: rs(16),
+    fontSize: fs(16),
     fontWeight: '800',
   },
   dealerDivider: {
@@ -1067,7 +1064,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   bottomTabText: {
-    fontSize: rs(16),
+    fontSize: fs(16),
     fontWeight: '700',
     marginTop: rs(8),
   },

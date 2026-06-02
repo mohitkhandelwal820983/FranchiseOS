@@ -3,7 +3,6 @@ import {
   ActivityIndicator,
   Alert,
   Dimensions,
-  SafeAreaView,
   ScrollView,
   StatusBar,
   StyleSheet,
@@ -11,10 +10,9 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import {
   Bell,
-  Building2,
-  CheckCircle2,
   ChevronRight,
   Download,
   Gift,
@@ -22,251 +20,26 @@ import {
   Menu,
   Plus,
   RefreshCw,
-  TrendingDown,
   TrendingUp,
   WalletCards,
-  X,
+
 } from 'lucide-react-native';
+import { CollectionStatus,
+  CustomerCollection,
+  DealerPaymentData,
+  SummaryCardType,
+  SupplierPayment,
+  Transaction, } from '../../api/mock/dealer/dealerPayment.mock';
+import { getDealerPayment } from '../../api/dealer/dealerPayment.api';
 
 const {width: SCREEN_WIDTH} = Dimensions.get('window');
 
 const DESIGN_WIDTH = 832;
 const scale = SCREEN_WIDTH / DESIGN_WIDTH;
 const rs = (value: number) => Math.round(value * scale);
+const fs = (value: number) => rs(value + 3);
 
-type SummaryCardType = {
-  id: string;
-  title: string;
-  value: string;
-  subtitle: string;
-  icon: 'collected' | 'outstanding' | 'supplier' | 'incentive';
-  color: string;
-  bg: string;
-  trend: 'up' | 'down';
-};
 
-type CollectionStatus = 'Overdue' | 'Due Soon' | 'Pending';
-
-type CustomerCollection = {
-  id: string;
-  initials: string;
-  name: string;
-  city: string;
-  amount: string;
-  dueDate: string;
-  dueMeta: string;
-  status: CollectionStatus;
-  avatarBg: string;
-  avatarColor: string;
-};
-
-type SupplierPayment = {
-  id: string;
-  logo: string;
-  name: string;
-  amount: string;
-  dueDate: string;
-  dueMeta: string;
-  status: CollectionStatus;
-  logoBg: string;
-  logoColor: string;
-};
-
-type Transaction = {
-  id: string;
-  title: string;
-  subtitle: string;
-  amount: string;
-  date: string;
-  icon: 'received' | 'paid' | 'refund' | 'failed';
-  color: string;
-  bg: string;
-};
-
-type PaymentData = {
-  summary: SummaryCardType[];
-  collections: CustomerCollection[];
-  suppliers: SupplierPayment[];
-  transactions: Transaction[];
-};
-
-const mockPaymentData: PaymentData = {
-  summary: [
-    {
-      id: '1',
-      title: 'Collected This Month',
-      value: '₹2,84,000',
-      subtitle: '↑ 18% vs last month',
-      icon: 'collected',
-      color: '#138A36',
-      bg: '#138A36',
-      trend: 'up',
-    },
-    {
-      id: '2',
-      title: 'Outstanding Amount',
-      value: '₹42,000',
-      subtitle: '↓ 12% vs last month',
-      icon: 'outstanding',
-      color: '#E00014',
-      bg: '#E00014',
-      trend: 'down',
-    },
-    {
-      id: '3',
-      title: 'Pending Supplier Payments',
-      value: '₹68,000',
-      subtitle: '↑ 8% vs last month',
-      icon: 'supplier',
-      color: '#173CFF',
-      bg: '#173CFF',
-      trend: 'up',
-    },
-    {
-      id: '4',
-      title: 'Incentives Received',
-      value: '₹8,400',
-      subtitle: '↑ 15% vs last month',
-      icon: 'incentive',
-      color: '#7B22EA',
-      bg: '#7B22EA',
-      trend: 'up',
-    },
-  ],
-  collections: [
-    {
-      id: '1',
-      initials: 'RK',
-      name: 'Rahul Kirana Store',
-      city: 'Jaipur, Rajasthan',
-      amount: '₹12,000',
-      dueDate: '22 May 2026',
-      dueMeta: 'Overdue',
-      status: 'Overdue',
-      avatarBg: '#EAF8EC',
-      avatarColor: '#138A36',
-    },
-    {
-      id: '2',
-      initials: 'MR',
-      name: 'Modern Retail Shop',
-      city: 'Jaipur, Rajasthan',
-      amount: '₹8,500',
-      dueDate: '25 May 2026',
-      dueMeta: '2 days left',
-      status: 'Due Soon',
-      avatarBg: '#FFF1E7',
-      avatarColor: '#F06419',
-    },
-    {
-      id: '3',
-      initials: 'GS',
-      name: 'Ganesh Supermarket',
-      city: 'Jaipur, Rajasthan',
-      amount: '₹6,200',
-      dueDate: '28 May 2026',
-      dueMeta: '5 days left',
-      status: 'Pending',
-      avatarBg: '#EEF3FF',
-      avatarColor: '#173CFF',
-    },
-    {
-      id: '4',
-      initials: 'SK',
-      name: 'Shree Krishna Store',
-      city: 'Jaipur, Rajasthan',
-      amount: '₹5,300',
-      dueDate: '02 Jun 2026',
-      dueMeta: '10 days left',
-      status: 'Pending',
-      avatarBg: '#F7F0FF',
-      avatarColor: '#7B22EA',
-    },
-  ],
-  suppliers: [
-    {
-      id: '1',
-      logo: '🏢',
-      name: 'Rajesh Stockist',
-      amount: '₹42,000',
-      dueDate: '23 May 2026',
-      dueMeta: 'Overdue',
-      status: 'Overdue',
-      logoBg: '#F7F0FF',
-      logoColor: '#7B22EA',
-    },
-    {
-      id: '2',
-      logo: 'Nestle',
-      name: 'Nestle Supplier',
-      amount: '₹18,500',
-      dueDate: '26 May 2026',
-      dueMeta: '2 days left',
-      status: 'Due Soon',
-      logoBg: '#EEF3FF',
-      logoColor: '#173CFF',
-    },
-    {
-      id: '3',
-      logo: 'PARLE',
-      name: 'Parle Distributor',
-      amount: '₹7,500',
-      dueDate: '30 May 2026',
-      dueMeta: '6 days left',
-      status: 'Pending',
-      logoBg: '#F3F3F3',
-      logoColor: '#E00014',
-    },
-  ],
-  transactions: [
-    {
-      id: '1',
-      title: 'Payment Received from Rahul Kirana Store',
-      subtitle: 'Order #CUST-2198',
-      amount: '+ ₹12,000',
-      date: '21 May 2026, 10:30 AM',
-      icon: 'received',
-      color: '#138A36',
-      bg: '#EAF8EC',
-    },
-    {
-      id: '2',
-      title: 'Payment Made to Rajesh Stockist',
-      subtitle: 'Invoice #INV-8820',
-      amount: '- ₹42,000',
-      date: '20 May 2026, 04:15 PM',
-      icon: 'paid',
-      color: '#173CFF',
-      bg: '#EEF3FF',
-    },
-    {
-      id: '3',
-      title: 'Refund to Modern Retail Shop',
-      subtitle: 'Order #CUST-2190',
-      amount: '+ ₹2,500',
-      date: '19 May 2026, 11:20 AM',
-      icon: 'refund',
-      color: '#7B22EA',
-      bg: '#F7F0FF',
-    },
-    {
-      id: '4',
-      title: 'Payment Failed from Sharma Store',
-      subtitle: 'Order #CUST-2187',
-      amount: '₹8,000',
-      date: '18 May 2026, 09:45 AM',
-      icon: 'failed',
-      color: '#E00014',
-      bg: '#FFF0F0',
-    },
-  ],
-};
-
-const mockPaymentApi = async (): Promise<PaymentData> => {
-  return new Promise(resolve => {
-    setTimeout(() => resolve(mockPaymentData), 300);
-  });
-};
 
 const Header = () => {
   return (
@@ -689,10 +462,24 @@ const BottomActions = ({
 };
 
 const DealerPaymentScreen = () => {
-  const [data, setData] = useState<PaymentData | null>(null);
+  const [data, setData] = useState<DealerPaymentData | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
+
+  const loadPaymentData = async () => {
+    try {
+      setLoading(true);
+
+      const response = await getDealerPayment();
+      setData(response);
+    } catch (error) {
+      console.log('Dealer Payment API Error:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    mockPaymentApi().then(setData);
+    loadPaymentData();
   }, []);
 
   const handlers = useMemo(
@@ -710,7 +497,7 @@ const DealerPaymentScreen = () => {
     [],
   );
 
-  if (!data) {
+  if (loading || !data) {
     return (
       <SafeAreaView style={styles.loaderScreen}>
         <StatusBar backgroundColor="#061B66" barStyle="light-content" />
@@ -737,7 +524,10 @@ const DealerPaymentScreen = () => {
           onReminder={handlers.reminder}
         />
 
-        <SupplierPaymentsCard items={data.suppliers} onPayNow={handlers.payNow} />
+        <SupplierPaymentsCard
+          items={data.suppliers}
+          onPayNow={handlers.payNow}
+        />
 
         <PaymentAnalyticsCard />
 
@@ -781,7 +571,7 @@ const styles = StyleSheet.create({
   },
   headerTitle: {
     color: '#FFFFFF',
-    fontSize: rs(31),
+    fontSize: fs(31),
     fontWeight: '900',
   },
   scrollView: {
@@ -826,17 +616,17 @@ const styles = StyleSheet.create({
   },
   summaryTitle: {
     color: '#061247',
-    fontSize: rs(15),
+    fontSize: fs(15),
     fontWeight: '800',
   },
   summaryValue: {
-    fontSize: rs(29),
+    fontSize: fs(29),
     fontWeight: '900',
     marginTop: rs(9),
     letterSpacing: rs(3),
   },
   summarySubtitle: {
-    fontSize: rs(14),
+    fontSize: fs(14),
     fontWeight: '800',
     marginTop: rs(9),
   },
@@ -861,7 +651,7 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     color: '#061247',
-    fontSize: rs(20),
+    fontSize: fs(20),
     fontWeight: '900',
   },
   viewAllRow: {
@@ -870,7 +660,7 @@ const styles = StyleSheet.create({
   },
   viewAllText: {
     color: '#173CFF',
-    fontSize: rs(14),
+    fontSize: fs(14),
     fontWeight: '900',
     marginRight: rs(8),
   },
@@ -887,7 +677,7 @@ const styles = StyleSheet.create({
   },
   tableHeadText: {
     color: '#5D607E',
-    fontSize: rs(12),
+    fontSize: fs(12),
     fontWeight: '800',
   },
   collectionRow: {
@@ -911,7 +701,7 @@ const styles = StyleSheet.create({
     marginRight: rs(14),
   },
   avatarText: {
-    fontSize: rs(18),
+    fontSize: fs(18),
     fontWeight: '900',
   },
   customerInfo: {
@@ -919,28 +709,28 @@ const styles = StyleSheet.create({
   },
   nameText: {
     color: '#061247',
-    fontSize: rs(14),
+    fontSize: fs(14),
     fontWeight: '900',
   },
   cityText: {
     color: '#5D607E',
-    fontSize: rs(12),
+    fontSize: fs(12),
     fontWeight: '700',
     marginTop: rs(6),
   },
   amountText: {
     color: '#061247',
-    fontSize: rs(15),
+    fontSize: fs(15),
     fontWeight: '900',
   },
   dateText: {
     color: '#061247',
-    fontSize: rs(13),
+    fontSize: fs(13),
     fontWeight: '700',
   },
   dueMetaText: {
     color: '#173CFF',
-    fontSize: rs(11),
+    fontSize: fs(11),
     fontWeight: '800',
     marginTop: rs(6),
   },
@@ -968,7 +758,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#F1F5FF',
   },
   statusText: {
-    fontSize: rs(12),
+    fontSize: fs(12),
     fontWeight: '900',
   },
   overdueText: {
@@ -994,7 +784,7 @@ const styles = StyleSheet.create({
   },
   collectText: {
     color: '#F06419',
-    fontSize: rs(12),
+    fontSize: fs(12),
     fontWeight: '900',
     marginLeft: rs(6),
   },
@@ -1009,7 +799,7 @@ const styles = StyleSheet.create({
   },
   reminderText: {
     color: '#173CFF',
-    fontSize: rs(12),
+    fontSize: fs(12),
     fontWeight: '900',
     marginLeft: rs(6),
   },
@@ -1022,7 +812,7 @@ const styles = StyleSheet.create({
     marginRight: rs(14),
   },
   supplierLogoText: {
-    fontSize: rs(11),
+    fontSize: fs(11),
     fontWeight: '900',
     textAlign: 'center',
   },
@@ -1037,7 +827,7 @@ const styles = StyleSheet.create({
   },
   payNowText: {
     color: '#173CFF',
-    fontSize: rs(12),
+    fontSize: fs(12),
     fontWeight: '900',
     marginLeft: rs(6),
   },
@@ -1052,7 +842,7 @@ const styles = StyleSheet.create({
   },
   downloadText: {
     color: '#173CFF',
-    fontSize: rs(12),
+    fontSize: fs(12),
     fontWeight: '900',
     marginLeft: rs(6),
   },
@@ -1083,7 +873,7 @@ const styles = StyleSheet.create({
   },
   chartTitle: {
     color: '#061247',
-    fontSize: rs(12),
+    fontSize: fs(12),
     fontWeight: '900',
     marginBottom: rs(10),
   },
@@ -1114,7 +904,7 @@ const styles = StyleSheet.create({
   },
   legendText: {
     color: '#5D607E',
-    fontSize: rs(10),
+    fontSize: fs(10),
     fontWeight: '700',
   },
   donutOuter: {
@@ -1132,17 +922,17 @@ const styles = StyleSheet.create({
   },
   donutMain: {
     color: '#061247',
-    fontSize: rs(17),
+    fontSize: fs(17),
     fontWeight: '900',
   },
   donutSub: {
     color: '#5D607E',
-    fontSize: rs(12),
+    fontSize: fs(12),
     fontWeight: '700',
   },
   donutRed: {
     color: '#E00014',
-    fontSize: rs(18),
+    fontSize: fs(18),
     fontWeight: '900',
   },
   barChart: {
@@ -1172,7 +962,7 @@ const styles = StyleSheet.create({
   },
   monthText: {
     color: '#5D607E',
-    fontSize: rs(10),
+    fontSize: fs(10),
     marginTop: rs(6),
   },
   lineChart: {
@@ -1191,7 +981,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     left: 0,
     color: '#5D607E',
-    fontSize: rs(9),
+    fontSize: fs(9),
     fontWeight: '700',
   },
   redLineOne: {
@@ -1258,7 +1048,7 @@ const styles = StyleSheet.create({
     marginRight: rs(14),
   },
   failedIconText: {
-    fontSize: rs(22),
+    fontSize: fs(22),
     fontWeight: '900',
   },
   transactionInfo: {
@@ -1266,12 +1056,12 @@ const styles = StyleSheet.create({
   },
   transactionTitle: {
     color: '#061247',
-    fontSize: rs(14),
+    fontSize: fs(14),
     fontWeight: '900',
   },
   transactionSubtitle: {
     color: '#5D607E',
-    fontSize: rs(12),
+    fontSize: fs(12),
     fontWeight: '700',
     marginTop: rs(4),
   },
@@ -1279,12 +1069,12 @@ const styles = StyleSheet.create({
     alignItems: 'flex-end',
   },
   transactionAmount: {
-    fontSize: rs(15),
+    fontSize: fs(15),
     fontWeight: '900',
   },
   transactionDate: {
     color: '#5D607E',
-    fontSize: rs(12),
+    fontSize: fs(12),
     fontWeight: '700',
     marginTop: rs(6),
   },
@@ -1314,7 +1104,7 @@ const styles = StyleSheet.create({
   },
   bottomActionText: {
     color: '#FFFFFF',
-    fontSize: rs(14),
+    fontSize: fs(14),
     fontWeight: '900',
   },
   bottomDivider: {

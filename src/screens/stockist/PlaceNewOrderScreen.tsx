@@ -1,8 +1,8 @@
-import React, {useMemo, useState} from 'react';
+import React, {useEffect, useMemo, useState} from 'react';
 import {
+  ActivityIndicator,
   Alert,
   Dimensions,
-  SafeAreaView,
   ScrollView,
   StatusBar,
   StyleSheet,
@@ -11,6 +11,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import {
   ArrowLeft,
   CheckCircle2,
@@ -20,64 +21,55 @@ import {
   ShoppingCart,
 } from 'lucide-react-native';
 import {useNavigation} from '@react-navigation/native';
+import { PlaceNewOrderData } from '../../api/mock/stockist/placeNewOrder.mock';
+import { getPlaceNewOrder } from '../../api/stockist/placeNewOrder.api';
 
 const {width: SCREEN_WIDTH} = Dimensions.get('window');
 const DESIGN_WIDTH = 390;
 const scale = SCREEN_WIDTH / DESIGN_WIDTH;
 const rs = (value: number) => Math.round(value * scale);
+const fs = (value: number) => rs(value + 3);
 
-type Product = {
-  id: string;
-  name: string;
-  sku: string;
-  price: number;
-  stock: number;
-  color: string;
-};
 
-const mockProducts: Product[] = [
-  {
-    id: '1',
-    name: 'Product A',
-    sku: 'PRD-A',
-    price: 500,
-    stock: 248,
-    color: '#173CFF',
-  },
-  {
-    id: '2',
-    name: 'Product B',
-    sku: 'PRD-B',
-    price: 900,
-    stock: 110,
-    color: '#138A36',
-  },
-  {
-    id: '3',
-    name: 'Product C',
-    sku: 'PRD-C',
-    price: 1200,
-    stock: 72,
-    color: '#F06419',
-  },
-];
 
 const PlaceNewOrderScreen = () => {
   const navigation = useNavigation<any>();
+
+  const [data, setData] = useState<PlaceNewOrderData | null>(null);
   const [customer, setCustomer] = useState('');
   const [search, setSearch] = useState('');
-  const [deliveryAddress, setDeliveryAddress] = useState(
-    '123 Business Park, Jaipur Road,\nMumbai, Maharashtra - 400001',
-  );
-  const [quantities, setQuantities] = useState<Record<string, number>>({
-    '1': 1,
-    '2': 0,
-    '3': 0,
-  });
+  const [deliveryAddress, setDeliveryAddress] = useState('');
+  const [quantities, setQuantities] = useState<Record<string, number>>({});
+  const [loading, setLoading] = useState<boolean>(true);
+
+  const loadPlaceNewOrder = async () => {
+    try {
+      setLoading(true);
+
+      const response = await getPlaceNewOrder();
+
+      setData(response);
+      setCustomer(response.defaultCustomer);
+      setDeliveryAddress(response.defaultDeliveryAddress);
+      setQuantities(response.defaultQuantities);
+    } catch (error) {
+      console.log('Place New Order API Error:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    loadPlaceNewOrder();
+  }, []);
 
   const selectedProducts = useMemo(() => {
-    return mockProducts.filter(item => (quantities[item.id] || 0) > 0);
-  }, [quantities]);
+    if (!data) {
+      return [];
+    }
+
+    return data.products.filter(item => (quantities[item.id] || 0) > 0);
+  }, [data, quantities]);
 
   const subtotal = useMemo(() => {
     return selectedProducts.reduce((total, item) => {
@@ -89,14 +81,18 @@ const PlaceNewOrderScreen = () => {
   const total = subtotal + tax;
 
   const filteredProducts = useMemo(() => {
+    if (!data) {
+      return [];
+    }
+
     const query = search.trim().toLowerCase();
 
-    return mockProducts.filter(
+    return data.products.filter(
       item =>
         item.name.toLowerCase().includes(query) ||
         item.sku.toLowerCase().includes(query),
     );
-  }, [search]);
+  }, [data, search]);
 
   const updateQuantity = (id: string, type: 'plus' | 'minus') => {
     setQuantities(prev => {
@@ -127,6 +123,18 @@ const PlaceNewOrderScreen = () => {
       },
     ]);
   };
+
+  if (loading || !data) {
+    return (
+      <SafeAreaView style={styles.safeArea}>
+        <StatusBar backgroundColor="#061B66" barStyle="light-content" />
+
+        <View style={styles.loaderScreen}>
+          <ActivityIndicator size="large" color="#173CFF" />
+        </View>
+      </SafeAreaView>
+    );
+  }
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -161,7 +169,10 @@ const PlaceNewOrderScreen = () => {
           />
         </View>
 
-        <TouchableOpacity activeOpacity={0.8} style={styles.customerChip}>
+        <TouchableOpacity
+          activeOpacity={0.8}
+          style={styles.customerChip}
+          onPress={() => setCustomer('Customer 1')}>
           <Text style={styles.customerChipText}>Customer 1</Text>
         </TouchableOpacity>
 
@@ -250,7 +261,10 @@ const PlaceNewOrderScreen = () => {
           />
         </View>
 
-        <TouchableOpacity activeOpacity={0.85} style={styles.orderButton} onPress={placeOrder}>
+        <TouchableOpacity
+          activeOpacity={0.85}
+          style={styles.orderButton}
+          onPress={placeOrder}>
           <CheckCircle2 color="#FFFFFF" size={rs(18)} />
           <Text style={styles.orderButtonText}>Submit Order</Text>
         </TouchableOpacity>
@@ -276,7 +290,7 @@ const styles = StyleSheet.create({
   },
   headerTitle: {
     color: '#FFFFFF',
-    fontSize: rs(15),
+    fontSize: fs(15),
     fontWeight: '900',
   },
   scrollView: {
@@ -288,7 +302,7 @@ const styles = StyleSheet.create({
   },
   label: {
     color: '#111327',
-    fontSize: rs(12),
+    fontSize: fs(12),
     fontWeight: '800',
     marginBottom: rs(7),
   },
@@ -302,11 +316,17 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: rs(12),
   },
+  loaderScreen: {
+  flex: 1,
+  backgroundColor: '#F8F9FD',
+  alignItems: 'center',
+  justifyContent: 'center',
+},
   input: {
     flex: 1,
     marginLeft: rs(8),
     color: '#111327',
-    fontSize: rs(12),
+    fontSize: fs(12),
     paddingVertical: 0,
   },
   customerChip: {
@@ -322,7 +342,7 @@ const styles = StyleSheet.create({
   },
   customerChipText: {
     color: '#FFFFFF',
-    fontSize: rs(11),
+    fontSize: fs(11),
     fontWeight: '800',
   },
   sectionHeader: {
@@ -332,12 +352,12 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     color: '#111327',
-    fontSize: rs(13),
+    fontSize: fs(13),
     fontWeight: '900',
   },
   showAllText: {
     color: '#173CFF',
-    fontSize: rs(11),
+    fontSize: fs(11),
     fontWeight: '800',
   },
   productSearchBox: {
@@ -355,7 +375,7 @@ const styles = StyleSheet.create({
   productSearchInput: {
     flex: 1,
     marginLeft: rs(8),
-    fontSize: rs(12),
+    fontSize: fs(12),
     color: '#111327',
     paddingVertical: 0,
   },
@@ -379,12 +399,12 @@ const styles = StyleSheet.create({
   },
   productName: {
     color: '#111327',
-    fontSize: rs(13),
+    fontSize: fs(13),
     fontWeight: '900',
   },
   productStock: {
     color: '#138A36',
-    fontSize: rs(11),
+    fontSize: fs(11),
     fontWeight: '600',
     marginTop: rs(4),
   },
@@ -401,7 +421,7 @@ const styles = StyleSheet.create({
     width: rs(28),
     textAlign: 'center',
     color: '#111327',
-    fontSize: rs(13),
+    fontSize: fs(13),
     fontWeight: '900',
   },
   summaryCard: {
@@ -413,7 +433,7 @@ const styles = StyleSheet.create({
   },
   summaryTitle: {
     color: '#111327',
-    fontSize: rs(13),
+    fontSize: fs(13),
     fontWeight: '900',
     marginBottom: rs(10),
   },
@@ -424,12 +444,12 @@ const styles = StyleSheet.create({
   },
   summaryText: {
     color: '#5D607E',
-    fontSize: rs(12),
+    fontSize: fs(12),
     fontWeight: '600',
   },
   summaryAmount: {
     color: '#111327',
-    fontSize: rs(12),
+    fontSize: fs(12),
     fontWeight: '800',
   },
   totalRow: {
@@ -441,12 +461,12 @@ const styles = StyleSheet.create({
   },
   totalLabel: {
     color: '#111327',
-    fontSize: rs(14),
+    fontSize: fs(14),
     fontWeight: '900',
   },
   totalAmount: {
     color: '#173CFF',
-    fontSize: rs(15),
+    fontSize: fs(15),
     fontWeight: '900',
   },
   addressBox: {
@@ -460,7 +480,7 @@ const styles = StyleSheet.create({
   },
   addressInput: {
     color: '#111327',
-    fontSize: rs(12),
+    fontSize: fs(12),
     fontWeight: '600',
     padding: 0,
     textAlignVertical: 'top',
@@ -475,7 +495,7 @@ const styles = StyleSheet.create({
   },
   orderButtonText: {
     color: '#FFFFFF',
-    fontSize: rs(14),
+    fontSize: fs(14),
     fontWeight: '900',
     marginLeft: rs(8),
   },

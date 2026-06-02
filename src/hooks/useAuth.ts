@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react';
-import { authAPI } from '../api/auth.api';
+import { authService } from '../services/authService';
 
 interface User {
   id: string;
@@ -16,9 +16,9 @@ export const useAuth = () => {
     setLoading(true);
     setError(null);
     try {
-      const response = await authAPI.login({ email, password });
-      setUser(response.data.user);
-      return response.data;
+      const userData = await authService.login(email, password);
+      setUser(userData);
+      return userData;
     } catch (err: any) {
       const errorMessage = err.response?.data?.message || 'Login failed';
       setError(errorMessage);
@@ -31,7 +31,7 @@ export const useAuth = () => {
   const logout = useCallback(async () => {
     setLoading(true);
     try {
-      await authAPI.logout();
+      await authService.logout();
       setUser(null);
     } catch (err: any) {
       setError(err.response?.data?.message || 'Logout failed');

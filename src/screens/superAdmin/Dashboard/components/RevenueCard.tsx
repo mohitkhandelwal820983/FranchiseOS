@@ -13,7 +13,7 @@ type Props = {
 
 const RevenueCard = ({styles, amount, items}: Props) => {
   return (
-    <View style={styles.halfCard}>
+    <View style={[styles.halfCard,{marginTop:16}]}>
       <View style={styles.cardTitleRow}>
         <Text style={styles.cardTitle}>Your Platform Revenue</Text>
         <Info color={C.linkBlue} size={s(24)} strokeWidth={2.2} />

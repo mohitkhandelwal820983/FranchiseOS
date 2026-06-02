@@ -42,6 +42,7 @@ const { width: SCREEN_WIDTH } = Dimensions.get('window');
 const DESIGN_WIDTH = 832;
 const scale = SCREEN_WIDTH / DESIGN_WIDTH;
 const rs = (value: number) => Math.round(value * scale);
+const fs = (value: number) => rs(value + 5);
 
 
 
@@ -583,7 +584,7 @@ const styles = StyleSheet.create({
   },
   headerTitle: {
     color: '#FFFFFF',
-    fontSize: rs(34),
+    fontSize: fs(34),
     fontWeight: '900',
   },
   scrollView: {
@@ -615,7 +616,7 @@ const styles = StyleSheet.create({
   },
   periodText: {
     color: '#061247',
-    fontSize: rs(17),
+    fontSize: fs(17),
     fontWeight: '800',
   },
   activePeriodText: {
@@ -655,17 +656,17 @@ const styles = StyleSheet.create({
   },
   summaryTitle: {
     color: '#5D607E',
-    fontSize: rs(16),
+    fontSize: fs(16),
     fontWeight: '700',
     marginBottom: rs(9),
   },
   summaryValue: {
-    fontSize: rs(30),
+    fontSize: fs(30),
     fontWeight: '900',
     letterSpacing: rs(2.5),
   },
   summarySubtitle: {
-    fontSize: rs(15),
+    fontSize: fs(15),
     fontWeight: '800',
     marginTop: rs(9),
   },
@@ -702,12 +703,12 @@ const styles = StyleSheet.create({
   },
   cardTitle: {
     color: '#111327',
-    fontSize: rs(24),
+    fontSize: fs(24),
     fontWeight: '900',
   },
   viewAllText: {
     color: '#173CFF',
-    fontSize: rs(18),
+    fontSize: fs(18),
     fontWeight: '800',
   },
   weeklyButton: {
@@ -724,7 +725,7 @@ const styles = StyleSheet.create({
   },
   weeklyText: {
     color: '#061247',
-    fontSize: rs(15),
+    fontSize: fs(15),
     fontWeight: '800',
   },
   chartArea: {
@@ -739,7 +740,7 @@ const styles = StyleSheet.create({
   },
   axisText: {
     color: '#5D607E',
-    fontSize: rs(13),
+    fontSize: fs(13),
     fontWeight: '700',
   },
   chartBox: {
@@ -842,7 +843,7 @@ const styles = StyleSheet.create({
   },
   tooltipText: {
     color: '#FFFFFF',
-    fontSize: rs(14),
+    fontSize: fs(14),
     fontWeight: '800',
   },
   xAxisRow: {
@@ -854,7 +855,7 @@ const styles = StyleSheet.create({
   },
   xAxisText: {
     color: '#5D607E',
-    fontSize: rs(15),
+    fontSize: fs(15),
     fontWeight: '700',
   },
   trendCardsRow: {
@@ -883,34 +884,34 @@ const styles = StyleSheet.create({
   },
   greenLegend: {
     color: '#138A36',
-    fontSize: rs(14),
+    fontSize: fs(14),
     fontWeight: '800',
   },
   orangeLegend: {
     color: '#F06419',
-    fontSize: rs(14),
+    fontSize: fs(14),
     fontWeight: '800',
   },
   redLegend: {
     color: '#E00014',
-    fontSize: rs(14),
+    fontSize: fs(14),
     fontWeight: '800',
   },
   greenBig: {
     color: '#138A36',
-    fontSize: rs(22),
+    fontSize: fs(22),
     fontWeight: '900',
     marginTop: rs(4),
   },
   orangeBig: {
     color: '#F06419',
-    fontSize: rs(22),
+    fontSize: fs(22),
     fontWeight: '900',
     marginTop: rs(4),
   },
   redBig: {
     color: '#E00014',
-    fontSize: rs(22),
+    fontSize: fs(22),
     fontWeight: '900',
     marginTop: rs(4),
   },
@@ -925,7 +926,7 @@ const styles = StyleSheet.create({
   companyName: {
     width: rs(120),
     color: '#44465F',
-    fontSize: rs(17),
+    fontSize: fs(17),
     fontWeight: '700',
   },
   stackedBar: {
@@ -955,7 +956,7 @@ const styles = StyleSheet.create({
   },
   barText: {
     color: '#FFFFFF',
-    fontSize: rs(13),
+    fontSize: fs(13),
     fontWeight: '900',
   },
   breakdownFooter: {
@@ -991,13 +992,13 @@ const styles = StyleSheet.create({
   },
   legendText: {
     color: '#5D607E',
-    fontSize: rs(13),
+    fontSize: fs(13),
     fontWeight: '700',
   },
   amountNote: {
     marginLeft: 'auto',
     color: '#5D607E',
-    fontSize: rs(14),
+    fontSize: fs(14),
     fontWeight: '700',
   },
   paymentRow: {
@@ -1020,12 +1021,12 @@ const styles = StyleSheet.create({
   },
   paymentCompany: {
     color: '#111327',
-    fontSize: rs(17),
+    fontSize: fs(17),
     fontWeight: '900',
   },
   paymentDescription: {
     color: '#5D607E',
-    fontSize: rs(14),
+    fontSize: fs(14),
     fontWeight: '600',
     marginTop: rs(6),
   },
@@ -1034,11 +1035,11 @@ const styles = StyleSheet.create({
   },
   paymentTime: {
     color: '#5D607E',
-    fontSize: rs(13),
+    fontSize: fs(13),
     fontWeight: '700',
   },
   paymentAmount: {
-    fontSize: rs(20),
+    fontSize: fs(20),
     fontWeight: '900',
     marginTop: rs(7),
   },
@@ -1050,7 +1051,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   paymentBadgeText: {
-    fontSize: rs(14),
+    fontSize: fs(14),
     fontWeight: '900',
   },
   collectedBadge: {
@@ -1103,7 +1104,7 @@ const styles = StyleSheet.create({
   },
   exportText: {
     color: '#061247',
-    fontSize: rs(17),
+    fontSize: fs(17),
     fontWeight: '800',
     marginLeft: rs(10),
   },
@@ -1118,7 +1119,7 @@ const styles = StyleSheet.create({
   },
   reminderText: {
     color: '#FFFFFF',
-    fontSize: rs(17),
+    fontSize: fs(17),
     fontWeight: '800',
     marginLeft: rs(10),
   },

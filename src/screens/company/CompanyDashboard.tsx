@@ -43,6 +43,7 @@ const {width: SCREEN_WIDTH} = Dimensions.get('window');
 const DESIGN_WIDTH = 832;
 const scale = SCREEN_WIDTH / DESIGN_WIDTH;
 const rs = (value: number) => Math.round(value * scale);
+const fs = (value: number) => rs(value + 3);
 
 
 
@@ -479,7 +480,7 @@ const DashboardScreen = () => {
         <Text
           style={{
             color: '#061247',
-            fontSize: rs(18),
+            fontSize: fs(18),
             fontWeight: '700',
             marginBottom: rs(18),
             textAlign: 'center',
@@ -496,7 +497,7 @@ const DashboardScreen = () => {
             paddingVertical: rs(14),
             borderRadius: rs(8),
           }}>
-          <Text style={{color: '#FFFFFF', fontWeight: '800'}}>Retry</Text>
+          <Text style={{color: '#FFFFFF', fontSize: fs(14), fontWeight: '800'}}>Retry</Text>
         </TouchableOpacity>
       </SafeAreaView>
     );
@@ -567,7 +568,7 @@ const styles = StyleSheet.create({
   },
   headerTitle: {
     color: '#FFFFFF',
-    fontSize: rs(29),
+    fontSize: fs(29),
     fontWeight: '800',
     letterSpacing: 0.2,
   },
@@ -591,7 +592,7 @@ const styles = StyleSheet.create({
   },
   badgeText: {
     color: '#FFFFFF',
-    fontSize: rs(12),
+    fontSize: fs(12),
     fontWeight: '800',
   },
   scrollView: {
@@ -636,14 +637,14 @@ const styles = StyleSheet.create({
   },
   welcomeTitle: {
     color: '#111327',
-    fontSize: rs(25),
+    fontSize: fs(25),
     lineHeight: rs(32),
     fontWeight: '800',
   },
   welcomeSubtitle: {
     marginTop: rs(13),
     color: '#006D1D',
-    fontSize: rs(16),
+    fontSize: fs(16),
     lineHeight: rs(22),
     fontWeight: '600',
   },
@@ -657,7 +658,7 @@ const styles = StyleSheet.create({
   dateText: {
     marginLeft: rs(9),
     color: '#55576F',
-    fontSize: rs(15),
+    fontSize: fs(15),
     fontWeight: '500',
   },
   snapshotSection: {
@@ -671,17 +672,17 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     color: '#121429',
-    fontSize: rs(20),
+    fontSize: fs(20),
     fontWeight: '800',
   },
   viewAllBlue: {
     color: '#001DDE',
-    fontSize: rs(16),
+    fontSize: fs(16),
     fontWeight: '700',
   },
   viewAllRed: {
     color: '#E00000',
-    fontSize: rs(16),
+    fontSize: fs(16),
     fontWeight: '700',
   },
   snapshotGrid: {
@@ -716,12 +717,12 @@ const styles = StyleSheet.create({
   },
   snapshotTitle: {
     color: '#52546D',
-    fontSize: rs(15),
+    fontSize: fs(15),
     fontWeight: '700',
     marginBottom: rs(13),
   },
   snapshotValue: {
-    fontSize: rs(35),
+    fontSize: fs(35),
     lineHeight: rs(39),
     fontWeight: '900',
     letterSpacing: rs(5),
@@ -729,7 +730,7 @@ const styles = StyleSheet.create({
   snapshotSubtitle: {
     marginTop: rs(12),
     color: '#52546D',
-    fontSize: rs(15),
+    fontSize: fs(15),
     fontWeight: '500',
   },
   twoColumnRow: {
@@ -812,7 +813,7 @@ const styles = StyleSheet.create({
   },
   cardTitle: {
     color: '#121429',
-    fontSize: rs(18),
+    fontSize: fs(18),
     fontWeight: '800',
   },
   monthButton: {
@@ -828,13 +829,13 @@ const styles = StyleSheet.create({
   },
   monthText: {
     color: '#151729',
-    fontSize: rs(15),
+    fontSize: fs(15),
     fontWeight: '500',
   },
   revenueAmount: {
     marginTop: rs(30),
     color: '#080912',
-    fontSize: rs(38),
+    fontSize: fs(38),
     fontWeight: '900',
     letterSpacing: rs(1),
   },
@@ -847,13 +848,13 @@ const styles = StyleSheet.create({
   growthPercent: {
     marginLeft: rs(5),
     color: '#138A36',
-    fontSize: rs(16),
+    fontSize: fs(16),
     fontWeight: '800',
   },
   growthLabel: {
     marginLeft: rs(8),
     color: '#46495F',
-    fontSize: rs(16),
+    fontSize: fs(16),
     fontWeight: '500',
   },
   progressRow: {
@@ -876,14 +877,14 @@ const styles = StyleSheet.create({
   progressPercent: {
     marginLeft: rs(14),
     color: '#484A60',
-    fontSize: rs(16),
+    fontSize: fs(16),
     fontWeight: '600',
   },
   achievedText: {
     marginTop: rs(18),
     textAlign: 'center',
     color: '#55576F',
-    fontSize: rs(15),
+    fontSize: fs(15),
     fontWeight: '600',
   },
   revenueStatsRow: {
@@ -912,35 +913,35 @@ const styles = StyleSheet.create({
   },
   collectedLabel: {
     color: '#138A36',
-    fontSize: rs(13),
+    fontSize: fs(13),
     fontWeight: '600',
   },
   outstandingLabel: {
     color: '#E75200',
-    fontSize: rs(13),
+    fontSize: fs(13),
     fontWeight: '600',
   },
   targetLabel: {
     color: '#173CFF',
-    fontSize: rs(13),
+    fontSize: fs(13),
     fontWeight: '600',
   },
   collectedValue: {
     marginTop: rs(6),
     color: '#138A36',
-    fontSize: rs(24),
+    fontSize: fs(24),
     fontWeight: '900',
   },
   outstandingValue: {
     marginTop: rs(6),
     color: '#E75200',
-    fontSize: rs(24),
+    fontSize: fs(24),
     fontWeight: '900',
   },
   targetValue: {
     marginTop: rs(6),
     color: '#173CFF',
-    fontSize: rs(24),
+    fontSize: fs(24),
     fontWeight: '900',
   },
   orderStatsRow: {
@@ -959,13 +960,13 @@ const styles = StyleSheet.create({
   },
   orderValue: {
     marginTop: rs(16),
-    fontSize: rs(34),
+    fontSize: fs(34),
     fontWeight: '900',
   },
   orderLabel: {
     marginTop: rs(5),
     color: '#55576F',
-    fontSize: rs(15),
+    fontSize: fs(15),
     fontWeight: '600',
   },
   orderMessageBox: {
@@ -978,17 +979,17 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   celebrationIcon: {
-    fontSize: rs(34),
+    fontSize: fs(34),
     marginRight: rs(16),
   },
   orderMessageTitle: {
     color: '#11802D',
-    fontSize: rs(15),
+    fontSize: fs(15),
     fontWeight: '800',
   },
   orderMessageText: {
     color: '#14172A',
-    fontSize: rs(14),
+    fontSize: fs(14),
     fontWeight: '500',
     marginTop: rs(7),
   },
@@ -1009,7 +1010,7 @@ const styles = StyleSheet.create({
   },
   needsCountText: {
     color: '#FFFFFF',
-    fontSize: rs(12),
+    fontSize: fs(12),
     fontWeight: '800',
   },
   attentionRow: {
@@ -1038,12 +1039,12 @@ const styles = StyleSheet.create({
   },
   attentionTitle: {
     color: '#111327',
-    fontSize: rs(14),
+    fontSize: fs(14),
     fontWeight: '800',
   },
   attentionSubtitle: {
     marginTop: rs(7),
-    fontSize: rs(13),
+    fontSize: fs(13),
     fontWeight: '700',
   },
   attentionButton: {
@@ -1058,7 +1059,7 @@ const styles = StyleSheet.create({
   },
   attentionButtonText: {
     color: '#0026E6',
-    fontSize: rs(12),
+    fontSize: fs(12),
     fontWeight: '800',
   },
   attentionDivider: {
@@ -1088,7 +1089,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   rankText: {
-    fontSize: rs(12),
+    fontSize: fs(12),
     fontWeight: '800',
   },
   leaderAvatar: {
@@ -1101,7 +1102,7 @@ const styles = StyleSheet.create({
   },
   leaderAvatarText: {
     color: '#FFFFFF',
-    fontSize: rs(15),
+    fontSize: fs(15),
     fontWeight: '800',
   },
   leaderInfo: {
@@ -1110,12 +1111,12 @@ const styles = StyleSheet.create({
   },
   leaderName: {
     color: '#15172A',
-    fontSize: rs(14),
+    fontSize: fs(14),
     fontWeight: '800',
   },
   leaderZone: {
     color: '#5B5E75',
-    fontSize: rs(13),
+    fontSize: fs(13),
     marginTop: rs(5),
     fontWeight: '500',
   },
@@ -1123,13 +1124,13 @@ const styles = StyleSheet.create({
     alignItems: 'flex-end',
   },
   leaderAmount: {
-    fontSize: rs(14),
+    fontSize: fs(14),
     fontWeight: '900',
   },
   leaderGrowth: {
     color: '#138A36',
     marginTop: rs(7),
-    fontSize: rs(13),
+    fontSize: fs(13),
     fontWeight: '700',
   },
   yourAttentionRow: {
@@ -1150,17 +1151,17 @@ const styles = StyleSheet.create({
   },
   yourAttentionTitle: {
     color: '#15172A',
-    fontSize: rs(16),
+    fontSize: fs(16),
     fontWeight: '800',
   },
   yourAttentionSubtitle: {
     marginTop: rs(7),
-    fontSize: rs(14),
+    fontSize: fs(14),
     fontWeight: '600',
   },
   viewText: {
     color: '#0026E6',
-    fontSize: rs(16),
+    fontSize: fs(16),
     fontWeight: '700',
   },
   supportBox: {
@@ -1175,7 +1176,7 @@ const styles = StyleSheet.create({
   supportText: {
     marginLeft: rs(10),
     color: '#D73900',
-    fontSize: rs(14),
+    fontSize: fs(14),
     fontWeight: '700',
   },
   activityRow: {
@@ -1194,12 +1195,12 @@ const styles = StyleSheet.create({
   activityTitle: {
     flex: 1,
     color: '#2B2D43',
-    fontSize: rs(14),
+    fontSize: fs(14),
     fontWeight: '600',
   },
   activityTime: {
     color: '#55576F',
-    fontSize: rs(12),
+    fontSize: fs(12),
     fontWeight: '500',
   },
   activityMessageBox: {
@@ -1214,7 +1215,7 @@ const styles = StyleSheet.create({
   activityMessageText: {
     marginLeft: rs(10),
     color: '#1F2B57',
-    fontSize: rs(14),
+    fontSize: fs(14),
     fontWeight: '700',
   },
   bottomNavigation: {
@@ -1244,7 +1245,7 @@ const styles = StyleSheet.create({
   },
   tabText: {
     marginTop: rs(7),
-    fontSize: rs(13),
+    fontSize: fs(13),
     fontWeight: '700',
   },
 });

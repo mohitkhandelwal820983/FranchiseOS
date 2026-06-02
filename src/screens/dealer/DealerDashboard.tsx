@@ -4,7 +4,6 @@ import {
   Alert,
   Dimensions,
   Image,
-  SafeAreaView,
   ScrollView,
   StatusBar,
   StyleSheet,
@@ -12,6 +11,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import {
   Award,
   Bell,
@@ -28,272 +28,17 @@ import {
   Users,
   WalletCards,
 } from 'lucide-react-native';
+import { getDealerDashboard } from '../../api/dealer/dealerDashboard.api';
+import { DealerDashboardData, OverviewItem, Payment, PriorityAction, Product, RecentOrder } from '../../api/mock/dealer/dealerDashboard.mock';
 
 const {width: SCREEN_WIDTH} = Dimensions.get('window');
 
 const DESIGN_WIDTH = 832;
 const scale = SCREEN_WIDTH / DESIGN_WIDTH;
 const rs = (value: number) => Math.round(value * scale);
+const fs = (value: number) => rs(value + 3);
 
-type OverviewItem = {
-  id: string;
-  title: string;
-  value: string;
-  subtitle: string;
-  icon: 'orders' | 'revenue' | 'customers' | 'incentive' | 'dues' | 'delivery';
-  color: string;
-  bg: string;
-  progress?: number;
-};
 
-type PriorityAction = {
-  id: string;
-  title: string;
-  subtitle?: string;
-  button: string;
-  icon: 'order' | 'payment' | 'stock' | 'target';
-  color: string;
-};
-
-type RecentOrder = {
-  id: string;
-  customer: string;
-  amount: string;
-  status: string;
-  statusColor: string;
-  statusBg: string;
-};
-
-type Product = {
-  id: string;
-  name: string;
-  units: string;
-  amount: string;
-  growth: string;
-  growthColor: string;
-  image: string;
-};
-
-type Payment = {
-  id: string;
-  title: string;
-  subtitle: string;
-  amount: string;
-  icon: 'received' | 'pending' | 'overdue';
-  color: string;
-  bg: string;
-};
-
-type DealerDashboardData = {
-  welcome: {
-    name: string;
-    business: string;
-    date: string;
-    notifications: string;
-  };
-  overview: OverviewItem[];
-  priorities: PriorityAction[];
-  recentOrders: RecentOrder[];
-  topProducts: Product[];
-  target: {
-    percent: number;
-    remaining: string;
-    message: string;
-  };
-  payments: Payment[];
-};
-
-const mockDealerDashboardData: DealerDashboardData = {
-  welcome: {
-    name: 'Amit',
-    business: 'ABC Dealers — Jaipur',
-    date: 'Thursday, 21 May 2026',
-    notifications: '5',
-  },
-  overview: [
-    {
-      id: '1',
-      title: 'Orders This Month',
-      value: '124',
-      subtitle: '↑ +18% growth',
-      icon: 'orders',
-      color: '#061247',
-      bg: '#EEF3FF',
-    },
-    {
-      id: '2',
-      title: 'Sales Revenue',
-      value: '₹3,84,000',
-      subtitle: '72% monthly target',
-      icon: 'revenue',
-      color: '#061247',
-      bg: '#EAF8EC',
-      progress: 72,
-    },
-    {
-      id: '3',
-      title: 'Active Customers',
-      value: '248',
-      subtitle: '12 new this week',
-      icon: 'customers',
-      color: '#061247',
-      bg: '#FFF1E7',
-    },
-    {
-      id: '4',
-      title: 'Incentives Earned',
-      value: '₹8,400',
-      subtitle: '1 reward unlocked',
-      icon: 'incentive',
-      color: '#061247',
-      bg: '#F7F0FF',
-    },
-    {
-      id: '5',
-      title: 'Outstanding Dues',
-      value: '₹42,000',
-      subtitle: 'Need collection',
-      icon: 'dues',
-      color: '#061247',
-      bg: '#FFF0F0',
-    },
-    {
-      id: '6',
-      title: 'Pending Deliveries',
-      value: '18',
-      subtitle: '4 arriving today',
-      icon: 'delivery',
-      color: '#061247',
-      bg: '#EEF3FF',
-    },
-  ],
-  priorities: [
-    {
-      id: '1',
-      title: '5 customer orders awaiting delivery',
-      button: 'View Orders',
-      icon: 'order',
-      color: '#173CFF',
-    },
-    {
-      id: '2',
-      title: 'Payment overdue from Modern Store',
-      subtitle: '₹12,000 pending',
-      button: 'Collect',
-      icon: 'payment',
-      color: '#E00014',
-    },
-    {
-      id: '3',
-      title: 'Stock running low for Coca Cola',
-      button: 'Reorder',
-      icon: 'stock',
-      color: '#F06419',
-    },
-    {
-      id: '4',
-      title: 'Target achievement at 72%',
-      button: 'Boost Sales',
-      icon: 'target',
-      color: '#138A36',
-    },
-  ],
-  recentOrders: [
-    {
-      id: '#ORD-2201',
-      customer: 'Sharma Kirana Store',
-      amount: '₹12,450',
-      status: 'Delivered',
-      statusColor: '#138A36',
-      statusBg: '#EAF8EC',
-    },
-    {
-      id: '#ORD-2200',
-      customer: 'Gupta General Store',
-      amount: '₹7,850',
-      status: 'In Transit',
-      statusColor: '#173CFF',
-      statusBg: '#F1F5FF',
-    },
-    {
-      id: '#ORD-2199',
-      customer: 'Verma Mart',
-      amount: '₹9,230',
-      status: 'Processing',
-      statusColor: '#F06419',
-      statusBg: '#FFF3E9',
-    },
-  ],
-  topProducts: [
-    {
-      id: '1',
-      name: 'Parle-G',
-      units: '2,450 units',
-      amount: '₹48,500',
-      growth: '↑ 12%',
-      growthColor: '#138A36',
-      image: 'https://dummyimage.com/55x40/f9d87b/111111&text=Parle',
-    },
-    {
-      id: '2',
-      name: 'Coca Cola',
-      units: '1,850 units',
-      amount: '₹46,250',
-      growth: '↑ 8%',
-      growthColor: '#138A36',
-      image: 'https://dummyimage.com/55x40/5c0000/ffffff&text=Coke',
-    },
-    {
-      id: '3',
-      name: 'Aashirvaad Atta',
-      units: '1,320 units',
-      amount: '₹31,680',
-      growth: '↓ 5%',
-      growthColor: '#E00014',
-      image: 'https://dummyimage.com/55x40/cb462f/ffffff&text=Atta',
-    },
-  ],
-  target: {
-    percent: 72,
-    remaining: '₹1.16L',
-    message: 'Hit target → Earn ₹10,000 bonus',
-  },
-  payments: [
-    {
-      id: '1',
-      title: 'Received',
-      subtitle: 'Today, 10:30 AM',
-      amount: '₹28,500',
-      icon: 'received',
-      color: '#138A36',
-      bg: '#EAF8EC',
-    },
-    {
-      id: '2',
-      title: 'Pending',
-      subtitle: '2 payments',
-      amount: '₹12,000',
-      icon: 'pending',
-      color: '#F06419',
-      bg: '#FFF3E9',
-    },
-    {
-      id: '3',
-      title: 'Overdue',
-      subtitle: '3 payments',
-      amount: '₹42,000',
-      icon: 'overdue',
-      color: '#E00014',
-      bg: '#FFF0F0',
-    },
-  ],
-};
-
-const mockDealerDashboardApi = async (): Promise<DealerDashboardData> => {
-  return new Promise(resolve => {
-    setTimeout(() => resolve(mockDealerDashboardData), 300);
-  });
-};
 
 const Header = ({count}: {count: string}) => {
   return (
@@ -634,9 +379,23 @@ const QuickActions = () => {
 
 const DealerDashboardScreen = () => {
   const [data, setData] = useState<DealerDashboardData | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
+
+  const loadDashboard = async () => {
+    try {
+      setLoading(true);
+
+      const response = await getDealerDashboard();
+      setData(response);
+    } catch (error) {
+      console.log('Dealer Dashboard API Error:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    mockDealerDashboardApi().then(setData);
+    loadDashboard();
   }, []);
 
   const bottomRows = useMemo(() => {
@@ -659,7 +418,7 @@ const DealerDashboardScreen = () => {
     );
   }, [data]);
 
-  if (!data) {
+  if (loading || !data) {
     return (
       <SafeAreaView style={styles.loaderScreen}>
         <StatusBar backgroundColor="#061B66" barStyle="light-content" />
@@ -720,7 +479,7 @@ const styles = StyleSheet.create({
   },
   headerTitle: {
     color: '#FFFFFF',
-    fontSize: rs(31),
+    fontSize: fs(31),
     fontWeight: '900',
   },
   bellWrap: {
@@ -742,7 +501,7 @@ const styles = StyleSheet.create({
   },
   notificationText: {
     color: '#FFFFFF',
-    fontSize: rs(12),
+    fontSize: fs(12),
     fontWeight: '900',
   },
   scrollView: {
@@ -777,7 +536,7 @@ const styles = StyleSheet.create({
   },
   welcomeTitle: {
     color: '#061247',
-    fontSize: rs(28),
+    fontSize: fs(28),
     fontWeight: '900',
     marginBottom: rs(14),
   },
@@ -788,13 +547,13 @@ const styles = StyleSheet.create({
   },
   welcomeMeta: {
     color: '#5D607E',
-    fontSize: rs(15),
+    fontSize: fs(15),
     fontWeight: '700',
     marginLeft: rs(12),
   },
   sectionTitle: {
     color: '#061247',
-    fontSize: rs(25),
+    fontSize: fs(25),
     fontWeight: '900',
     marginBottom: rs(14),
   },
@@ -832,19 +591,19 @@ const styles = StyleSheet.create({
   },
   overviewTitle: {
     color: '#061247',
-    fontSize: rs(15),
+    fontSize: fs(15),
     fontWeight: '800',
   },
   overviewValue: {
     color: '#061247',
-    fontSize: rs(28),
+    fontSize: fs(28),
     fontWeight: '900',
     marginTop: rs(9),
     letterSpacing: rs(3),
   },
   overviewSubtitle: {
     color: '#138A36',
-    fontSize: rs(14),
+    fontSize: fs(14),
     fontWeight: '800',
     marginTop: rs(8),
   },
@@ -883,7 +642,7 @@ const styles = StyleSheet.create({
   },
   cardTitle: {
     color: '#061247',
-    fontSize: rs(19),
+    fontSize: fs(19),
     fontWeight: '900',
   },
   priorityRow: {
@@ -906,12 +665,12 @@ const styles = StyleSheet.create({
   },
   priorityTitle: {
     color: '#061247',
-    fontSize: rs(15),
+    fontSize: fs(15),
     fontWeight: '800',
   },
   prioritySubtitle: {
     color: '#E00014',
-    fontSize: rs(13),
+    fontSize: fs(13),
     fontWeight: '800',
     marginTop: rs(4),
   },
@@ -925,7 +684,7 @@ const styles = StyleSheet.create({
     marginRight: rs(18),
   },
   priorityButtonText: {
-    fontSize: rs(14),
+    fontSize: fs(14),
     fontWeight: '900',
   },
   twoColumnRow: {
@@ -953,7 +712,7 @@ const styles = StyleSheet.create({
   },
   viewAllText: {
     color: '#173CFF',
-    fontSize: rs(14),
+    fontSize: fs(14),
     fontWeight: '900',
   },
   orderRow: {
@@ -977,12 +736,12 @@ const styles = StyleSheet.create({
   },
   orderId: {
     color: '#173CFF',
-    fontSize: rs(15),
+    fontSize: fs(15),
     fontWeight: '900',
   },
   orderCustomer: {
     color: '#5D607E',
-    fontSize: rs(12),
+    fontSize: fs(12),
     fontWeight: '700',
     marginTop: rs(4),
   },
@@ -991,7 +750,7 @@ const styles = StyleSheet.create({
   },
   orderAmount: {
     color: '#061247',
-    fontSize: rs(14),
+    fontSize: fs(14),
     fontWeight: '900',
     marginBottom: rs(6),
   },
@@ -1004,7 +763,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: rs(8),
   },
   statusText: {
-    fontSize: rs(11),
+    fontSize: fs(11),
     fontWeight: '800',
   },
   productRow: {
@@ -1026,12 +785,12 @@ const styles = StyleSheet.create({
   },
   productName: {
     color: '#061247',
-    fontSize: rs(15),
+    fontSize: fs(15),
     fontWeight: '900',
   },
   productUnits: {
     color: '#5D607E',
-    fontSize: rs(12),
+    fontSize: fs(12),
     fontWeight: '700',
     marginTop: rs(5),
   },
@@ -1042,11 +801,11 @@ const styles = StyleSheet.create({
   },
   productAmount: {
     color: '#061247',
-    fontSize: rs(14),
+    fontSize: fs(14),
     fontWeight: '900',
   },
   productGrowth: {
-    fontSize: rs(12),
+    fontSize: fs(12),
     fontWeight: '800',
     marginTop: rs(5),
   },
@@ -1067,7 +826,7 @@ const styles = StyleSheet.create({
   },
   targetPercent: {
     color: '#061247',
-    fontSize: rs(29),
+    fontSize: fs(29),
     fontWeight: '900',
   },
   targetInfo: {
@@ -1075,12 +834,12 @@ const styles = StyleSheet.create({
   },
   targetRemaining: {
     color: '#061247',
-    fontSize: rs(25),
+    fontSize: fs(25),
     fontWeight: '900',
   },
   targetLabel: {
     color: '#5D607E',
-    fontSize: rs(14),
+    fontSize: fs(14),
     fontWeight: '700',
     marginTop: rs(10),
   },
@@ -1095,7 +854,7 @@ const styles = StyleSheet.create({
   },
   targetBonusText: {
     color: '#173CFF',
-    fontSize: rs(14),
+    fontSize: fs(14),
     fontWeight: '900',
     marginLeft: rs(10),
   },
@@ -1118,18 +877,18 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   paymentTitle: {
-    fontSize: rs(15),
+    fontSize: fs(15),
     fontWeight: '900',
   },
   paymentSubtitle: {
     color: '#5D607E',
-    fontSize: rs(12),
+    fontSize: fs(12),
     fontWeight: '700',
     marginTop: rs(5),
   },
   paymentAmount: {
     color: '#061247',
-    fontSize: rs(15),
+    fontSize: fs(15),
     fontWeight: '900',
     marginRight: rs(10),
   },
@@ -1159,7 +918,7 @@ const styles = StyleSheet.create({
   },
   quickActionText: {
     color: '#FFFFFF',
-    fontSize: rs(15),
+    fontSize: fs(15),
     fontWeight: '900',
   },
   quickDivider: {

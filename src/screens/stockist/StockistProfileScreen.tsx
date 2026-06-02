@@ -1,10 +1,9 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, {useEffect, useMemo, useState} from 'react';
 import {
   ActivityIndicator,
   Alert,
   Dimensions,
   Image,
-  SafeAreaView,
   ScrollView,
   StatusBar,
   StyleSheet,
@@ -13,8 +12,9 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { CommonActions, useNavigation } from '@react-navigation/native';
+import {CommonActions, useNavigation} from '@react-navigation/native';
 import {
   Bell,
   Boxes,
@@ -46,303 +46,19 @@ import {
   MessageSquareText,
   IndianRupee,
 } from 'lucide-react-native';
+import { BusinessInfoItem, PerformanceItem, SettingRow, StockistProfileData } from '../../api/mock/stockist/stockistProfile.mock';
+import { getStockistProfile } from '../../api/stockist/stockistProfile.api';
 
-const { width: SCREEN_WIDTH } = Dimensions.get('window');
+const {width: SCREEN_WIDTH} = Dimensions.get('window');
 
 const DESIGN_WIDTH = 832;
 const scale = SCREEN_WIDTH / DESIGN_WIDTH;
 const rs = (value: number) => Math.round(value * scale);
+const fs = (value: number) => rs(value + 5);
 
 const LOGIN_ROUTE_NAME = 'Auth';
 
-type BusinessInfoItem = {
-  id: string;
-  label: string;
-  value: string;
-  icon: 'business' | 'gst' | 'warehouse' | 'phone' | 'email' | 'calendar';
-};
 
-type PerformanceItem = {
-  id: string;
-  label: string;
-  value: string;
-  icon: 'revenue' | 'dealers' | 'fulfillment' | 'payment';
-  color: string;
-};
-
-type SettingRow = {
-  id: string;
-  label: string;
-  value?: string;
-  icon: string;
-  type: 'arrow' | 'switch' | 'download';
-  enabled?: boolean;
-  green?: boolean;
-};
-
-type ProfileData = {
-  profile: {
-    name: string;
-    role: string;
-    badge: string;
-    image: string;
-  };
-  businessInfo: BusinessInfoItem[];
-  performance: PerformanceItem[];
-  warehouseSettings: SettingRow[];
-  securitySettings: SettingRow[];
-  notifications: SettingRow[];
-  documents: SettingRow[];
-  support: SettingRow[];
-  preferences: SettingRow[];
-};
-
-const mockProfileData: ProfileData = {
-  profile: {
-    name: 'Rajesh Kumar',
-    role: 'Stockist — Jaipur Region',
-    badge: 'Premium Distributor',
-    image: 'https://randomuser.me/api/portraits/men/32.jpg',
-  },
-  businessInfo: [
-    {
-      id: '1',
-      label: 'Business Name',
-      value: 'Rajesh Distributors',
-      icon: 'business',
-    },
-    {
-      id: '2',
-      label: 'GST Number',
-      value: '08AABFR1234F1Z5',
-      icon: 'gst',
-    },
-    {
-      id: '3',
-      label: 'Warehouse Address',
-      value: 'Plot No. 12, Sitapura Industrial Area,\nJaipur, Rajasthan 302022',
-      icon: 'warehouse',
-    },
-    {
-      id: '4',
-      label: 'Phone Number',
-      value: '+91 98765 43210',
-      icon: 'phone',
-    },
-    {
-      id: '5',
-      label: 'Email',
-      value: 'rajesh.kumar@rajeshdistributors.in',
-      icon: 'email',
-    },
-    {
-      id: '6',
-      label: 'Member Since',
-      value: '15 Aug 2019',
-      icon: 'calendar',
-    },
-  ],
-  performance: [
-    {
-      id: '1',
-      label: 'Monthly Revenue',
-      value: '₹24.8L',
-      icon: 'revenue',
-      color: '#138A36',
-    },
-    {
-      id: '2',
-      label: 'Dealer Count',
-      value: '42',
-      icon: 'dealers',
-      color: '#7B22EA',
-    },
-    {
-      id: '3',
-      label: 'Fulfillment Rate',
-      value: '96%',
-      icon: 'fulfillment',
-      color: '#173CFF',
-    },
-    {
-      id: '4',
-      label: 'Payment Collection Rate',
-      value: '92%',
-      icon: 'payment',
-      color: '#F06419',
-    },
-  ],
-  warehouseSettings: [
-    {
-      id: '1',
-      label: 'Warehouse Capacity',
-      value: '10,000 sq ft',
-      icon: 'warehouse',
-      type: 'arrow',
-    },
-    {
-      id: '2',
-      label: 'Storage Utilization',
-      value: '78%',
-      icon: 'chart',
-      type: 'arrow',
-    },
-    {
-      id: '3',
-      label: 'Delivery Radius',
-      value: '150 km',
-      icon: 'location',
-      type: 'arrow',
-    },
-    {
-      id: '4',
-      label: 'Operating Hours',
-      value: '9:00 AM – 8:00 PM',
-      icon: 'clock',
-      type: 'arrow',
-    },
-  ],
-  securitySettings: [
-    {
-      id: '1',
-      label: 'Change Password',
-      icon: 'lock',
-      type: 'arrow',
-    },
-    {
-      id: '2',
-      label: '2FA Enabled',
-      value: 'Enabled',
-      icon: 'shield',
-      type: 'arrow',
-      green: true,
-    },
-    {
-      id: '3',
-      label: 'Device Sessions',
-      value: '3 Active',
-      icon: 'device',
-      type: 'arrow',
-    },
-    {
-      id: '4',
-      label: 'Login History',
-      icon: 'history',
-      type: 'arrow',
-    },
-  ],
-  notifications: [
-    {
-      id: '1',
-      label: 'Order Alerts',
-      icon: 'orders',
-      type: 'switch',
-      enabled: true,
-    },
-    {
-      id: '2',
-      label: 'Payment Alerts',
-      icon: 'payment',
-      type: 'switch',
-      enabled: true,
-    },
-    {
-      id: '3',
-      label: 'Low Stock Alerts',
-      icon: 'stock',
-      type: 'switch',
-      enabled: true,
-    },
-    {
-      id: '4',
-      label: 'Dealer Requests',
-      icon: 'dealers',
-      type: 'switch',
-      enabled: true,
-    },
-  ],
-  documents: [
-    {
-      id: '1',
-      label: 'GST Certificate',
-      icon: 'gst',
-      type: 'download',
-    },
-    {
-      id: '2',
-      label: 'PAN Card',
-      icon: 'pan',
-      type: 'download',
-    },
-    {
-      id: '3',
-      label: 'Bank Documents',
-      icon: 'bank',
-      type: 'download',
-    },
-    {
-      id: '4',
-      label: 'Business License',
-      icon: 'license',
-      type: 'download',
-    },
-  ],
-  support: [
-    {
-      id: '1',
-      label: 'Help Center',
-      icon: 'help',
-      type: 'arrow',
-    },
-    {
-      id: '2',
-      label: 'Raise Ticket',
-      icon: 'ticket',
-      type: 'arrow',
-    },
-    {
-      id: '3',
-      label: 'Chat Support',
-      icon: 'chat',
-      type: 'arrow',
-    },
-    {
-      id: '4',
-      label: 'Terms & Privacy',
-      icon: 'privacy',
-      type: 'arrow',
-    },
-  ],
-  preferences: [
-    {
-      id: '1',
-      label: 'Dark Mode',
-      icon: 'dark',
-      type: 'switch',
-      enabled: false,
-    },
-    {
-      id: '2',
-      label: 'Language',
-      value: 'English',
-      icon: 'language',
-      type: 'arrow',
-    },
-    {
-      id: '3',
-      label: 'Default Dashboard',
-      value: 'Overview',
-      icon: 'dashboard',
-      type: 'arrow',
-    },
-  ],
-};
-
-const mockProfileApi = async (): Promise<ProfileData> => {
-  return new Promise(resolve => {
-    setTimeout(() => resolve(mockProfileData), 300);
-  });
-};
 
 const Header = () => {
   return (
@@ -358,10 +74,10 @@ const Header = () => {
   );
 };
 
-const ProfileHero = ({ data }: { data: ProfileData }) => {
+const ProfileHero = ({data}: {data: StockistProfileData}) => {
   return (
     <View style={styles.heroCard}>
-      <Image source={{ uri: data.profile.image }} style={styles.profileImage} />
+      <Image source={{uri: data.profile.image}} style={styles.profileImage} />
 
       <View style={styles.heroInfo}>
         <Text style={styles.profileName}>{data.profile.name}</Text>
@@ -376,7 +92,7 @@ const ProfileHero = ({ data }: { data: ProfileData }) => {
   );
 };
 
-const BusinessIcon = ({ type }: { type: BusinessInfoItem['icon'] }) => {
+const BusinessIcon = ({type}: {type: BusinessInfoItem['icon']}) => {
   const size = rs(20);
 
   if (type === 'business') {
@@ -402,7 +118,7 @@ const BusinessIcon = ({ type }: { type: BusinessInfoItem['icon'] }) => {
   return <CalendarDays color="#173CFF" size={size} strokeWidth={2.2} />;
 };
 
-const SectionIcon = ({ type }: { type: string }) => {
+const SectionIcon = ({type}: {type: string}) => {
   const size = rs(21);
 
   if (type === 'business') {
@@ -436,7 +152,7 @@ const SectionIcon = ({ type }: { type: string }) => {
   return <Grid2X2 color="#173CFF" size={size} strokeWidth={2.2} />;
 };
 
-const SmallIcon = ({ type }: { type: string }) => {
+const SmallIcon = ({type}: {type: string}) => {
   const size = rs(20);
 
   if (type === 'warehouse') {
@@ -530,7 +246,7 @@ const SmallIcon = ({ type }: { type: string }) => {
   return <Grid2X2 color="#5D607E" size={size} strokeWidth={2.2} />;
 };
 
-const CardTitle = ({ icon, title }: { icon: string; title: string }) => {
+const CardTitle = ({icon, title}: {icon: string; title: string}) => {
   return (
     <View style={styles.cardTitleRow}>
       <View style={styles.sectionIconBox}>
@@ -542,7 +258,7 @@ const CardTitle = ({ icon, title }: { icon: string; title: string }) => {
   );
 };
 
-const BusinessInformationCard = ({ items }: { items: BusinessInfoItem[] }) => {
+const BusinessInformationCard = ({items}: {items: BusinessInfoItem[]}) => {
   return (
     <View style={styles.fullCard}>
       <CardTitle icon="business" title="Business Information" />
@@ -551,8 +267,7 @@ const BusinessInformationCard = ({ items }: { items: BusinessInfoItem[] }) => {
         <TouchableOpacity
           key={item.id}
           activeOpacity={0.8}
-          style={styles.businessRow}
-        >
+          style={styles.businessRow}>
           <View style={styles.rowIconSoft}>
             <BusinessIcon type={item.icon} />
           </View>
@@ -568,7 +283,7 @@ const BusinessInformationCard = ({ items }: { items: BusinessInfoItem[] }) => {
   );
 };
 
-const PerformanceIcon = ({ item }: { item: PerformanceItem }) => {
+const PerformanceIcon = ({item}: {item: PerformanceItem}) => {
   const size = rs(25);
 
   if (item.icon === 'revenue') {
@@ -586,7 +301,7 @@ const PerformanceIcon = ({ item }: { item: PerformanceItem }) => {
   return <WalletCards color={item.color} size={size} strokeWidth={2.2} />;
 };
 
-const PerformanceSummaryCard = ({ items }: { items: PerformanceItem[] }) => {
+const PerformanceSummaryCard = ({items}: {items: PerformanceItem[]}) => {
   return (
     <View style={styles.fullCard}>
       <CardTitle icon="performance" title="Performance Summary" />
@@ -595,8 +310,7 @@ const PerformanceSummaryCard = ({ items }: { items: PerformanceItem[] }) => {
         {items.map((item, index) => (
           <View key={item.id} style={styles.performanceItem}>
             <View
-              style={[styles.performanceIconBox, { borderColor: item.color }]}
-            >
+              style={[styles.performanceIconBox, {borderColor: item.color}]}>
               <PerformanceIcon item={item} />
             </View>
 
@@ -627,21 +341,20 @@ const SettingsCard = ({
   const toggle = (id: string) => {
     setLocalItems(prev =>
       prev.map(item =>
-        item.id === id ? { ...item, enabled: !item.enabled } : item,
+        item.id === id ? {...item, enabled: !item.enabled} : item,
       ),
     );
   };
 
   return (
-    <View style={styles.halfCard}>
+    <View style={styles.settingFullCard}>
       <CardTitle icon={icon} title={title} />
 
       {localItems.map(item => (
         <TouchableOpacity
           key={item.id}
           activeOpacity={0.8}
-          style={styles.settingRow}
-        >
+          style={styles.settingRow}>
           <View style={styles.smallIconSoft}>
             <SmallIcon type={item.icon} />
           </View>
@@ -649,9 +362,7 @@ const SettingsCard = ({
           <Text style={styles.settingLabel}>{item.label}</Text>
 
           {!!item.value && (
-            <Text
-              style={[styles.settingValue, item.green && styles.greenValue]}
-            >
+            <Text style={[styles.settingValue, item.green && styles.greenValue]}>
               {item.value}
             </Text>
           )}
@@ -660,7 +371,7 @@ const SettingsCard = ({
             <Switch
               value={!!item.enabled}
               onValueChange={() => toggle(item.id)}
-              trackColor={{ false: '#D0D3DA', true: '#173CFF' }}
+              trackColor={{false: '#D0D3DA', true: '#173CFF'}}
               thumbColor="#FFFFFF"
             />
           )}
@@ -709,7 +420,7 @@ const LogoutButton = () => {
           {
             name: LOGIN_ROUTE_NAME,
             state: {
-              routes: [{ name: 'Login' }],
+              routes: [{name: 'Login'}],
             },
           },
         ],
@@ -745,8 +456,7 @@ const LogoutButton = () => {
       activeOpacity={0.85}
       disabled={isLoggingOut}
       onPress={handleLogout}
-      style={[styles.logoutButton, isLoggingOut && styles.disabledButton]}
-    >
+      style={[styles.logoutButton, isLoggingOut && styles.disabledButton]}>
       <LogOut color="#E00014" size={rs(24)} strokeWidth={2.4} />
       <Text style={styles.logoutText}>
         {isLoggingOut ? 'Logging out...' : 'Logout'}
@@ -756,10 +466,24 @@ const LogoutButton = () => {
 };
 
 const StockistProfileScreen = () => {
-  const [data, setData] = useState<ProfileData | null>(null);
+  const [data, setData] = useState<StockistProfileData | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
+
+  const loadProfile = async () => {
+    try {
+      setLoading(true);
+
+      const response = await getStockistProfile();
+      setData(response);
+    } catch (error) {
+      console.log('Stockist Profile API Error:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    mockProfileApi().then(setData);
+    loadProfile();
   }, []);
 
   const cardRows = useMemo(() => {
@@ -768,46 +492,40 @@ const StockistProfileScreen = () => {
     }
 
     return [
-      [
-        {
-          title: 'Warehouse Settings',
-          icon: 'warehouse',
-          items: data.warehouseSettings,
-        },
-        {
-          title: 'Security Settings',
-          icon: 'security',
-          items: data.securitySettings,
-        },
-      ],
-      [
-        {
-          title: 'Notifications',
-          icon: 'notifications',
-          items: data.notifications,
-        },
-        {
-          title: 'Documents',
-          icon: 'documents',
-          items: data.documents,
-        },
-      ],
-      [
-        {
-          title: 'Support',
-          icon: 'support',
-          items: data.support,
-        },
-        {
-          title: 'App Preferences',
-          icon: 'preferences',
-          items: data.preferences,
-        },
-      ],
+      {
+        title: 'Warehouse Settings',
+        icon: 'warehouse',
+        items: data.warehouseSettings,
+      },
+      {
+        title: 'Security Settings',
+        icon: 'security',
+        items: data.securitySettings,
+      },
+      {
+        title: 'Notifications',
+        icon: 'notifications',
+        items: data.notifications,
+      },
+      {
+        title: 'Documents',
+        icon: 'documents',
+        items: data.documents,
+      },
+      {
+        title: 'Support',
+        icon: 'support',
+        items: data.support,
+      },
+      {
+        title: 'App Preferences',
+        icon: 'preferences',
+        items: data.preferences,
+      },
     ];
   }, [data]);
 
-  if (!data) {
+  if (loading || !data) {
     return (
       <SafeAreaView style={styles.loaderScreen}>
         <StatusBar backgroundColor="#061B66" barStyle="light-content" />
@@ -825,25 +543,20 @@ const StockistProfileScreen = () => {
       <ScrollView
         style={styles.scrollView}
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={styles.scrollContent}
-      >
+        contentContainerStyle={styles.scrollContent}>
         <ProfileHero data={data} />
 
         <BusinessInformationCard items={data.businessInfo} />
 
         <PerformanceSummaryCard items={data.performance} />
 
-        {cardRows.map((row, index) => (
-          <View key={index} style={styles.twoColumnRow}>
-            {row.map(card => (
-              <SettingsCard
-                key={card.title}
-                title={card.title}
-                icon={card.icon}
-                items={card.items}
-              />
-            ))}
-          </View>
+        {cardRows.map(card => (
+          <SettingsCard
+            key={card.title}
+            title={card.title}
+            icon={card.icon}
+            items={card.items}
+          />
         ))}
 
         <LogoutButton />
@@ -855,8 +568,6 @@ const StockistProfileScreen = () => {
 export default StockistProfileScreen;
 
 const PAGE_PADDING = rs(28);
-const CARD_GAP = rs(16);
-const HALF_WIDTH = (SCREEN_WIDTH - PAGE_PADDING * 2 - CARD_GAP) / 2;
 
 const styles = StyleSheet.create({
   safeArea: {
@@ -883,7 +594,7 @@ const styles = StyleSheet.create({
   },
   headerTitle: {
     color: '#FFFFFF',
-    fontSize: rs(30),
+    fontSize: fs(30),
     fontWeight: '900',
   },
   scrollView: {
@@ -918,13 +629,13 @@ const styles = StyleSheet.create({
   },
   profileName: {
     color: '#FFFFFF',
-    fontSize: rs(30),
+    fontSize: fs(30),
     fontWeight: '900',
     marginBottom: rs(14),
   },
   profileRole: {
     color: '#FFFFFF',
-    fontSize: rs(18),
+    fontSize: fs(18),
     fontWeight: '700',
     marginBottom: rs(22),
   },
@@ -941,11 +652,12 @@ const styles = StyleSheet.create({
   },
   premiumText: {
     color: '#FFFFFF',
-    fontSize: rs(15),
+    fontSize: fs(15),
     fontWeight: '900',
     marginLeft: rs(8),
   },
   fullCard: {
+    width: '100%',
     backgroundColor: '#FFFFFF',
     borderRadius: rs(10),
     paddingHorizontal: rs(22),
@@ -954,11 +666,11 @@ const styles = StyleSheet.create({
     shadowColor: '#000000',
     shadowOpacity: 0.04,
     shadowRadius: rs(12),
-    shadowOffset: { width: 0, height: rs(5) },
+    shadowOffset: {width: 0, height: rs(5)},
     elevation: 3,
   },
-  halfCard: {
-    width: HALF_WIDTH,
+  settingFullCard: {
+    width: '100%',
     backgroundColor: '#FFFFFF',
     borderRadius: rs(10),
     paddingHorizontal: rs(18),
@@ -967,12 +679,8 @@ const styles = StyleSheet.create({
     shadowColor: '#000000',
     shadowOpacity: 0.04,
     shadowRadius: rs(12),
-    shadowOffset: { width: 0, height: rs(5) },
+    shadowOffset: {width: 0, height: rs(5)},
     elevation: 3,
-  },
-  twoColumnRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
   },
   cardTitleRow: {
     height: rs(42),
@@ -991,7 +699,7 @@ const styles = StyleSheet.create({
   },
   cardTitle: {
     color: '#061247',
-    fontSize: rs(20),
+    fontSize: fs(20),
     fontWeight: '900',
   },
   businessRow: {
@@ -1013,13 +721,13 @@ const styles = StyleSheet.create({
   businessLabel: {
     width: rs(350),
     color: '#061247',
-    fontSize: rs(15),
+    fontSize: fs(15),
     fontWeight: '800',
   },
   businessValue: {
     flex: 1,
     color: '#252943',
-    fontSize: rs(14),
+    fontSize: fs(14),
     fontWeight: '600',
     lineHeight: rs(20),
   },
@@ -1045,13 +753,13 @@ const styles = StyleSheet.create({
   },
   performanceValue: {
     color: '#061247',
-    fontSize: rs(20),
+    fontSize: fs(20),
     fontWeight: '900',
     marginBottom: rs(6),
   },
   performanceLabel: {
     color: '#5D607E',
-    fontSize: rs(12),
+    fontSize: fs(12),
     fontWeight: '700',
     textAlign: 'center',
   },
@@ -1082,12 +790,12 @@ const styles = StyleSheet.create({
   settingLabel: {
     flex: 1,
     color: '#061247',
-    fontSize: rs(14),
+    fontSize: fs(14),
     fontWeight: '800',
   },
   settingValue: {
     color: '#5D607E',
-    fontSize: rs(13),
+    fontSize: fs(13),
     fontWeight: '700',
     marginRight: rs(10),
     textAlign: 'right',
@@ -1111,7 +819,7 @@ const styles = StyleSheet.create({
   },
   logoutText: {
     color: '#E00014',
-    fontSize: rs(17),
+    fontSize: fs(17),
     fontWeight: '900',
     marginLeft: rs(12),
   },

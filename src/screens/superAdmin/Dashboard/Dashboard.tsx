@@ -157,15 +157,14 @@ const DashboardScreen = () => {
           smallCards={data.overview.smallCards}
         />
 
-        <View style={styles.twoColumnRow}>
-          <SystemHealth styles={styles} items={data.health} />
+         <SystemHealth styles={styles} items={data.health} />
 
-          <RevenueCard
+         <RevenueCard
             styles={styles}
             amount={data.revenue.amount}
             items={data.revenue.items}
           />
-        </View>
+
 
         <AttentionToday styles={styles} items={data.attention} />
 

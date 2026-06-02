@@ -4,7 +4,6 @@ import {
   Alert,
   Dimensions,
   Image,
-  SafeAreaView,
   ScrollView,
   StatusBar,
   StyleSheet,
@@ -13,6 +12,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import {SafeAreaView} from 'react-native-safe-area-context';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {CommonActions, useNavigation} from '@react-navigation/native';
 import {
@@ -27,7 +27,6 @@ import {
   Globe2,
   Headphones,
   HelpCircle,
-  Home,
   KeyRound,
   Lock,
   LogOut,
@@ -41,277 +40,28 @@ import {
   Target,
   Trophy,
   TrendingUp,
-  User,
   Users,
   WalletCards,
   IndianRupee,
 } from 'lucide-react-native';
+import {
+  BusinessInfoItem,
+  DealerProfileData,
+  PerformanceItem,
+  RowItem,
+} from '../../api/mock/dealer/dealerProfile.mock';
+import {getDealerProfile} from '../../api/dealer/dealerProfile.api';
 
 const {width: SCREEN_WIDTH} = Dimensions.get('window');
 
 const DESIGN_WIDTH = 832;
 const scale = SCREEN_WIDTH / DESIGN_WIDTH;
 const rs = (value: number) => Math.round(value * scale);
+const fs = (value: number) => rs(value + 3);
 
 const LOGIN_ROUTE_NAME = 'Auth';
 
-type BusinessInfoItem = {
-  id: string;
-  label: string;
-  value: string;
-  icon: 'business' | 'gst' | 'address' | 'phone' | 'email' | 'calendar';
-};
 
-type PerformanceItem = {
-  id: string;
-  label: string;
-  value: string;
-  growth: string;
-  icon: 'revenue' | 'customers' | 'success' | 'score';
-  color: string;
-};
-
-type RowItem = {
-  id: string;
-  label: string;
-  value?: string;
-  icon: string;
-  type: 'arrow' | 'download' | 'switch' | 'plain';
-  enabled?: boolean;
-  green?: boolean;
-};
-
-type ProfileData = {
-  profile: {
-    name: string;
-    business: string;
-    badge: string;
-    image: string;
-  };
-  businessInfo: BusinessInfoItem[];
-  performance: PerformanceItem[];
-  accountSettings: RowItem[];
-  documents: RowItem[];
-  support: RowItem[];
-  achievements: RowItem[];
-  preferences: RowItem[];
-};
-
-const mockDealerProfileData: ProfileData = {
-  profile: {
-    name: 'Amit Sharma',
-    business: 'ABC Dealers',
-    badge: 'Gold Dealer',
-    image: 'https://randomuser.me/api/portraits/men/32.jpg',
-  },
-  businessInfo: [
-    {
-      id: '1',
-      label: 'Business Name',
-      value: 'ABC Dealers',
-      icon: 'business',
-    },
-    {
-      id: '2',
-      label: 'GST Number',
-      value: '08AABFR1234F1Z5',
-      icon: 'gst',
-    },
-    {
-      id: '3',
-      label: 'Address',
-      value: 'Shop No. 12, Mansarovar,\nJaipur, Rajasthan 302020',
-      icon: 'address',
-    },
-    {
-      id: '4',
-      label: 'Phone',
-      value: '+91 98765 43210',
-      icon: 'phone',
-    },
-    {
-      id: '5',
-      label: 'Email',
-      value: 'amit.sharma@abcdealers.in',
-      icon: 'email',
-    },
-    {
-      id: '6',
-      label: 'Member Since',
-      value: '15 Aug 2019',
-      icon: 'calendar',
-    },
-  ],
-  performance: [
-    {
-      id: '1',
-      label: 'Monthly Revenue',
-      value: '₹2,84,000',
-      growth: '↑ 18%',
-      icon: 'revenue',
-      color: '#138A36',
-    },
-    {
-      id: '2',
-      label: 'Customer Count',
-      value: '248',
-      growth: '↑ 12%',
-      icon: 'customers',
-      color: '#173CFF',
-    },
-    {
-      id: '3',
-      label: 'Order Success Rate',
-      value: '96%',
-      growth: '↑ 5%',
-      icon: 'success',
-      color: '#7B22EA',
-    },
-    {
-      id: '4',
-      label: 'Payment Score',
-      value: '92%',
-      growth: '↑ 7%',
-      icon: 'score',
-      color: '#F06419',
-    },
-  ],
-  accountSettings: [
-    {
-      id: '1',
-      label: 'Change Password',
-      icon: 'lock',
-      type: 'arrow',
-    },
-    {
-      id: '2',
-      label: '2FA Security',
-      value: 'Enabled',
-      icon: 'shield',
-      type: 'arrow',
-      green: true,
-    },
-    {
-      id: '3',
-      label: 'Device Sessions',
-      value: '3 Active',
-      icon: 'device',
-      type: 'arrow',
-    },
-    {
-      id: '4',
-      label: 'Notification Preferences',
-      icon: 'settings',
-      type: 'arrow',
-    },
-  ],
-  documents: [
-    {
-      id: '1',
-      label: 'GST Certificate',
-      icon: 'gst',
-      type: 'download',
-    },
-    {
-      id: '2',
-      label: 'PAN Card',
-      icon: 'pan',
-      type: 'download',
-    },
-    {
-      id: '3',
-      label: 'Business License',
-      icon: 'license',
-      type: 'download',
-    },
-    {
-      id: '4',
-      label: 'Bank Details',
-      icon: 'bank',
-      type: 'download',
-    },
-  ],
-  support: [
-    {
-      id: '1',
-      label: 'Help Center',
-      icon: 'help',
-      type: 'arrow',
-    },
-    {
-      id: '2',
-      label: 'Raise Ticket',
-      icon: 'ticket',
-      type: 'arrow',
-    },
-    {
-      id: '3',
-      label: 'Terms & Conditions',
-      icon: 'terms',
-      type: 'arrow',
-    },
-    {
-      id: '4',
-      label: 'Privacy Policy',
-      icon: 'privacy',
-      type: 'arrow',
-    },
-  ],
-  achievements: [
-    {
-      id: '1',
-      label: 'Rewards Earned',
-      value: '₹8,400',
-      icon: 'reward',
-      type: 'plain',
-      green: true,
-    },
-    {
-      id: '2',
-      label: 'Targets Completed',
-      value: '7/10',
-      icon: 'target',
-      type: 'plain',
-      green: true,
-    },
-    {
-      id: '3',
-      label: 'Leaderboard Rank',
-      value: 'Top 12%',
-      icon: 'rank',
-      type: 'plain',
-    },
-  ],
-  preferences: [
-    {
-      id: '1',
-      label: 'Dark Mode',
-      icon: 'dark',
-      type: 'switch',
-      enabled: false,
-    },
-    {
-      id: '2',
-      label: 'Language',
-      value: 'English',
-      icon: 'language',
-      type: 'arrow',
-    },
-    {
-      id: '3',
-      label: 'Default Payment Method',
-      value: 'UPI',
-      icon: 'payment',
-      type: 'arrow',
-    },
-  ],
-};
-
-const mockDealerProfileApi = async (): Promise<ProfileData> => {
-  return new Promise(resolve => {
-    setTimeout(() => resolve(mockDealerProfileData), 300);
-  });
-};
 
 const Header = () => {
   return (
@@ -327,7 +77,7 @@ const Header = () => {
   );
 };
 
-const ProfileHero = ({profile}: {profile: ProfileData['profile']}) => {
+const ProfileHero = ({profile}: {profile: DealerProfileData['profile']}) => {
   return (
     <View style={styles.heroCard}>
       <Image source={{uri: profile.image}} style={styles.profileImage} />
@@ -733,11 +483,26 @@ const LogoutButton = () => {
     </TouchableOpacity>
   );
 };
+
 const DealerProfileScreen = () => {
-  const [data, setData] = useState<ProfileData | null>(null);
+  const [data, setData] = useState<DealerProfileData | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
+
+  const loadProfile = async () => {
+    try {
+      setLoading(true);
+
+      const response = await getDealerProfile();
+      setData(response);
+    } catch (error) {
+      console.log('Dealer Profile API Error:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    mockDealerProfileApi().then(setData);
+    loadProfile();
   }, []);
 
   const cards = useMemo(() => {
@@ -773,7 +538,7 @@ const DealerProfileScreen = () => {
     ];
   }, [data]);
 
-  if (!data) {
+  if (loading || !data) {
     return (
       <SafeAreaView style={styles.loaderScreen}>
         <StatusBar backgroundColor="#061B66" barStyle="light-content" />
@@ -822,8 +587,6 @@ const DealerProfileScreen = () => {
 export default DealerProfileScreen;
 
 const PAGE_PADDING = rs(28);
-const CARD_GAP = rs(16);
-const HALF_WIDTH = (SCREEN_WIDTH - PAGE_PADDING * 2 - CARD_GAP) / 2;
 
 const styles = StyleSheet.create({
   safeArea: {
@@ -850,7 +613,7 @@ const styles = StyleSheet.create({
   },
   headerTitle: {
     color: '#FFFFFF',
-    fontSize: rs(30),
+    fontSize: fs(30),
     fontWeight: '900',
   },
   scrollView: {
@@ -885,13 +648,13 @@ const styles = StyleSheet.create({
   },
   profileName: {
     color: '#FFFFFF',
-    fontSize: rs(31),
+    fontSize: fs(31),
     fontWeight: '900',
     marginBottom: rs(14),
   },
   profileBusiness: {
     color: '#FFFFFF',
-    fontSize: rs(20),
+    fontSize: fs(20),
     fontWeight: '700',
     marginBottom: rs(26),
   },
@@ -908,7 +671,7 @@ const styles = StyleSheet.create({
   },
   goldBadgeText: {
     color: '#FFFFFF',
-    fontSize: rs(16),
+    fontSize: fs(16),
     fontWeight: '900',
     marginLeft: rs(10),
   },
@@ -925,7 +688,7 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
   halfCard: {
-    width: HALF_WIDTH,
+    width: '100%',
     backgroundColor: '#FFFFFF',
     borderRadius: rs(10),
     paddingHorizontal: rs(18),
@@ -938,8 +701,7 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
   twoColumnRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: 'column',
   },
   cardTitleRow: {
     height: rs(42),
@@ -958,7 +720,7 @@ const styles = StyleSheet.create({
   },
   cardTitle: {
     color: '#061247',
-    fontSize: rs(20),
+    fontSize: fs(20),
     fontWeight: '900',
   },
   businessRow: {
@@ -980,13 +742,13 @@ const styles = StyleSheet.create({
   businessLabel: {
     width: rs(350),
     color: '#061247',
-    fontSize: rs(14),
+    fontSize: fs(14),
     fontWeight: '800',
   },
   businessValue: {
     flex: 1,
     color: '#252943',
-    fontSize: rs(14),
+    fontSize: fs(14),
     fontWeight: '600',
     lineHeight: rs(20),
   },
@@ -1010,20 +772,20 @@ const styles = StyleSheet.create({
   },
   performanceLabel: {
     color: '#5D607E',
-    fontSize: rs(12),
+    fontSize: fs(12),
     fontWeight: '700',
     textAlign: 'center',
     marginBottom: rs(8),
   },
   performanceValue: {
     color: '#061247',
-    fontSize: rs(20),
+    fontSize: fs(20),
     fontWeight: '900',
     marginBottom: rs(7),
   },
   performanceGrowth: {
     color: '#138A36',
-    fontSize: rs(12),
+    fontSize: fs(12),
     fontWeight: '900',
   },
   performanceDivider: {
@@ -1051,12 +813,12 @@ const styles = StyleSheet.create({
   settingLabel: {
     flex: 1,
     color: '#061247',
-    fontSize: rs(14),
+    fontSize: fs(14),
     fontWeight: '800',
   },
   settingValue: {
     color: '#5D607E',
-    fontSize: rs(13),
+    fontSize: fs(13),
     fontWeight: '700',
     marginRight: rs(10),
     textAlign: 'right',
@@ -1080,7 +842,7 @@ const styles = StyleSheet.create({
   },
   logoutText: {
     color: '#E00014',
-    fontSize: rs(17),
+    fontSize: fs(17),
     fontWeight: '900',
     marginLeft: rs(12),
   },

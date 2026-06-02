@@ -44,6 +44,7 @@ const {width: SCREEN_WIDTH} = Dimensions.get('window');
 const DESIGN_WIDTH = 832;
 const scale = SCREEN_WIDTH / DESIGN_WIDTH;
 const rs = (value: number) => Math.round(value * scale);
+const fs = (value: number) => rs(value + 3);
 
 
 
@@ -911,7 +912,7 @@ const NetworkDetailScreen = () => {
         <Text
           style={{
             color: '#061247',
-            fontSize: rs(18),
+            fontSize: fs(18),
             fontWeight: '700',
             marginBottom: rs(18),
             textAlign: 'center',
@@ -928,7 +929,7 @@ const NetworkDetailScreen = () => {
             paddingVertical: rs(14),
             borderRadius: rs(8),
           }}>
-          <Text style={{color: '#FFFFFF', fontWeight: '800'}}>Retry</Text>
+          <Text style={{color: '#FFFFFF', fontSize: fs(14), fontWeight: '800'}}>Retry</Text>
         </TouchableOpacity>
       </SafeAreaView>
     );
@@ -1081,7 +1082,7 @@ const styles = StyleSheet.create({
   },
   headerTitle: {
     color: '#FFFFFF',
-    fontSize: rs(28),
+    fontSize: fs(28),
     fontWeight: '800',
   },
   scrollView: {
@@ -1118,7 +1119,7 @@ const styles = StyleSheet.create({
   },
   profileAvatarText: {
     color: '#FFFFFF',
-    fontSize: rs(56),
+    fontSize: fs(56),
     fontWeight: '800',
   },
   cameraButton: {
@@ -1137,7 +1138,7 @@ const styles = StyleSheet.create({
   },
   profileName: {
     color: '#FFFFFF',
-    fontSize: rs(34),
+    fontSize: fs(34),
     fontWeight: '800',
     marginBottom: rs(12),
   },
@@ -1148,7 +1149,7 @@ const styles = StyleSheet.create({
   },
   profileLocationText: {
     color: '#FFFFFF',
-    fontSize: rs(18),
+    fontSize: fs(18),
     fontWeight: '500',
     marginLeft: rs(10),
   },
@@ -1164,12 +1165,12 @@ const styles = StyleSheet.create({
   },
   profileStatusText: {
     color: '#91F0A9',
-    fontSize: rs(14),
+    fontSize: fs(14),
     fontWeight: '700',
   },
   memberSince: {
     color: '#FFFFFF',
-    fontSize: rs(16),
+    fontSize: fs(16),
     fontWeight: '500',
   },
   scoreCircle: {
@@ -1184,18 +1185,18 @@ const styles = StyleSheet.create({
   },
   scoreNumber: {
     color: '#061247',
-    fontSize: rs(56),
+    fontSize: fs(56),
     lineHeight: rs(62),
     fontWeight: '900',
   },
   scoreHundred: {
     color: '#061247',
-    fontSize: rs(18),
+    fontSize: fs(18),
     fontWeight: '500',
   },
   scoreLabel: {
     color: '#061247',
-    fontSize: rs(16),
+    fontSize: fs(16),
     fontWeight: '700',
     marginTop: rs(4),
   },
@@ -1219,7 +1220,7 @@ const styles = StyleSheet.create({
   },
   tabText: {
     color: '#4D506E',
-    fontSize: rs(16),
+    fontSize: fs(16),
     fontWeight: '600',
   },
   activeTabText: {
@@ -1253,14 +1254,14 @@ const styles = StyleSheet.create({
   },
   metricTitle: {
     color: '#4D506E',
-    fontSize: rs(13),
+    fontSize: fs(13),
     fontWeight: '600',
     marginTop: rs(10),
     marginBottom: rs(8),
     textAlign: 'center',
   },
   metricValue: {
-    fontSize: rs(22),
+    fontSize: fs(22),
     fontWeight: '900',
     textAlign: 'center',
   },
@@ -1321,7 +1322,7 @@ const styles = StyleSheet.create({
   },
   cardTitle: {
     color: '#111327',
-    fontSize: rs(18),
+    fontSize: fs(18),
     fontWeight: '900',
   },
   chartHeader: {
@@ -1349,7 +1350,7 @@ const styles = StyleSheet.create({
   },
   legendText: {
     color: '#4D506E',
-    fontSize: rs(12),
+    fontSize: fs(12),
     fontWeight: '500',
   },
   lineChartArea: {
@@ -1364,7 +1365,7 @@ const styles = StyleSheet.create({
   },
   axisText: {
     color: '#4D506E',
-    fontSize: rs(11),
+    fontSize: fs(11),
   },
   fakeLineChart: {
     flex: 1,
@@ -1387,7 +1388,7 @@ const styles = StyleSheet.create({
   },
   monthText: {
     color: '#4D506E',
-    fontSize: rs(11),
+    fontSize: fs(11),
   },
   fakeLineOne: {
     position: 'absolute',
@@ -1423,7 +1424,7 @@ const styles = StyleSheet.create({
   },
   paymentText: {
     color: '#111327',
-    fontSize: rs(15),
+    fontSize: fs(15),
     fontWeight: '600',
   },
   paymentProgressRow: {
@@ -1447,7 +1448,7 @@ const styles = StyleSheet.create({
   },
   paymentPercent: {
     color: '#111327',
-    fontSize: rs(16),
+    fontSize: fs(16),
     fontWeight: '800',
     marginLeft: rs(16),
   },
@@ -1459,22 +1460,22 @@ const styles = StyleSheet.create({
   },
   greenValue: {
     color: '#138A36',
-    fontSize: rs(18),
+    fontSize: fs(18),
     fontWeight: '900',
   },
   grayValue: {
     color: '#4D506E',
-    fontSize: rs(15),
+    fontSize: fs(15),
     fontWeight: '700',
   },
   blueValue: {
     color: '#173CFF',
-    fontSize: rs(18),
+    fontSize: fs(18),
     fontWeight: '900',
   },
   incentiveTitle: {
     color: '#111327',
-    fontSize: rs(15),
+    fontSize: fs(15),
     fontWeight: '800',
     marginTop: rs(18),
     marginBottom: rs(12),
@@ -1500,7 +1501,7 @@ const styles = StyleSheet.create({
   },
   incentivePercent: {
     color: '#111327',
-    fontSize: rs(15),
+    fontSize: fs(15),
     fontWeight: '800',
     marginLeft: rs(16),
   },
@@ -1511,12 +1512,12 @@ const styles = StyleSheet.create({
   },
   incentiveMeta: {
     color: '#4D506E',
-    fontSize: rs(14),
+    fontSize: fs(14),
     fontWeight: '600',
   },
   rewardText: {
     color: '#173CFF',
-    fontSize: rs(14),
+    fontSize: fs(14),
     fontWeight: '700',
   },
   cardDivider: {
@@ -1526,7 +1527,7 @@ const styles = StyleSheet.create({
   },
   qualifiedText: {
     color: '#138A36',
-    fontSize: rs(14),
+    fontSize: fs(14),
     fontWeight: '800',
     marginTop: rs(14),
   },
@@ -1546,18 +1547,18 @@ const styles = StyleSheet.create({
   },
   timelineCheckText: {
     color: '#FFFFFF',
-    fontSize: rs(10),
+    fontSize: fs(10),
     fontWeight: '900',
   },
   timelineTitle: {
     flex: 1,
     color: '#111327',
-    fontSize: rs(15),
+    fontSize: fs(15),
     fontWeight: '600',
   },
   timelineTime: {
     color: '#4D506E',
-    fontSize: rs(14),
+    fontSize: fs(14),
     fontWeight: '500',
   },
   adminCard: {
@@ -1586,7 +1587,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   actionText: {
-    fontSize: rs(15),
+    fontSize: fs(15),
     fontWeight: '800',
     marginLeft: rs(10),
   },
@@ -1620,7 +1621,7 @@ const styles = StyleSheet.create({
   },
   dealerSearchInput: {
     flex: 1,
-    fontSize: rs(13),
+    fontSize: fs(13),
     color: '#111327',
     marginLeft: rs(8),
     paddingVertical: 0,
@@ -1656,7 +1657,7 @@ const styles = StyleSheet.create({
   },
   dealerChipText: {
     color: '#138A36',
-    fontSize: rs(13),
+    fontSize: fs(13),
     fontWeight: '800',
   },
   activeDealerChipText: {
@@ -1671,7 +1672,7 @@ const styles = StyleSheet.create({
   },
   sortDealerText: {
     color: '#4D506E',
-    fontSize: rs(13),
+    fontSize: fs(13),
     marginRight: rs(14),
   },
   sortDealerButton: {
@@ -1687,7 +1688,7 @@ const styles = StyleSheet.create({
   },
   sortDealerButtonText: {
     color: '#061247',
-    fontSize: rs(13),
+    fontSize: fs(13),
     fontWeight: '600',
   },
   dealerTable: {
@@ -1711,7 +1712,7 @@ const styles = StyleSheet.create({
   },
   smallDealerAvatarText: {
     color: '#FFFFFF',
-    fontSize: rs(16),
+    fontSize: fs(16),
     fontWeight: '900',
   },
   dealerNameBlock: {
@@ -1719,12 +1720,12 @@ const styles = StyleSheet.create({
   },
   dealerName: {
     color: '#111327',
-    fontSize: rs(14),
+    fontSize: fs(14),
     fontWeight: '900',
   },
   dealerCity: {
     color: '#4D506E',
-    fontSize: rs(12),
+    fontSize: fs(12),
     marginTop: rs(5),
   },
   tableDivider: {
@@ -1738,12 +1739,12 @@ const styles = StyleSheet.create({
   },
   tableRevenue: {
     color: '#138A36',
-    fontSize: rs(15),
+    fontSize: fs(15),
     fontWeight: '900',
   },
   tableSubText: {
     color: '#4D506E',
-    fontSize: rs(11),
+    fontSize: fs(11),
     marginTop: rs(4),
   },
   scoreBlock: {
@@ -1762,7 +1763,7 @@ const styles = StyleSheet.create({
   },
   smallScoreText: {
     color: '#173CFF',
-    fontSize: rs(12),
+    fontSize: fs(12),
     fontWeight: '900',
   },
   tableStatusBadge: {
@@ -1786,7 +1787,7 @@ const styles = StyleSheet.create({
   },
   tableStatusText: {
     color: '#138A36',
-    fontSize: rs(12),
+    fontSize: fs(12),
     fontWeight: '800',
   },
   loadMoreButton: {
@@ -1797,7 +1798,7 @@ const styles = StyleSheet.create({
   },
   loadMoreText: {
     color: '#173CFF',
-    fontSize: rs(15),
+    fontSize: fs(15),
     fontWeight: '800',
     marginRight: rs(8),
   },
@@ -1814,12 +1815,12 @@ const styles = StyleSheet.create({
   },
   bigCircleValue: {
     color: '#173CFF',
-    fontSize: rs(36),
+    fontSize: fs(36),
     fontWeight: '900',
   },
   bigCircleSub: {
     color: '#4D506E',
-    fontSize: rs(12),
+    fontSize: fs(12),
     marginTop: rs(6),
   },
   onTrackBadge: {
@@ -1836,12 +1837,12 @@ const styles = StyleSheet.create({
   },
   onTrackText: {
     color: '#138A36',
-    fontSize: rs(15),
+    fontSize: fs(15),
     fontWeight: '800',
   },
   greenSmall: {
     color: '#138A36',
-    fontSize: rs(14),
+    fontSize: fs(14),
     fontWeight: '800',
   },
   barChart: {
@@ -1856,7 +1857,7 @@ const styles = StyleSheet.create({
   },
   barValue: {
     color: '#111327',
-    fontSize: rs(11),
+    fontSize: fs(11),
     fontWeight: '800',
     marginBottom: rs(8),
   },
@@ -1867,7 +1868,7 @@ const styles = StyleSheet.create({
   },
   barMonth: {
     color: '#4D506E',
-    fontSize: rs(12),
+    fontSize: fs(12),
     marginTop: rs(8),
   },
   smallProgressTrack: {
@@ -1886,7 +1887,7 @@ const styles = StyleSheet.create({
   },
   smallGray: {
     color: '#4D506E',
-    fontSize: rs(12),
+    fontSize: fs(12),
     marginTop: -rs(8),
     marginBottom: rs(18),
   },
@@ -1897,7 +1898,7 @@ const styles = StyleSheet.create({
   },
   peerSub: {
     color: '#4D506E',
-    fontSize: rs(15),
+    fontSize: fs(15),
     marginLeft: rs(20),
     flex: 1,
   },
@@ -1928,7 +1929,7 @@ const styles = StyleSheet.create({
   peerLabel: {
     width: rs(90),
     color: '#111327',
-    fontSize: rs(13),
+    fontSize: fs(13),
     fontWeight: '800',
   },
   peerTrack: {
@@ -1947,7 +1948,7 @@ const styles = StyleSheet.create({
   peerValue: {
     width: rs(45),
     color: '#111327',
-    fontSize: rs(13),
+    fontSize: fs(13),
     fontWeight: '800',
   },
   peerTrackSmall: {
@@ -1965,7 +1966,7 @@ const styles = StyleSheet.create({
   },
   aboveAverage: {
     color: '#138A36',
-    fontSize: rs(14),
+    fontSize: fs(14),
     fontWeight: '800',
     textAlign: 'center',
     marginTop: rs(4),

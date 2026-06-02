@@ -35,6 +35,8 @@ const SplashScreen = () => {
           navigation.replace('CompanyTabs');
         } else if (role === 'STOCKIST') {
           navigation.replace('StockistTabs');
+        } else if (role === 'DEALER') {
+          navigation.replace('DealerTabs');
         } else {
           navigation.replace('SuperAdminTabs');
         }

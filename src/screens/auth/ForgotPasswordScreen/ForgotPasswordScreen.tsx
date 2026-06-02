@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   Alert,
   KeyboardAvoidingView,
@@ -12,10 +12,10 @@ import {
   View,
   Dimensions,
 } from 'react-native';
-import {useNavigation} from '@react-navigation/native';
-import {ArrowLeft, Phone} from 'lucide-react-native';
+import { useNavigation } from '@react-navigation/native';
+import { ArrowLeft, Phone } from 'lucide-react-native';
 
-const {width: SCREEN_WIDTH, height: SCREEN_HEIGHT} = Dimensions.get('window');
+const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 
 const DESIGN_WIDTH = 263;
 const scale = SCREEN_WIDTH / DESIGN_WIDTH;
@@ -102,18 +102,21 @@ const ForgotPasswordScreen = () => {
       <StatusBar backgroundColor="#0D3696" barStyle="light-content" />
 
       <KeyboardAvoidingView
-        style={styles.container}
-        behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+        style={[styles.container]}
+        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+      >
         <ScrollView
           keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}
-          contentContainerStyle={styles.scrollContent}>
-          <View style={styles.screenWrap}>
+          contentContainerStyle={styles.scrollContent}
+        >
+          <View style={[styles.screenWrap]}>
             <View style={styles.topSection}>
               <TouchableOpacity
                 activeOpacity={0.8}
                 style={styles.backButton}
-                onPress={() => navigation.goBack()}>
+                onPress={() => navigation.goBack()}
+              >
                 <ArrowLeft color="#FFFFFF" size={rs(11)} strokeWidth={2.4} />
               </TouchableOpacity>
 
@@ -150,7 +153,8 @@ const ForgotPasswordScreen = () => {
               <TouchableOpacity
                 activeOpacity={0.85}
                 style={styles.primaryButton}
-                onPress={onSendOtp}>
+                onPress={onSendOtp}
+              >
                 <Text style={styles.primaryButtonText}>Send OTP</Text>
               </TouchableOpacity>
 
@@ -166,7 +170,7 @@ const ForgotPasswordScreen = () => {
                     keyboardType="number-pad"
                     style={styles.otpInput}
                     onChangeText={text => handleOtpChange(text, index)}
-                    onKeyPress={({nativeEvent}) =>
+                    onKeyPress={({ nativeEvent }) =>
                       handleOtpKeyPress(nativeEvent.key, index)
                     }
                   />
@@ -183,7 +187,8 @@ const ForgotPasswordScreen = () => {
                     style={[
                       styles.resendText,
                       seconds === 0 && styles.resendActiveText,
-                    ]}>
+                    ]}
+                  >
                     Resend OTP
                   </Text>
                 </TouchableOpacity>
@@ -192,14 +197,18 @@ const ForgotPasswordScreen = () => {
               <TouchableOpacity
                 activeOpacity={0.85}
                 style={styles.verifyButton}
-                onPress={onVerifyOtp}>
+                onPress={onVerifyOtp}
+              >
                 <Text style={styles.verifyButtonText}>Verify OTP</Text>
               </TouchableOpacity>
 
               <TouchableOpacity
                 activeOpacity={0.8}
-                onPress={() => navigation.navigate('Login')}>
-                <Text style={styles.backText}>Remember password? Back to Logi</Text>
+                onPress={() => navigation.navigate('Login')}
+              >
+                <Text style={styles.backText}>
+                  Remember password? Back to Logi
+                </Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -219,18 +228,16 @@ const styles = StyleSheet.create({
   scrollContent: {
     flexGrow: 1,
     minHeight: SCREEN_HEIGHT,
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingVertical: rs(18),
+    backgroundColor: '#F7F9FA',
   },
   screenWrap: {
-    width: rs(219),
-    minHeight: rs(320),
+    width: SCREEN_WIDTH,
+    minHeight: SCREEN_HEIGHT,
     backgroundColor: '#F7F9FA',
     shadowColor: '#000000',
     shadowOpacity: 0.12,
     shadowRadius: rs(14),
-    shadowOffset: {width: 0, height: rs(8)},
+    shadowOffset: { width: 0, height: rs(8) },
     elevation: 10,
   },
   topSection: {
@@ -287,7 +294,7 @@ const styles = StyleSheet.create({
     shadowColor: '#000000',
     shadowOpacity: 0.08,
     shadowRadius: rs(8),
-    shadowOffset: {width: 0, height: rs(4)},
+    shadowOffset: { width: 0, height: rs(4) },
     elevation: 6,
   },
   heading: {

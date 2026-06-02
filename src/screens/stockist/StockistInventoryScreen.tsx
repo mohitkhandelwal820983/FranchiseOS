@@ -3,7 +3,6 @@ import {
   ActivityIndicator,
   Dimensions,
   Image,
-  SafeAreaView,
   ScrollView,
   StatusBar,
   StyleSheet,
@@ -12,6 +11,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import {
   AlertTriangle,
   Barcode,
@@ -28,127 +28,18 @@ import {
   IndianRupee,
   RotateCw,
 } from 'lucide-react-native';
+import { InventoryFilter, InventoryProduct, InventorySummary, ProductStatus, StockistInventoryData } from '../../api/mock/stockist/stockistInventory.mock';
+import { getStockistInventory } from '../../api/stockist/stockistInventory.api';
 
 const {width: SCREEN_WIDTH} = Dimensions.get('window');
 
 const DESIGN_WIDTH = 832;
 const scale = SCREEN_WIDTH / DESIGN_WIDTH;
 const rs = (value: number) => Math.round(value * scale);
+const fs = (value: number) => rs(value + 3);
 
-type InventoryFilter =
-  | 'All'
-  | 'Low Stock'
-  | 'Out of Stock'
-  | 'Fast Moving'
-  | 'Expiring Soon'
-  | 'High Value';
 
-type ProductStatus =
-  | 'Fast Moving'
-  | 'Low Stock'
-  | 'Out of Stock'
-  | 'Expiring Soon';
 
-type InventoryProduct = {
-  id: string;
-  name: string;
-  sku: string;
-  warehouse: string;
-  image: string;
-  status: ProductStatus;
-  available: number;
-  reserved: number;
-  incoming: number;
-  progress: number;
-  soldThisWeek?: number;
-  alertText?: string;
-  alertSubText?: string;
-  suggestedReorder?: string;
-  affectedUnits?: string;
-};
-
-type InventorySummary = {
-  products: string;
-  stockValue: string;
-  lowStockAlerts: string;
-};
-
-type InventoryData = {
-  summary: InventorySummary;
-  products: InventoryProduct[];
-};
-
-const mockInventoryData: InventoryData = {
-  summary: {
-    products: '1,248',
-    stockValue: '₹12.4L',
-    lowStockAlerts: '8',
-  },
-  products: [
-    {
-      id: '1',
-      name: 'Parle-G Biscuits 500g',
-      sku: 'PRL-500',
-      warehouse: 'Warehouse A-12',
-      image: 'https://dummyimage.com/145x105/f7c94a/111111&text=Parle-G',
-      status: 'Fast Moving',
-      available: 248,
-      reserved: 32,
-      incoming: 120,
-      progress: 78,
-      soldThisWeek: 324,
-    },
-    {
-      id: '2',
-      name: 'Tata Salt 1kg',
-      sku: 'TTS-1KG',
-      warehouse: 'Warehouse B-05',
-      image: 'https://dummyimage.com/145x105/f2762e/ffffff&text=Tata+Salt',
-      status: 'Low Stock',
-      available: 12,
-      reserved: 8,
-      incoming: 50,
-      progress: 14,
-      alertText: 'Only 12 units remaining',
-      suggestedReorder: 'Minimum 100 units',
-    },
-    {
-      id: '3',
-      name: 'Coca Cola 750ml',
-      sku: 'CCL-750',
-      warehouse: 'Warehouse C-02',
-      image: 'https://dummyimage.com/145x105/470000/ffffff&text=Coca+Cola',
-      status: 'Out of Stock',
-      available: 0,
-      reserved: 48,
-      incoming: 0,
-      progress: 0,
-      alertText: 'Out of Stock',
-      alertSubText: '48 reserved orders waiting',
-    },
-    {
-      id: '4',
-      name: 'Amul Butter 100g',
-      sku: 'AML-100',
-      warehouse: 'Warehouse A-08',
-      image: 'https://dummyimage.com/145x105/f5e69b/111111&text=Amul',
-      status: 'Expiring Soon',
-      available: 84,
-      reserved: 16,
-      incoming: 0,
-      progress: 42,
-      alertText: 'Expires in 12 days',
-      alertSubText: '84 units affected',
-      affectedUnits: '84 units affected',
-    },
-  ],
-};
-
-const mockInventoryApi = async (): Promise<InventoryData> => {
-  return new Promise(resolve => {
-    setTimeout(() => resolve(mockInventoryData), 300);
-  });
-};
 
 const Header = () => {
   return (
@@ -587,12 +478,26 @@ const ProductCard = ({item}: {item: InventoryProduct}) => {
 
 
 const StockistInventoryScreen = () => {
-  const [data, setData] = useState<InventoryData | null>(null);
+  const [data, setData] = useState<StockistInventoryData | null>(null);
   const [search, setSearch] = useState('');
   const [activeFilter, setActiveFilter] = useState<InventoryFilter>('All');
+  const [loading, setLoading] = useState<boolean>(true);
+
+  const loadInventory = async () => {
+    try {
+      setLoading(true);
+
+      const response = await getStockistInventory();
+      setData(response);
+    } catch (error) {
+      console.log('Stockist Inventory API Error:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    mockInventoryApi().then(setData);
+    loadInventory();
   }, []);
 
   const filteredProducts = useMemo(() => {
@@ -617,7 +522,7 @@ const StockistInventoryScreen = () => {
     });
   }, [data, search, activeFilter]);
 
-  if (!data) {
+  if (loading || !data) {
     return (
       <SafeAreaView style={styles.loaderScreen}>
         <StatusBar backgroundColor="#061B66" barStyle="light-content" />
@@ -646,7 +551,6 @@ const StockistInventoryScreen = () => {
           <ProductCard key={item.id} item={item} />
         ))}
       </ScrollView>
-
     </SafeAreaView>
   );
 };
@@ -677,7 +581,7 @@ const styles = StyleSheet.create({
   },
   headerTitle: {
     color: '#FFFFFF',
-    fontSize: rs(31),
+    fontSize: fs(31),
     fontWeight: '800',
   },
   scrollView: {
@@ -703,7 +607,7 @@ const styles = StyleSheet.create({
     flex: 1,
     marginLeft: rs(16),
     color: '#111327',
-    fontSize: rs(18),
+    fontSize: fs(18),
     fontWeight: '500',
     paddingVertical: 0,
   },
@@ -728,7 +632,7 @@ const styles = StyleSheet.create({
   },
   filterText: {
     color: '#061247',
-    fontSize: rs(15),
+    fontSize: fs(15),
     fontWeight: '800',
   },
   activeFilterText: {
@@ -782,24 +686,24 @@ const styles = StyleSheet.create({
   },
   summaryValue: {
     color: '#061247',
-    fontSize: rs(31),
+    fontSize: fs(31),
     fontWeight: '900',
     letterSpacing: rs(4),
   },
   summaryValueGreen: {
     color: '#138A36',
-    fontSize: rs(31),
+    fontSize: fs(31),
     fontWeight: '900',
     letterSpacing: rs(4),
   },
   summaryValueOrange: {
     color: '#F06419',
-    fontSize: rs(31),
+    fontSize: fs(31),
     fontWeight: '900',
   },
   summaryLabel: {
     color: '#111327',
-    fontSize: rs(15),
+    fontSize: fs(15),
     fontWeight: '700',
     marginTop: rs(8),
   },
@@ -838,7 +742,7 @@ const styles = StyleSheet.create({
   },
   productName: {
     color: '#111327',
-    fontSize: rs(25),
+    fontSize: fs(25),
     fontWeight: '900',
   },
   skuRow: {
@@ -848,13 +752,13 @@ const styles = StyleSheet.create({
   },
   skuText: {
     color: '#5D607E',
-    fontSize: rs(17),
+    fontSize: fs(17),
     fontWeight: '600',
     marginRight: rs(10),
   },
   dotText: {
     color: '#5D607E',
-    fontSize: rs(17),
+    fontSize: fs(17),
     fontWeight: '900',
     marginRight: rs(10),
   },
@@ -885,22 +789,22 @@ const styles = StyleSheet.create({
   },
   fastBadgeText: {
     color: '#138A36',
-    fontSize: rs(13),
+    fontSize: fs(13),
     fontWeight: '900',
   },
   lowBadgeText: {
     color: '#F06419',
-    fontSize: rs(13),
+    fontSize: fs(13),
     fontWeight: '900',
   },
   outBadgeText: {
     color: '#E00014',
-    fontSize: rs(13),
+    fontSize: fs(13),
     fontWeight: '900',
   },
   expireBadgeText: {
     color: '#7B22EA',
-    fontSize: rs(13),
+    fontSize: fs(13),
     fontWeight: '900',
   },
   productBodyRow: {
@@ -919,11 +823,11 @@ const styles = StyleSheet.create({
   },
   statLabel: {
     color: '#5D607E',
-    fontSize: rs(14),
+    fontSize: fs(14),
     fontWeight: '600',
   },
   statValue: {
-    fontSize: rs(23),
+    fontSize: fs(23),
     fontWeight: '900',
     marginTop: rs(6),
   },
@@ -945,7 +849,7 @@ const styles = StyleSheet.create({
   },
   progressText: {
     color: '#061247',
-    fontSize: rs(17),
+    fontSize: fs(17),
     fontWeight: '900',
     marginLeft: rs(16),
   },
@@ -962,17 +866,17 @@ const styles = StyleSheet.create({
   },
   soldIcon: {
     color: '#138A36',
-    fontSize: rs(28),
+    fontSize: fs(28),
     fontWeight: '900',
   },
   soldNumber: {
     color: '#061247',
-    fontSize: rs(28),
+    fontSize: fs(28),
     fontWeight: '900',
   },
   soldText: {
     color: '#111327',
-    fontSize: rs(15),
+    fontSize: fs(15),
     fontWeight: '600',
     marginTop: rs(5),
   },
@@ -993,7 +897,7 @@ const styles = StyleSheet.create({
   },
   actionText: {
     color: '#173CFF',
-    fontSize: rs(16),
+    fontSize: fs(16),
     fontWeight: '800',
     marginLeft: rs(12),
   },
@@ -1018,7 +922,7 @@ const styles = StyleSheet.create({
   },
   warningText: {
     color: '#F06419',
-    fontSize: rs(18),
+    fontSize: fs(18),
     fontWeight: '800',
     marginLeft: rs(12),
   },
@@ -1032,12 +936,12 @@ const styles = StyleSheet.create({
   },
   reorderTitle: {
     color: '#111327',
-    fontSize: rs(16),
+    fontSize: fs(16),
     fontWeight: '700',
   },
   reorderSub: {
     color: '#F06419',
-    fontSize: rs(15),
+    fontSize: fs(15),
     fontWeight: '700',
     marginTop: rs(10),
     marginBottom: rs(18),
@@ -1052,7 +956,7 @@ const styles = StyleSheet.create({
   },
   purchaseButtonText: {
     color: '#FFFFFF',
-    fontSize: rs(15),
+    fontSize: fs(15),
     fontWeight: '800',
   },
   outWarningBox: {
@@ -1067,12 +971,12 @@ const styles = StyleSheet.create({
   },
   outWarningTitle: {
     color: '#E00014',
-    fontSize: rs(20),
+    fontSize: fs(20),
     fontWeight: '900',
   },
   outWarningSub: {
     color: '#111327',
-    fontSize: rs(15),
+    fontSize: fs(15),
     fontWeight: '600',
     marginTop: rs(8),
   },
@@ -1092,7 +996,7 @@ const styles = StyleSheet.create({
   },
   urgentButtonText: {
     color: '#FFFFFF',
-    fontSize: rs(16),
+    fontSize: fs(16),
     fontWeight: '900',
     marginLeft: rs(12),
   },
@@ -1108,7 +1012,7 @@ const styles = StyleSheet.create({
   },
   notifyButtonText: {
     color: '#E00014',
-    fontSize: rs(16),
+    fontSize: fs(16),
     fontWeight: '900',
     marginLeft: rs(12),
   },
@@ -1134,12 +1038,12 @@ const styles = StyleSheet.create({
   },
   expireTitle: {
     color: '#7B22EA',
-    fontSize: rs(20),
+    fontSize: fs(20),
     fontWeight: '900',
   },
   expireSub: {
     color: '#111327',
-    fontSize: rs(15),
+    fontSize: fs(15),
     fontWeight: '600',
     marginTop: rs(6),
   },
@@ -1155,7 +1059,7 @@ const styles = StyleSheet.create({
   },
   createOfferText: {
     color: '#7B22EA',
-    fontSize: rs(16),
+    fontSize: fs(16),
     fontWeight: '900',
   },
   quickMenu: {
@@ -1177,7 +1081,7 @@ const styles = StyleSheet.create({
   },
   quickMenuText: {
     color: '#111327',
-    fontSize: rs(16),
+    fontSize: fs(16),
     fontWeight: '800',
     marginLeft: rs(18),
   },

@@ -3,7 +3,6 @@ import {
   ActivityIndicator,
   Dimensions,
   Image,
-  SafeAreaView,
   ScrollView,
   StatusBar,
   StyleSheet,
@@ -11,6 +10,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import {
   AlertTriangle,
   Bell,
@@ -27,295 +27,19 @@ import {
   Users,
   
 } from 'lucide-react-native';
+import { DealerItem, InventoryItem, OverviewCard, PriorityAction, ProductItem, QuickAction, RecentOrder, StockistDashboardData } from '../../api/mock/stockist/stockistDashboard.mock';
+import { getStockistDashboard } from '../../api/stockist/stockistDashboard.api';
 
 const {width: SCREEN_WIDTH} = Dimensions.get('window');
 
 const DESIGN_WIDTH = 832;
 const scale = SCREEN_WIDTH / DESIGN_WIDTH;
 const rs = (value: number) => Math.round(value * scale);
-
-type OverviewCard = {
-  id: string;
-  title: string;
-  value: string;
-  subtitle: string;
-  icon: 'stock' | 'orders' | 'dealers' | 'revenue' | 'lowStock' | 'incentive';
-  color: string;
-  bg: string;
-};
-
-type PriorityAction = {
-  id: string;
-  title: string;
-  subtitle: string;
-  button: string;
-  color: string;
-  icon: 'warning' | 'truck' | 'card' | 'user';
-};
-
-type InventoryItem = {
-  id: string;
-  label: string;
-  value: number;
-  color: string;
-};
-
-type ProductItem = {
-  id: string;
-  name: string;
-  units: string;
-  revenue: string;
-  trendColor: string;
-  image: string;
-};
-
-type DealerItem = {
-  id: string;
-  initials: string;
-  name: string;
-  orders: string;
-  score: string;
-  status: string;
-  color: string;
-  statusColor: string;
-  statusBg: string;
-};
-
-type RecentOrder = {
-  id: string;
-  dealer: string;
-  amount: string;
-  status: string;
-  statusColor: string;
-  statusBg: string;
-};
-
-type QuickAction = {
-  id: string;
-  title: string;
-  icon: 'create' | 'dealer' | 'restock';
-};
+const fs = (value: number) => rs(value + 3);
 
 
 
-type DashboardData = {
-  name: string;
-  subtitle: string;
-  date: string;
-  notifications: string;
-  overview: OverviewCard[];
-  priorityActions: PriorityAction[];
-  inventoryHealth: InventoryItem[];
-  products: ProductItem[];
-  dealers: DealerItem[];
-  recentOrders: RecentOrder[];
-  quickActions: QuickAction[];
-
-};
-
-const mockDashboardData: DashboardData = {
-  name: 'Rajesh',
-  subtitle: 'Stockist — Jaipur Region',
-  date: 'Thursday, 21 May 2026',
-  notifications: '3',
-  overview: [
-    {
-      id: '1',
-      title: 'Total Stock Value',
-      value: '₹12,40,000',
-      subtitle: '↑ +8% this month',
-      icon: 'stock',
-      color: '#173CFF',
-      bg: '#0B74FF',
-    },
-    {
-      id: '2',
-      title: 'Orders Today',
-      value: '28',
-      subtitle: '5 pending dispatch',
-      icon: 'orders',
-      color: '#138A36',
-      bg: '#008A21',
-    },
-    {
-      id: '3',
-      title: 'Active Dealers',
-      value: '42',
-      subtitle: '3 inactive',
-      icon: 'dealers',
-      color: '#F06419',
-      bg: '#F06419',
-    },
-    {
-      id: '4',
-      title: 'Revenue MTD',
-      value: '₹4,80,000',
-      subtitle: '82% target achieved',
-      icon: 'revenue',
-      color: '#173CFF',
-      bg: '#173CFF',
-    },
-    {
-      id: '5',
-      title: 'Low Stock Items',
-      value: '8',
-      subtitle: 'Need restock urgently',
-      icon: 'lowStock',
-      color: '#D90014',
-      bg: '#D90014',
-    },
-    {
-      id: '6',
-      title: 'Inventives Earned',
-      value: '₹18,500',
-      subtitle: '2 milestones unlocked',
-      icon: 'incentive',
-      color: '#7B22EA',
-      bg: '#7B22EA',
-    },
-  ],
-  priorityActions: [
-    {
-      id: '1',
-      title: 'Parle-G 500g stock critically low',
-      subtitle: 'Only 12 units left',
-      button: 'Restock',
-      color: '#E00014',
-      icon: 'warning',
-    },
-    {
-      id: '2',
-      title: '5 dealer orders pending dispatch',
-      subtitle: 'Dispatch before 5 PM',
-      button: 'View Orders',
-      color: '#F06419',
-      icon: 'truck',
-    },
-    {
-      id: '3',
-      title: 'ABC Dealers payment overdue',
-      subtitle: '₹24,000 pending',
-      button: 'Collect',
-      color: '#173CFF',
-      icon: 'card',
-    },
-    {
-      id: '4',
-      title: '2 new dealer onboarding requests',
-      subtitle: 'Waiting approval',
-      button: 'Review',
-      color: '#138A36',
-      icon: 'user',
-    },
-  ],
-  inventoryHealth: [
-    {id: '1', label: 'Fast Moving Products', value: 92, color: '#173CFF'},
-    {id: '2', label: 'Low Stock Risk', value: 28, color: '#E00014'},
-    {id: '3', label: 'Warehouse Capacity', value: 74, color: '#138A36'},
-    {id: '4', label: 'Stock Accuracy', value: 98, color: '#138A36'},
-  ],
-  products: [
-    {
-      id: '1',
-      name: 'Parle-G Biscuits',
-      units: '324 units sold this week',
-      revenue: '₹48,000 revenue',
-      trendColor: '#138A36',
-      image: 'https://dummyimage.com/90x70/f9d87b/000000&text=Parle-G',
-    },
-    {
-      id: '2',
-      name: 'Coca Cola 750ml',
-      units: '210 units sold',
-      revenue: '₹39,000 revenue',
-      trendColor: '#173CFF',
-      image: 'https://dummyimage.com/90x70/ffffff/000000&text=Coke',
-    },
-    {
-      id: '3',
-      name: 'Aashirvaad Atta',
-      units: '180 units sold',
-      revenue: '₹31,000 revenue',
-      trendColor: '#F06419',
-      image: 'https://dummyimage.com/90x70/f4b6a5/000000&text=Atta',
-    },
-  ],
-  dealers: [
-    {
-      id: '1',
-      initials: 'AD',
-      name: 'ABC Dealers',
-      orders: '₹1.2L orders this month',
-      score: '94% payment score',
-      status: 'Active',
-      color: '#061B66',
-      statusColor: '#138A36',
-      statusBg: '#EAF8EC',
-    },
-    {
-      id: '2',
-      initials: 'MD',
-      name: 'Modern Mart',
-      orders: '₹94K orders',
-      score: '76% payment score',
-      status: 'Payment Due',
-      color: '#138A36',
-      statusColor: '#F06419',
-      statusBg: '#FFF1E7',
-    },
-    {
-      id: '3',
-      initials: 'SK',
-      name: 'Shree Krishna Traders',
-      orders: '₹72K orders',
-      score: '96% payment score',
-      status: 'Top Performer',
-      color: '#173CFF',
-      statusColor: '#138A36',
-      statusBg: '#EAF8EC',
-    },
-  ],
-  recentOrders: [
-    {
-      id: '#ORD-1023',
-      dealer: 'ABC Dealers',
-      amount: '₹12,400',
-      status: 'Processing',
-      statusColor: '#F06419',
-      statusBg: '#FFF1E7',
-    },
-    {
-      id: '#ORD-1022',
-      dealer: 'Modern Mart',
-      amount: '₹8,200',
-      status: 'Shipped',
-      statusColor: '#173CFF',
-      statusBg: '#F1F5FF',
-    },
-    {
-      id: '#ORD-1021',
-      dealer: 'Shree Krishna Traders',
-      amount: '₹15,600',
-      status: 'Delivered',
-      statusColor: '#138A36',
-      statusBg: '#EAF8EC',
-    },
-  ],
-  quickActions: [
-    {id: '1', title: 'Create Order', icon: 'create'},
-    {id: '2', title: 'Add Dealer', icon: 'dealer'},
-    {id: '3', title: 'Restock Inventory', icon: 'restock'},
-  ],
-
-};
-
-const mockDashboardApi = async (): Promise<DashboardData> => {
-  return new Promise(resolve => {
-    setTimeout(() => resolve(mockDashboardData), 300);
-  });
-};
-
-const DashboardHeader = ({data}: {data: DashboardData}) => {
+const DashboardHeader = ({data}: {data: StockistDashboardData}) => {
   return (
     <View style={styles.header}>
       <TouchableOpacity activeOpacity={0.8}>
@@ -334,7 +58,7 @@ const DashboardHeader = ({data}: {data: DashboardData}) => {
   );
 };
 
-const WelcomeCard = ({data}: {data: DashboardData}) => {
+const WelcomeCard = ({data}: {data: StockistDashboardData}) => {
   return (
     <View style={styles.welcomeCard}>
       <View style={styles.leftBlueLine} />
@@ -374,7 +98,7 @@ const OverviewIcon = ({item}: {item: OverviewCard}) => {
   );
 };
 
-const OverviewCard = ({item}: {item: OverviewCard}) => {
+const OverviewCardScreen = ({item}: {item: OverviewCard}) => {
   return (
     <View style={styles.overviewCard}>
       <OverviewIcon item={item} />
@@ -397,7 +121,7 @@ const OverviewCard = ({item}: {item: OverviewCard}) => {
   );
 };
 
-const BusinessOverview = ({data}: {data: DashboardData}) => {
+const BusinessOverview = ({data}: {data: StockistDashboardData}) => {
   return (
     <>
       <View style={styles.sectionHeader}>
@@ -407,7 +131,7 @@ const BusinessOverview = ({data}: {data: DashboardData}) => {
 
       <View style={styles.overviewGrid}>
         {data.overview.map(item => (
-          <OverviewCard key={item.id} item={item} />
+          <OverviewCardScreen key={item.id} item={item} />
         ))}
       </View>
     </>
@@ -609,13 +333,27 @@ const QuickActionsCard = ({items}: {items: QuickAction[]}) => {
 
 
 const StockistDashboardScreen = () => {
-  const [data, setData] = useState<DashboardData | null>(null);
+  const [data, setData] = useState<StockistDashboardData | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
+
+  const loadDashboard = async () => {
+    try {
+      setLoading(true);
+
+      const response = await getStockistDashboard();
+      setData(response);
+    } catch (error) {
+      console.log('Stockist Dashboard API Error:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    mockDashboardApi().then(setData);
+    loadDashboard();
   }, []);
 
-  if (!data) {
+  if (loading || !data) {
     return (
       <SafeAreaView style={styles.loaderScreen}>
         <StatusBar backgroundColor="#061B66" barStyle="light-content" />
@@ -653,9 +391,6 @@ const StockistDashboardScreen = () => {
           <QuickActionsCard items={data.quickActions} />
         </View>
       </ScrollView>
-
-     
-      
     </SafeAreaView>
   );
 };
@@ -689,7 +424,7 @@ const styles = StyleSheet.create({
   },
   headerTitle: {
     color: '#FFFFFF',
-    fontSize: rs(30),
+    fontSize: fs(30),
     fontWeight: '800',
   },
   bellBox: {
@@ -711,7 +446,7 @@ const styles = StyleSheet.create({
   },
   badgeText: {
     color: '#FFFFFF',
-    fontSize: rs(12),
+    fontSize: fs(12),
     fontWeight: '900',
   },
   scrollView: {
@@ -748,18 +483,18 @@ const styles = StyleSheet.create({
   },
   welcomeTitle: {
     color: '#111327',
-    fontSize: rs(28),
+    fontSize: fs(28),
     fontWeight: '900',
   },
   welcomeSubtitle: {
     color: '#5D607E',
-    fontSize: rs(15),
+    fontSize: fs(15),
     fontWeight: '600',
     marginTop: rs(10),
   },
   dateText: {
     color: '#5D607E',
-    fontSize: rs(13),
+    fontSize: fs(13),
     fontWeight: '600',
     marginTop: rs(34),
   },
@@ -771,12 +506,12 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     color: '#111327',
-    fontSize: rs(24),
+    fontSize: fs(24),
     fontWeight: '900',
   },
   viewReports: {
     color: '#173CFF',
-    fontSize: rs(17),
+    fontSize: fs(17),
     fontWeight: '800',
   },
   overviewGrid: {
@@ -813,18 +548,18 @@ const styles = StyleSheet.create({
   },
   overviewTitle: {
     color: '#5D607E',
-    fontSize: rs(16),
+    fontSize: fs(16),
     fontWeight: '700',
   },
   overviewValue: {
-    fontSize: rs(28),
+    fontSize: fs(28),
     fontWeight: '900',
     marginTop: rs(10),
     letterSpacing: rs(3),
   },
   overviewSubtitle: {
     color: '#138A36',
-    fontSize: rs(14),
+    fontSize: fs(14),
     fontWeight: '700',
     marginTop: rs(8),
   },
@@ -871,7 +606,7 @@ const styles = StyleSheet.create({
   },
   cardTitle: {
     color: '#111327',
-    fontSize: rs(18),
+    fontSize: fs(18),
     fontWeight: '900',
   },
   priorityBadge: {
@@ -884,7 +619,7 @@ const styles = StyleSheet.create({
   },
   priorityBadgeText: {
     color: '#FFFFFF',
-    fontSize: rs(12),
+    fontSize: fs(12),
     fontWeight: '900',
   },
   priorityRow: {
@@ -910,12 +645,12 @@ const styles = StyleSheet.create({
   },
   priorityTitle: {
     color: '#111327',
-    fontSize: rs(13),
+    fontSize: fs(13),
     fontWeight: '800',
   },
   prioritySubtitle: {
     color: '#5D607E',
-    fontSize: rs(12),
+    fontSize: fs(12),
     fontWeight: '600',
     marginTop: rs(5),
   },
@@ -931,7 +666,7 @@ const styles = StyleSheet.create({
   },
   priorityButtonText: {
     color: '#173CFF',
-    fontSize: rs(12),
+    fontSize: fs(12),
     fontWeight: '800',
   },
   healthyBadge: {
@@ -944,7 +679,7 @@ const styles = StyleSheet.create({
   },
   healthyText: {
     color: '#138A36',
-    fontSize: rs(12),
+    fontSize: fs(12),
     fontWeight: '800',
   },
   healthRow: {
@@ -957,12 +692,12 @@ const styles = StyleSheet.create({
   },
   healthLabel: {
     color: '#111327',
-    fontSize: rs(14),
+    fontSize: fs(14),
     fontWeight: '700',
   },
   healthPercent: {
     color: '#111327',
-    fontSize: rs(14),
+    fontSize: fs(14),
     fontWeight: '800',
   },
   progressTrack: {
@@ -1005,18 +740,18 @@ const styles = StyleSheet.create({
   },
   productName: {
     color: '#111327',
-    fontSize: rs(16),
+    fontSize: fs(16),
     fontWeight: '900',
   },
   productUnits: {
     color: '#5D607E',
-    fontSize: rs(13),
+    fontSize: fs(13),
     fontWeight: '600',
     marginTop: rs(6),
   },
   productRevenue: {
     color: '#111327',
-    fontSize: rs(12),
+    fontSize: fs(12),
     fontWeight: '700',
     marginTop: rs(8),
   },
@@ -1064,7 +799,7 @@ const styles = StyleSheet.create({
   },
   seeAllText: {
     color: '#173CFF',
-    fontSize: rs(15),
+    fontSize: fs(15),
     fontWeight: '800',
   },
   dealerRow: {
@@ -1084,7 +819,7 @@ const styles = StyleSheet.create({
   },
   dealerAvatarText: {
     color: '#FFFFFF',
-    fontSize: rs(18),
+    fontSize: fs(18),
     fontWeight: '900',
   },
   dealerInfo: {
@@ -1092,12 +827,12 @@ const styles = StyleSheet.create({
   },
   dealerName: {
     color: '#111327',
-    fontSize: rs(16),
+    fontSize: fs(16),
     fontWeight: '900',
   },
   dealerSub: {
     color: '#5D607E',
-    fontSize: rs(12),
+    fontSize: fs(12),
     fontWeight: '600',
     marginTop: rs(5),
   },
@@ -1110,7 +845,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: rs(8),
   },
   dealerStatusText: {
-    fontSize: rs(12),
+    fontSize: fs(12),
     fontWeight: '800',
   },
   bottomContentRow: {
@@ -1139,19 +874,19 @@ const styles = StyleSheet.create({
   orderId: {
     width: rs(130),
     color: '#173CFF',
-    fontSize: rs(15),
+    fontSize: fs(15),
     fontWeight: '900',
   },
   orderDealer: {
     flex: 1,
     color: '#111327',
-    fontSize: rs(13),
+    fontSize: fs(13),
     fontWeight: '700',
   },
   orderAmount: {
     width: rs(86),
     color: '#111327',
-    fontSize: rs(14),
+    fontSize: fs(14),
     fontWeight: '900',
   },
   orderStatus: {
@@ -1162,7 +897,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   orderStatusText: {
-    fontSize: rs(11),
+    fontSize: fs(11),
     fontWeight: '800',
   },
   quickActionsCard: {
@@ -1186,7 +921,7 @@ const styles = StyleSheet.create({
   },
   quickActionText: {
     color: '#111327',
-    fontSize: rs(14),
+    fontSize: fs(14),
     fontWeight: '800',
     marginLeft: rs(18),
   },
@@ -1231,7 +966,7 @@ const styles = StyleSheet.create({
   },
   bottomTabText: {
     color: '#55576F',
-    fontSize: rs(13),
+    fontSize: fs(13),
     fontWeight: '700',
     marginTop: rs(7),
   },

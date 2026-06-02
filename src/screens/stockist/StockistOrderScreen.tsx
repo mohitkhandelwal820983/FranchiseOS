@@ -2,7 +2,6 @@ import React, {useEffect, useMemo, useState} from 'react';
 import {
   ActivityIndicator,
   Dimensions,
-  SafeAreaView,
   ScrollView,
   StatusBar,
   StyleSheet,
@@ -11,6 +10,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import {
   CheckCircle2,
   ChevronRight,
@@ -38,227 +38,19 @@ import {
   Warehouse,
 } from 'lucide-react-native';
 import {useNavigation} from '@react-navigation/native';
+import { DealerOrder, DealerStatus, MainTab, PurchaseOrder, PurchaseStatus, StepItem, StockistOrdersData } from '../../api/mock/stockist/stockistOrders.mock';
+import { getStockistOrders } from '../../api/stockist/stockistOrders.api';
 
 const {width: SCREEN_WIDTH} = Dimensions.get('window');
 
 const DESIGN_WIDTH = 832;
 const scale = SCREEN_WIDTH / DESIGN_WIDTH;
 const rs = (value: number) => Math.round(value * scale);
+const fs = (value: number) => rs(value + 3);
 
-type MainTab = 'dealer' | 'purchase';
 
-type DealerStatus =
-  | 'All'
-  | 'Pending'
-  | 'Processing'
-  | 'Shipped'
-  | 'Delivered'
-  | 'Cancelled';
 
-type PurchaseStatus =
-  | 'All'
-  | 'Pending'
-  | 'Approved'
-  | 'In Transit'
-  | 'Delivered'
-  | 'Cancelled';
 
-type StepStatus = 'done' | 'pending' | 'active';
-
-type StepItem = {
-  id: string;
-  label: string;
-  status: StepStatus;
-  sub?: string;
-};
-
-type DealerOrder = {
-  id: string;
-  dealer: string;
-  meta: string;
-  status: Exclude<DealerStatus, 'All'> | 'Ready Dispatch';
-  statusColor: string;
-  statusBg: string;
-  icon: 'approval' | 'dispatch' | 'delivered';
-  iconBg: string;
-  products?: string;
-  units?: string;
-  amount: string;
-  amountLabel: string;
-  warehouse?: string;
-  paid?: boolean;
-  steps: StepItem[];
-};
-
-type PurchaseOrder = {
-  id: string;
-  supplier: string;
-  subtitle: string;
-  status: Exclude<PurchaseStatus, 'All'> | 'Approval Pending' | 'Delayed';
-  statusColor: string;
-  statusBg: string;
-  icon: 'supplier' | 'truck' | 'warning';
-  iconBg: string;
-  skus?: string;
-  cartons?: string;
-  units: string;
-  amount: string;
-  lowStock?: string;
-  delivery?: string;
-  delayed?: string;
-  impact?: string;
-  aiSuggestion?: string;
-  steps: StepItem[];
-};
-
-type OrdersData = {
-  dealerSummary: {
-    totalOrders: string;
-    orderValue: string;
-    pendingApprovals: string;
-    dispatchToday: string;
-  };
-  purchaseSummary: {
-    totalPOs: string;
-    poValue: string;
-    pendingApproval: string;
-    inTransit: string;
-  };
-  dealerOrders: DealerOrder[];
-  purchaseOrders: PurchaseOrder[];
-};
-
-const mockOrdersData: OrdersData = {
-  dealerSummary: {
-    totalOrders: '248',
-    orderValue: '₹18.4L',
-    pendingApprovals: '12',
-    dispatchToday: '8',
-  },
-  purchaseSummary: {
-    totalPOs: '48',
-    poValue: '₹18.4L',
-    pendingApproval: '12',
-    inTransit: '8',
-  },
-  dealerOrders: [
-    {
-      id: '#ORD-1023',
-      dealer: 'ABC Dealers',
-      meta: 'Today 10:42 AM',
-      status: 'Pending',
-      statusColor: '#F06419',
-      statusBg: '#FFF3E9',
-      icon: 'approval',
-      iconBg: '#F06419',
-      products: '12 products',
-      units: '84 units',
-      amount: '₹24,400',
-      amountLabel: 'Total',
-      steps: [
-        {id: '1', label: 'Order Placed', status: 'done'},
-        {id: '2', label: 'Waiting Approval', status: 'active'},
-        {id: '3', label: 'Dispatch Pending', status: 'pending'},
-      ],
-    },
-    {
-      id: '#ORD-1022',
-      dealer: 'Modern Mart',
-      meta: 'Delivery: Jaipur',
-      status: 'Ready Dispatch',
-      statusColor: '#173CFF',
-      statusBg: '#F1F5FF',
-      icon: 'dispatch',
-      iconBg: '#173CFF',
-      products: '28 items',
-      amount: '₹48,200',
-      amountLabel: 'Total',
-      warehouse: 'A-12',
-      steps: [
-        {id: '1', label: 'Packed', status: 'done'},
-        {id: '2', label: 'Invoice Generated', status: 'done'},
-        {id: '3', label: 'Awaiting Pickup', status: 'active'},
-      ],
-    },
-    {
-      id: '#ORD-1021',
-      dealer: 'Shree Krishna Traders',
-      meta: 'Delivered on: 20 May 2026',
-      status: 'Delivered',
-      statusColor: '#138A36',
-      statusBg: '#EAF8EC',
-      icon: 'delivered',
-      iconBg: '#138A36',
-      amount: '',
-      amountLabel: '',
-      paid: true,
-      steps: [],
-    },
-  ],
-  purchaseOrders: [
-    {
-      id: '#PO-8821',
-      supplier: 'Hindustan Foods Ltd',
-      subtitle: 'Low stock auto replenishment',
-      status: 'Approval Pending',
-      statusColor: '#F06419',
-      statusBg: '#FFF3E9',
-      icon: 'supplier',
-      iconBg: '#7B22EA',
-      skus: '18 SKUs',
-      units: '420 units',
-      amount: '₹1,84,000',
-      lowStock: '8',
-      steps: [
-        {id: '1', label: 'PO Created', status: 'done', sub: '21 May, 10:15 AM'},
-        {id: '2', label: 'Sent to Company', status: 'done', sub: '21 May, 10:20 AM'},
-        {id: '3', label: 'Approval Pending', status: 'active', sub: '—'},
-        {id: '4', label: 'Dispatch Pending', status: 'pending', sub: '—'},
-      ],
-    },
-    {
-      id: '#PO-8820',
-      supplier: 'Nestle Distribution',
-      subtitle: 'Expected delivery: 23 May 2026',
-      status: 'In Transit',
-      statusColor: '#173CFF',
-      statusBg: '#F1F5FF',
-      icon: 'truck',
-      iconBg: '#173CFF',
-      cartons: '12 cartons',
-      units: '280 units',
-      amount: '₹96,000',
-      steps: [
-        {id: '1', label: 'Order Approved', status: 'done'},
-        {id: '2', label: 'Packed', status: 'done'},
-        {id: '3', label: 'Shipped', status: 'done'},
-        {id: '4', label: 'Out for Delivery', status: 'active'},
-      ],
-    },
-    {
-      id: '#PO-8818',
-      supplier: 'ITC Foods',
-      subtitle: 'Expected delivery: 18 May 2026',
-      status: 'Delayed',
-      statusColor: '#E00014',
-      statusBg: '#FFF0F0',
-      icon: 'warning',
-      iconBg: '#FFF0F0',
-      units: '',
-      amount: '',
-      delayed: 'Delayed by 3 days',
-      impact: '4 dealer orders may be affected',
-      aiSuggestion: 'Temporarily restrict dealer ordering for affected products.',
-      steps: [],
-    },
-  ],
-};
-
-const mockOrdersApi = async (): Promise<OrdersData> => {
-  return new Promise(resolve => {
-    setTimeout(() => resolve(mockOrdersData), 300);
-  });
-};
 
 const Header = ({activeTab}: {activeTab: MainTab}) => {
   return (
@@ -428,7 +220,7 @@ const SummaryBar = ({
   data,
   activeTab,
 }: {
-  data: OrdersData;
+  data: StockistOrdersData;
   activeTab: MainTab;
 }) => {
   const items =
@@ -936,14 +728,28 @@ const FloatingButton = () => {
 };
 
 const StockistOrderScreen = () => {
-  const [data, setData] = useState<OrdersData | null>(null);
+  const [data, setData] = useState<StockistOrdersData | null>(null);
   const [activeTab, setActiveTab] = useState<MainTab>('dealer');
   const [search, setSearch] = useState('');
   const [dealerStatus, setDealerStatus] = useState<DealerStatus>('All');
   const [purchaseStatus, setPurchaseStatus] = useState<PurchaseStatus>('All');
+  const [loading, setLoading] = useState<boolean>(true);
+
+  const loadOrders = async () => {
+    try {
+      setLoading(true);
+
+      const response = await getStockistOrders();
+      setData(response);
+    } catch (error) {
+      console.log('Stockist Orders API Error:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    mockOrdersApi().then(setData);
+    loadOrders();
   }, []);
 
   const filteredDealerOrders = useMemo(() => {
@@ -1058,7 +864,7 @@ const StockistOrderScreen = () => {
     });
   };
 
-  if (!data) {
+  if (loading || !data) {
     return (
       <SafeAreaView style={styles.loaderScreen}>
         <StatusBar backgroundColor="#061B66" barStyle="light-content" />
@@ -1144,6 +950,60 @@ export default StockistOrderScreen;
 const PAGE_PADDING = rs(28);
 
 const styles = StyleSheet.create({
+  summaryBar: {
+  minHeight: rs(112),
+  borderRadius: rs(8),
+  backgroundColor: '#FFFFFF',
+  flexDirection: 'row',
+  alignItems: 'center',
+  marginBottom: rs(24),
+  paddingVertical: rs(12),
+  shadowColor: '#000000',
+  shadowOpacity: 0.04,
+  shadowRadius: rs(12),
+  shadowOffset: {width: 0, height: rs(5)},
+  elevation: 3,
+},
+
+summaryItem: {
+  flex: 1,
+  alignItems: 'center',
+  justifyContent: 'center',
+  paddingHorizontal: rs(6),
+  position: 'relative',
+},
+
+summaryIcon: {
+  width: rs(50),
+  height: rs(50),
+  borderRadius: rs(25),
+  alignItems: 'center',
+  justifyContent: 'center',
+  marginBottom: rs(8),
+},
+
+summaryValue: {
+  fontSize: fs(22),
+  fontWeight: '900',
+  textAlign: 'center',
+},
+
+summaryLabel: {
+  color: '#5D607E',
+  fontSize: fs(11),
+  fontWeight: '700',
+  marginTop: rs(5),
+  textAlign: 'center',
+  lineHeight: fs(14),
+},
+
+summaryDivider: {
+  position: 'absolute',
+  right: 0,
+  width: 1,
+  height: rs(70),
+  backgroundColor: '#D9DCE8',
+},
   safeArea: {
     flex: 1,
     backgroundColor: '#F8F9FD',
@@ -1165,7 +1025,7 @@ const styles = StyleSheet.create({
   },
   headerTitle: {
     color: '#FFFFFF',
-    fontSize: rs(30),
+    fontSize: fs(30),
     fontWeight: '900',
   },
   scrollView: {
@@ -1196,7 +1056,7 @@ const styles = StyleSheet.create({
   },
   mainTabText: {
     color: '#5D607E',
-    fontSize: rs(18),
+    fontSize: fs(18),
     fontWeight: '800',
   },
   activeMainTabText: {
@@ -1216,7 +1076,7 @@ const styles = StyleSheet.create({
   searchInput: {
     flex: 1,
     color: '#111327',
-    fontSize: rs(18),
+    fontSize: fs(18),
     fontWeight: '500',
     paddingVertical: 0,
     marginLeft: rs(16),
@@ -1242,57 +1102,13 @@ const styles = StyleSheet.create({
   },
   statusChipText: {
     color: '#061247',
-    fontSize: rs(15),
+    fontSize: fs(15),
     fontWeight: '800',
   },
   activeStatusChipText: {
     color: '#FFFFFF',
   },
-  summaryBar: {
-    height: rs(112),
-    borderRadius: rs(8),
-    backgroundColor: '#FFFFFF',
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: rs(24),
-    shadowColor: '#000000',
-    shadowOpacity: 0.04,
-    shadowRadius: rs(12),
-    shadowOffset: {width: 0, height: rs(5)},
-    elevation: 3,
-  },
-  summaryItem: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: rs(20),
-    position: 'relative',
-  },
-  summaryIcon: {
-    width: rs(54),
-    height: rs(54),
-    borderRadius: rs(27),
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginRight: rs(16),
-  },
-  summaryValue: {
-    fontSize: rs(26),
-    fontWeight: '900',
-  },
-  summaryLabel: {
-    color: '#5D607E',
-    fontSize: rs(14),
-    fontWeight: '700',
-    marginTop: rs(6),
-  },
-  summaryDivider: {
-    position: 'absolute',
-    right: 0,
-    width: 1,
-    height: rs(54),
-    backgroundColor: '#D9DCE8',
-  },
+ 
   sectionTitleRow: {
     height: rs(52),
     flexDirection: 'row',
@@ -1306,7 +1122,7 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     color: '#111327',
-    fontSize: rs(24),
+    fontSize: fs(24),
     fontWeight: '900',
     marginRight: rs(10),
   },
@@ -1320,7 +1136,7 @@ const styles = StyleSheet.create({
   },
   countBadgeText: {
     color: '#FFFFFF',
-    fontSize: rs(14),
+    fontSize: fs(14),
     fontWeight: '900',
   },
   viewAllButton: {
@@ -1330,7 +1146,7 @@ const styles = StyleSheet.create({
   },
   viewAllText: {
     color: '#173CFF',
-    fontSize: rs(16),
+    fontSize: fs(16),
     fontWeight: '800',
     marginRight: rs(8),
   },
@@ -1374,18 +1190,18 @@ const styles = StyleSheet.create({
   },
   orderId: {
     color: '#061247',
-    fontSize: rs(25),
+    fontSize: fs(25),
     fontWeight: '900',
   },
   orderDealer: {
     color: '#111327',
-    fontSize: rs(16),
+    fontSize: fs(16),
     fontWeight: '900',
     marginTop: rs(6),
   },
   orderMeta: {
     color: '#5D607E',
-    fontSize: rs(14),
+    fontSize: fs(14),
     fontWeight: '600',
     marginTop: rs(8),
   },
@@ -1402,7 +1218,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: rs(10),
   },
   badgePillText: {
-    fontSize: rs(14),
+    fontSize: fs(14),
     fontWeight: '800',
   },
   orderMetrics: {
@@ -1441,19 +1257,19 @@ const styles = StyleSheet.create({
   },
   metricText: {
     color: '#111327',
-    fontSize: rs(15),
+    fontSize: fs(15),
     fontWeight: '800',
     marginLeft: rs(10),
   },
   metricAmount: {
     color: '#111327',
-    fontSize: rs(19),
+    fontSize: fs(19),
     fontWeight: '900',
     textAlign: 'center',
   },
   metricSub: {
     color: '#5D607E',
-    fontSize: rs(12),
+    fontSize: fs(12),
     fontWeight: '700',
     marginTop: rs(5),
     marginLeft: rs(6),
@@ -1487,16 +1303,16 @@ const styles = StyleSheet.create({
   },
   activeStepText: {
     color: '#F06419',
-    fontSize: rs(13),
+    fontSize: fs(13),
   },
   stepLabel: {
     color: '#111327',
-    fontSize: rs(12),
+    fontSize: fs(12),
     fontWeight: '800',
   },
   stepSub: {
     color: '#5D607E',
-    fontSize: rs(11),
+    fontSize: fs(11),
     marginTop: rs(5),
   },
   dashedLine: {
@@ -1523,7 +1339,7 @@ const styles = StyleSheet.create({
   },
   primaryActionText: {
     color: '#FFFFFF',
-    fontSize: rs(15),
+    fontSize: fs(15),
     fontWeight: '900',
     marginLeft: rs(8),
   },
@@ -1549,7 +1365,7 @@ const styles = StyleSheet.create({
   },
   outlineActionText: {
     color: '#173CFF',
-    fontSize: rs(15),
+    fontSize: fs(15),
     fontWeight: '900',
     marginLeft: rs(8),
   },
@@ -1565,7 +1381,7 @@ const styles = StyleSheet.create({
   },
   dangerOutlineText: {
     color: '#E00014',
-    fontSize: rs(15),
+    fontSize: fs(15),
     fontWeight: '900',
     marginLeft: rs(8),
   },
@@ -1581,7 +1397,7 @@ const styles = StyleSheet.create({
   },
   purpleOutlineText: {
     color: '#7B22EA',
-    fontSize: rs(14),
+    fontSize: fs(14),
     fontWeight: '900',
     marginLeft: rs(8),
   },
@@ -1598,7 +1414,7 @@ const styles = StyleSheet.create({
   },
   paidText: {
     color: '#138A36',
-    fontSize: rs(13),
+    fontSize: fs(13),
     fontWeight: '900',
   },
   redText: {
@@ -1629,13 +1445,13 @@ const styles = StyleSheet.create({
   },
   delayTextRed: {
     color: '#E00014',
-    fontSize: rs(14),
+    fontSize: fs(14),
     fontWeight: '900',
     marginLeft: rs(10),
   },
   delayTextOrange: {
     color: '#A34900',
-    fontSize: rs(14),
+    fontSize: fs(14),
     fontWeight: '900',
     marginLeft: rs(10),
   },
@@ -1652,13 +1468,13 @@ const styles = StyleSheet.create({
   },
   aiIcon: {
     color: '#7B22EA',
-    fontSize: rs(28),
+    fontSize: fs(28),
     fontWeight: '900',
     marginRight: rs(14),
   },
   aiText: {
     color: '#111327',
-    fontSize: rs(14),
+    fontSize: fs(14),
     fontWeight: '600',
   },
   aiTitle: {
@@ -1675,7 +1491,7 @@ const styles = StyleSheet.create({
   },
   createPOText: {
     color: '#FFFFFF',
-    fontSize: rs(22),
+    fontSize: fs(22),
     fontWeight: '900',
     marginLeft: rs(12),
   },
@@ -1694,5 +1510,6 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.2,
     shadowRadius: rs(12),
     shadowOffset: {width: 0, height: rs(5)},
+    
   },
 });

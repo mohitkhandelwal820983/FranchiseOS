@@ -109,7 +109,7 @@ export const makeStyles = () =>
       fontWeight: '700',
     },
     totalCard: {
-      minHeight: s(136),
+      minHeight: s(150),
       backgroundColor: C.white,
       borderRadius: s(10),
       paddingHorizontal: s(30),
@@ -163,7 +163,7 @@ export const makeStyles = () =>
     },
     overviewTitle: {
       color: C.muted,
-      fontSize: fs(16),
+      fontSize: fs(20),
       fontWeight: '500',
       lineHeight: fs(21),
     },
@@ -180,7 +180,7 @@ export const makeStyles = () =>
     },
     overviewSub: {
       color: C.muted,
-      fontSize: fs(15),
+      fontSize: fs(19),
       fontWeight: '500',
       lineHeight: fs(20),
       marginTop: s(0),
@@ -197,7 +197,7 @@ export const makeStyles = () =>
       marginTop: s(0),
     },
     halfCard: {
-      width: '49%',
+      width: '100%',
       backgroundColor: C.white,
       borderRadius: s(10),
       paddingHorizontal: s(18),
@@ -216,7 +216,7 @@ export const makeStyles = () =>
     },
     cardTitle: {
       color: C.text,
-      fontSize: fs(22),
+      fontSize: fs(24),
       fontWeight: '900',
     },
     healthBadge: {
@@ -307,11 +307,11 @@ export const makeStyles = () =>
       justifyContent: 'center',
     },
     revenueMiniLabel: {
-      fontSize: fs(13),
+      fontSize: fs(22),
       fontWeight: '700',
     },
     revenueMiniValue: {
-      fontSize: fs(15),
+      fontSize: fs(24),
       fontWeight: '900',
       marginTop: s(2),
     },
@@ -336,7 +336,7 @@ export const makeStyles = () =>
     },
     attentionTitle: {
       color: C.text,
-      fontSize: fs(22),
+      fontSize: fs(24),
       fontWeight: '900',
     },
     attentionBadge: {
@@ -381,13 +381,13 @@ export const makeStyles = () =>
     },
     attentionItemTitle: {
       color: C.text,
-      fontSize: fs(16),
+      fontSize: fs(18),
       fontWeight: '900',
       lineHeight: fs(22),
     },
     attentionItemSub: {
       color: C.muted,
-      fontSize: fs(14),
+      fontSize: fs(16),
       fontWeight: '500',
       lineHeight: fs(20),
     },
@@ -402,7 +402,7 @@ export const makeStyles = () =>
     },
     attentionButtonText: {
       color: C.linkBlue,
-      fontSize: fs(14),
+      fontSize: fs(16),
       fontWeight: '700',
     },
     companyCard: {
@@ -439,13 +439,13 @@ export const makeStyles = () =>
     },
     companyName: {
       color: C.text,
-      fontSize: fs(17),
+      fontSize: fs(20),
       fontWeight: '900',
       lineHeight: fs(23),
     },
     companyOwner: {
       color: C.muted,
-      fontSize: fs(13),
+      fontSize: fs(18),
       fontWeight: '500',
       marginTop: s(2),
       lineHeight: fs(18),
@@ -457,7 +457,7 @@ export const makeStyles = () =>
     },
     companyLocation: {
       color: C.muted,
-      fontSize: fs(13),
+      fontSize: fs(18),
       fontWeight: '500',
       marginLeft: s(4),
       lineHeight: fs(18),
@@ -468,8 +468,8 @@ export const makeStyles = () =>
       marginRight: s(18),
     },
     statusPill: {
-      minWidth: s(68),
-      height: s(25),
+      minWidth: s(72),
+      height: s(30),
       borderRadius: s(13),
       alignItems: 'center',
       justifyContent: 'center',
@@ -477,7 +477,7 @@ export const makeStyles = () =>
       marginLeft: s(20),
     },
     statusText: {
-      fontSize: fs(13),
+      fontSize: fs(16),
       fontWeight: '700',
     },
     planText: {
@@ -507,7 +507,7 @@ export const makeStyles = () =>
     },
     broadcastTitle: {
       color: C.text,
-      fontSize: fs(17),
+      fontSize: fs(24),
       fontWeight: '900',
       marginBottom: s(12),
     },
@@ -522,7 +522,7 @@ export const makeStyles = () =>
     },
     broadcastText: {
       color: C.linkBlue,
-      fontSize: fs(17),
+      fontSize: fs(24),
       fontWeight: '500',
       marginLeft: s(10),
     },
@@ -553,7 +553,7 @@ export const makeStyles = () =>
     tabLabel: {
       marginTop: s(5),
       color: '#686A82',
-      fontSize: fs(13),
+      fontSize: fs(16),
       fontWeight: '500',
     },
     tabActive: {

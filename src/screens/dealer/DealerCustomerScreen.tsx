@@ -3,7 +3,6 @@ import {
   ActivityIndicator,
   Alert,
   Dimensions,
-  SafeAreaView,
   ScrollView,
   StatusBar,
   StyleSheet,
@@ -12,6 +11,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import {
   Bell,
   Briefcase,
@@ -33,146 +33,20 @@ import {
   Users,
   WalletCards,
 } from 'lucide-react-native';
+import {   Customer,
+  CustomerFilter,
+  CustomerStatus,
+  DealerCustomerData,
+  Insight, } from '../../api/mock/dealer/dealerCustomer.mock';
+import { getDealerCustomer } from '../../api/dealer/dealerCustomer.api';
 
 const {width: SCREEN_WIDTH} = Dimensions.get('window');
 
 const DESIGN_WIDTH = 832;
 const scale = SCREEN_WIDTH / DESIGN_WIDTH;
 const rs = (value: number) => Math.round(value * scale);
+const fs = (value: number) => rs(value + 3);
 
-type CustomerFilter = 'All' | 'Active' | 'High Value' | 'Payment Due' | 'Inactive';
-
-type CustomerStatus = 'Active' | 'Payment Due' | 'Top Buyer';
-
-type Customer = {
-  id: string;
-  initials: string;
-  name: string;
-  owner: string;
-  city: string;
-  state: string;
-  status: CustomerStatus;
-  avatarBg: string;
-  avatarColor: string;
-  monthlyPurchase: string;
-  completedOrders: string;
-  paymentScore: string;
-  outstandingAmount?: string;
-  achievement?: string;
-};
-
-type Insight = {
-  id: string;
-  value: string;
-  label: string;
-  icon: 'top' | 'repeat' | 'inactive' | 'average';
-  color: string;
-  bg: string;
-};
-
-type CustomerData = {
-  summary: {
-    customers: string;
-    monthlyBusiness: string;
-    overduePayments: string;
-  };
-  customers: Customer[];
-  insights: Insight[];
-};
-
-const mockCustomerData: CustomerData = {
-  summary: {
-    customers: '248',
-    monthlyBusiness: '₹3.8L',
-    overduePayments: '12',
-  },
-  customers: [
-    {
-      id: '1',
-      initials: 'RK',
-      name: 'Rahul Kirana Store',
-      owner: 'Rahul Sharma',
-      city: 'Jaipur',
-      state: 'Rajasthan',
-      status: 'Active',
-      avatarBg: '#EAF8EC',
-      avatarColor: '#138A36',
-      monthlyPurchase: '₹42,000',
-      completedOrders: '18',
-      paymentScore: '92%',
-    },
-    {
-      id: '2',
-      initials: 'MR',
-      name: 'Modern Retail Shop',
-      owner: 'Amit Verma',
-      city: 'Jaipur',
-      state: 'Rajasthan',
-      status: 'Payment Due',
-      avatarBg: '#FFF1E7',
-      avatarColor: '#F06419',
-      monthlyPurchase: '₹28,500',
-      completedOrders: '12',
-      paymentScore: '68%',
-      outstandingAmount: '₹12,000',
-    },
-    {
-      id: '3',
-      initials: 'GS',
-      name: 'Ganesh Supermarket',
-      owner: 'Suresh Yadav',
-      city: 'Jaipur',
-      state: 'Rajasthan',
-      status: 'Top Buyer',
-      avatarBg: '#EEF3FF',
-      avatarColor: '#173CFF',
-      monthlyPurchase: '₹68,500',
-      completedOrders: '28',
-      paymentScore: '95%',
-      achievement: 'Highest monthly purchase',
-    },
-  ],
-  insights: [
-    {
-      id: '1',
-      value: '32',
-      label: 'Top Buyers',
-      icon: 'top',
-      color: '#173CFF',
-      bg: '#EEF3FF',
-    },
-    {
-      id: '2',
-      value: '186',
-      label: 'Repeat Customers',
-      icon: 'repeat',
-      color: '#138A36',
-      bg: '#EAF8EC',
-    },
-    {
-      id: '3',
-      value: '14',
-      label: 'Inactive Customers',
-      icon: 'inactive',
-      color: '#F06419',
-      bg: '#FFF1E7',
-    },
-    {
-      id: '4',
-      value: '₹16,200',
-      label: 'Avg. Order Value',
-      icon: 'average',
-      color: '#7B22EA',
-      bg: '#F7F0FF',
-    },
-  ],
-};
-
-const mockCustomerApi = async (): Promise<CustomerData> => {
-  return new Promise(resolve => {
-    setTimeout(() => resolve(mockCustomerData), 300);
-  });
-};
 
 const Header = ({onAdd}: {onAdd: () => void}) => {
   return (
@@ -247,7 +121,7 @@ const FilterChips = ({
   );
 };
 
-const SummaryCard = ({summary}: {summary: CustomerData['summary']}) => {
+const SummaryCard = ({summary}: {summary: DealerCustomerData['summary']}) => {
   return (
     <View style={styles.summaryCard}>
       <View style={styles.summaryItem}>
@@ -557,12 +431,26 @@ const FloatingAddButton = ({onPress}: {onPress: () => void}) => {
 };
 
 const DealerCustomerScreen = () => {
-  const [data, setData] = useState<CustomerData | null>(null);
+  const [data, setData] = useState<DealerCustomerData | null>(null);
   const [search, setSearch] = useState('');
   const [activeFilter, setActiveFilter] = useState<CustomerFilter>('All');
+  const [loading, setLoading] = useState<boolean>(true);
+
+  const loadCustomerData = async () => {
+    try {
+      setLoading(true);
+
+      const response = await getDealerCustomer();
+      setData(response);
+    } catch (error) {
+      console.log('Dealer Customer API Error:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    mockCustomerApi().then(setData);
+    loadCustomerData();
   }, []);
 
   const filteredCustomers = useMemo(() => {
@@ -609,7 +497,7 @@ const DealerCustomerScreen = () => {
     Alert.alert('Reward', `Reward flow opened for ${customer.name}.`);
   };
 
-  if (!data) {
+  if (loading || !data) {
     return (
       <SafeAreaView style={styles.loaderScreen}>
         <StatusBar backgroundColor="#061B66" barStyle="light-content" />
@@ -678,7 +566,7 @@ const styles = StyleSheet.create({
   },
   headerTitle: {
     color: '#FFFFFF',
-    fontSize: rs(31),
+    fontSize: fs(31),
     fontWeight: '900',
   },
   scrollView: {
@@ -703,7 +591,7 @@ const styles = StyleSheet.create({
   searchInput: {
     flex: 1,
     color: '#111327',
-    fontSize: rs(17),
+    fontSize: fs(17),
     fontWeight: '500',
     paddingVertical: 0,
     marginLeft: rs(16),
@@ -730,7 +618,7 @@ const styles = StyleSheet.create({
   },
   filterText: {
     color: '#061247',
-    fontSize: rs(16),
+    fontSize: fs(16),
     fontWeight: '800',
   },
   activeFilterText: {
@@ -765,12 +653,12 @@ const styles = StyleSheet.create({
   },
   summaryValue: {
     color: '#061247',
-    fontSize: rs(31),
+    fontSize: fs(31),
     fontWeight: '900',
   },
   summaryLabel: {
     color: '#5D607E',
-    fontSize: rs(14),
+    fontSize: fs(14),
     fontWeight: '700',
     marginTop: rs(8),
   },
@@ -811,7 +699,7 @@ const styles = StyleSheet.create({
     marginRight: rs(24),
   },
   avatarText: {
-    fontSize: rs(29),
+    fontSize: fs(29),
     fontWeight: '900',
   },
   customerInfo: {
@@ -819,7 +707,7 @@ const styles = StyleSheet.create({
   },
   customerName: {
     color: '#061247',
-    fontSize: rs(25),
+    fontSize: fs(25),
     fontWeight: '900',
     marginBottom: rs(8),
   },
@@ -830,7 +718,7 @@ const styles = StyleSheet.create({
   },
   metaText: {
     color: '#5D607E',
-    fontSize: rs(14),
+    fontSize: fs(14),
     fontWeight: '700',
     marginLeft: rs(9),
   },
@@ -859,7 +747,7 @@ const styles = StyleSheet.create({
     borderColor: '#B8C8FF',
   },
   statusText: {
-    fontSize: rs(14),
+    fontSize: fs(14),
     fontWeight: '900',
   },
   activeText: {
@@ -885,7 +773,7 @@ const styles = StyleSheet.create({
   },
   outstandingLabel: {
     color: '#F06419',
-    fontSize: rs(16),
+    fontSize: fs(16),
     fontWeight: '900',
   },
   outstandingRight: {
@@ -894,7 +782,7 @@ const styles = StyleSheet.create({
   },
   outstandingAmount: {
     color: '#F06419',
-    fontSize: rs(20),
+    fontSize: fs(20),
     fontWeight: '900',
     marginRight: rs(12),
   },
@@ -911,7 +799,7 @@ const styles = StyleSheet.create({
   },
   achievementText: {
     color: '#061247',
-    fontSize: rs(14),
+    fontSize: fs(14),
     fontWeight: '700',
     marginLeft: rs(10),
   },
@@ -942,12 +830,12 @@ const styles = StyleSheet.create({
   },
   metricValue: {
     color: '#061247',
-    fontSize: rs(21),
+    fontSize: fs(21),
     fontWeight: '900',
   },
   metricLabel: {
     color: '#5D607E',
-    fontSize: rs(12),
+    fontSize: fs(12),
     fontWeight: '700',
     marginTop: rs(5),
   },
@@ -983,7 +871,7 @@ const styles = StyleSheet.create({
   },
   outlineButtonText: {
     color: '#173CFF',
-    fontSize: rs(15),
+    fontSize: fs(15),
     fontWeight: '900',
     marginLeft: rs(9),
   },
@@ -1007,7 +895,7 @@ const styles = StyleSheet.create({
   },
   primaryButtonText: {
     color: '#FFFFFF',
-    fontSize: rs(15),
+    fontSize: fs(15),
     fontWeight: '900',
     marginLeft: rs(9),
   },
@@ -1023,7 +911,7 @@ const styles = StyleSheet.create({
   },
   orangeOutlineText: {
     color: '#F06419',
-    fontSize: rs(15),
+    fontSize: fs(15),
     fontWeight: '900',
     marginLeft: rs(9),
   },
@@ -1070,7 +958,7 @@ const styles = StyleSheet.create({
   },
   insightTitle: {
     color: '#061247',
-    fontSize: rs(20),
+    fontSize: fs(20),
     fontWeight: '900',
   },
   insightItemsRow: {
@@ -1093,12 +981,12 @@ const styles = StyleSheet.create({
   },
   insightValue: {
     color: '#061247',
-    fontSize: rs(19),
+    fontSize: fs(19),
     fontWeight: '900',
   },
   insightLabel: {
     color: '#5D607E',
-    fontSize: rs(12),
+    fontSize: fs(12),
     fontWeight: '700',
     marginTop: rs(5),
   },
@@ -1128,7 +1016,7 @@ const styles = StyleSheet.create({
   },
   floatingAddText: {
     color: '#FFFFFF',
-    fontSize: rs(18),
+    fontSize: fs(18),
     fontWeight: '900',
     marginLeft: rs(12),
   },

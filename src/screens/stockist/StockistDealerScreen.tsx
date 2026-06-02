@@ -3,7 +3,6 @@ import {
   ActivityIndicator,
   Alert,
   Dimensions,
-  SafeAreaView,
   ScrollView,
   StatusBar,
   StyleSheet,
@@ -12,6 +11,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import {
   Bell,
   BookOpen,
@@ -33,177 +33,17 @@ import {
   WalletCards,
   X,
 } from 'lucide-react-native';
+import { Dealer, DealerFilter, DealerStatus, OnboardingRequest, RankingItem, StockistDealerData } from '../../api/mock/stockist/stockistDealer.mock';
+import { getStockistDealer } from '../../api/stockist/stockistDealer.api';
 
 const {width: SCREEN_WIDTH} = Dimensions.get('window');
 
 const DESIGN_WIDTH = 832;
 const scale = SCREEN_WIDTH / DESIGN_WIDTH;
 const rs = (value: number) => Math.round(value * scale);
+const fs = (value: number) => rs(value + 3);
 
-type DealerFilter = 'All' | 'Active' | 'Pending' | 'Payment Due' | 'Top Performers';
 
-type DealerStatus = 'Active' | 'Payment Due' | 'Top Performer';
-
-type Dealer = {
-  id: string;
-  initials: string;
-  name: string;
-  owner: string;
-  city: string;
-  state: string;
-  status: DealerStatus;
-  avatarColor: string;
-  monthlyOrders: string;
-  paymentScore: string;
-  completedOrders: string;
-  outstandingAmount?: string;
-  achievement?: string;
-  incentive?: boolean;
-};
-
-type OnboardingRequest = {
-  id: string;
-  initials: string;
-  name: string;
-  city: string;
-  state: string;
-  appliedOn: string;
-  status: 'Pending' | 'Approved' | 'Rejected';
-};
-
-type RankingItem = {
-  id: string;
-  rank: number;
-  name: string;
-  amount: string;
-  progress: number;
-};
-
-type DealerData = {
-  summary: {
-    activeDealers: string;
-    monthlyBusiness: string;
-    paymentOverdue: string;
-  };
-  dealers: Dealer[];
-  onboardingRequests: OnboardingRequest[];
-  rankings: RankingItem[];
-};
-
-const mockDealerData: DealerData = {
-  summary: {
-    activeDealers: '42',
-    monthlyBusiness: '₹24L',
-    paymentOverdue: '3',
-  },
-  dealers: [
-    {
-      id: '1',
-      initials: 'AD',
-      name: 'ABC Dealers',
-      owner: 'Amit Sharma',
-      city: 'Jaipur',
-      state: 'Rajasthan',
-      status: 'Active',
-      avatarColor: '#061B66',
-      monthlyOrders: '₹1.2L',
-      paymentScore: '94%',
-      completedOrders: '28',
-    },
-    {
-      id: '2',
-      initials: 'MM',
-      name: 'Modern Mart',
-      owner: 'Rahul Verma',
-      city: 'Jaipur',
-      state: 'Rajasthan',
-      status: 'Payment Due',
-      avatarColor: '#087F8C',
-      monthlyOrders: '₹94K',
-      paymentScore: '72%',
-      completedOrders: '16',
-      outstandingAmount: '₹24,000',
-    },
-    {
-      id: '3',
-      initials: 'SK',
-      name: 'Shree Krishna Traders',
-      owner: 'Suresh Yadav',
-      city: 'Jaipur',
-      state: 'Rajasthan',
-      status: 'Top Performer',
-      avatarColor: '#173CFF',
-      monthlyOrders: '₹1.6L',
-      paymentScore: '96%',
-      completedOrders: '35',
-      achievement: 'Highest sales this month',
-      incentive: true,
-    },
-  ],
-  onboardingRequests: [
-    {
-      id: '1',
-      initials: 'RK',
-      name: 'R.K. Distributors',
-      city: 'Jaipur',
-      state: 'Rajasthan',
-      appliedOn: '20 May 2026',
-      status: 'Pending',
-    },
-    {
-      id: '2',
-      initials: 'VP',
-      name: 'Vijay Provision Store',
-      city: 'Tonk',
-      state: 'Rajasthan',
-      appliedOn: '19 May 2026',
-      status: 'Pending',
-    },
-  ],
-  rankings: [
-    {
-      id: '1',
-      rank: 1,
-      name: 'Shree Krishna Traders',
-      amount: '₹1.6L',
-      progress: 88,
-    },
-    {
-      id: '2',
-      rank: 2,
-      name: 'ABC Dealers',
-      amount: '₹1.2L',
-      progress: 72,
-    },
-    {
-      id: '3',
-      rank: 3,
-      name: 'Modern Mart',
-      amount: '₹94K',
-      progress: 62,
-    },
-    {
-      id: '4',
-      rank: 4,
-      name: 'Ganesh Agencies',
-      amount: '₹72K',
-      progress: 50,
-    },
-    {
-      id: '5',
-      rank: 5,
-      name: 'Suresh Provision Store',
-      amount: '₹58K',
-      progress: 39,
-    },
-  ],
-};
-
-const mockDealerApi = async (): Promise<DealerData> => {
-  return new Promise(resolve => {
-    setTimeout(() => resolve(mockDealerData), 300);
-  });
-};
 
 const Header = ({onAddPress}: {onAddPress: () => void}) => {
   return (
@@ -278,7 +118,7 @@ const FilterChips = ({
   );
 };
 
-const SummaryCard = ({data}: {data: DealerData['summary']}) => {
+const SummaryCard = ({data}: {data: StockistDealerData['summary']}) => {
   return (
     <View style={styles.summaryCard}>
       <View style={styles.summaryItem}>
@@ -613,12 +453,26 @@ const FloatingButton = ({onPress}: {onPress: () => void}) => {
 };
 
 const StockistDealerScreen = () => {
-  const [data, setData] = useState<DealerData | null>(null);
+  const [data, setData] = useState<StockistDealerData | null>(null);
   const [search, setSearch] = useState('');
   const [activeFilter, setActiveFilter] = useState<DealerFilter>('All');
+  const [loading, setLoading] = useState<boolean>(true);
+
+  const loadDealerData = async () => {
+    try {
+      setLoading(true);
+
+      const response = await getStockistDealer();
+      setData(response);
+    } catch (error) {
+      console.log('Stockist Dealer API Error:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    mockDealerApi().then(setData);
+    loadDealerData();
   }, []);
 
   const filteredDealers = useMemo(() => {
@@ -652,12 +506,8 @@ const StockistDealerScreen = () => {
       return [];
     }
 
-    if (activeFilter === 'Pending') {
-      return data.onboardingRequests;
-    }
-
     return data.onboardingRequests;
-  }, [data, activeFilter]);
+  }, [data]);
 
   const handleAddDealer = () => {
     Alert.alert('Add Dealer', 'Add dealer flow opened.');
@@ -713,7 +563,7 @@ const StockistDealerScreen = () => {
     Alert.alert('Rejected', 'Dealer request rejected.');
   };
 
-  if (!data) {
+  if (loading || !data) {
     return (
       <SafeAreaView style={styles.loaderScreen}>
         <StatusBar backgroundColor="#061B66" barStyle="light-content" />
@@ -788,7 +638,7 @@ const styles = StyleSheet.create({
   },
   headerTitle: {
     color: '#FFFFFF',
-    fontSize: rs(31),
+    fontSize: fs(31),
     fontWeight: '900',
   },
   scrollView: {
@@ -813,7 +663,7 @@ const styles = StyleSheet.create({
   searchInput: {
     flex: 1,
     color: '#111327',
-    fontSize: rs(18),
+    fontSize: fs(18),
     fontWeight: '500',
     paddingVertical: 0,
     marginLeft: rs(16),
@@ -840,7 +690,7 @@ const styles = StyleSheet.create({
   },
   filterText: {
     color: '#061247',
-    fontSize: rs(15),
+    fontSize: fs(15),
     fontWeight: '800',
   },
   activeFilterText: {
@@ -874,12 +724,12 @@ const styles = StyleSheet.create({
     marginRight: rs(20),
   },
   summaryValue: {
-    fontSize: rs(28),
+    fontSize: fs(28),
     fontWeight: '900',
   },
   summaryLabel: {
     color: '#5D607E',
-    fontSize: rs(13),
+    fontSize: fs(13),
     fontWeight: '700',
     marginTop: rs(7),
   },
@@ -915,7 +765,7 @@ const styles = StyleSheet.create({
   },
   dealerAvatarText: {
     color: '#FFFFFF',
-    fontSize: rs(26),
+    fontSize: fs(26),
     fontWeight: '900',
   },
   dealerInfo: {
@@ -923,7 +773,7 @@ const styles = StyleSheet.create({
   },
   dealerName: {
     color: '#111327',
-    fontSize: rs(23),
+    fontSize: fs(23),
     fontWeight: '900',
     marginBottom: rs(8),
   },
@@ -934,7 +784,7 @@ const styles = StyleSheet.create({
   },
   metaText: {
     color: '#5D607E',
-    fontSize: rs(13),
+    fontSize: fs(13),
     fontWeight: '600',
     marginLeft: rs(8),
   },
@@ -963,7 +813,7 @@ const styles = StyleSheet.create({
     borderColor: '#B8C8FF',
   },
   statusText: {
-    fontSize: rs(13),
+    fontSize: fs(13),
     fontWeight: '900',
   },
   activeText: {
@@ -989,7 +839,7 @@ const styles = StyleSheet.create({
   },
   outstandingLeft: {
     color: '#F06419',
-    fontSize: rs(14),
+    fontSize: fs(14),
     fontWeight: '900',
   },
   outstandingRight: {
@@ -998,7 +848,7 @@ const styles = StyleSheet.create({
   },
   outstandingAmount: {
     color: '#F06419',
-    fontSize: rs(19),
+    fontSize: fs(19),
     fontWeight: '900',
     marginRight: rs(10),
   },
@@ -1020,7 +870,7 @@ const styles = StyleSheet.create({
   },
   achievementText: {
     color: '#111327',
-    fontSize: rs(14),
+    fontSize: fs(14),
     fontWeight: '600',
     marginLeft: rs(10),
   },
@@ -1040,12 +890,12 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   incentiveIcon: {
-    fontSize: rs(17),
+    fontSize: fs(17),
     marginRight: rs(8),
   },
   incentiveText: {
     color: '#7B22EA',
-    fontSize: rs(14),
+    fontSize: fs(14),
     fontWeight: '900',
   },
   metricsRow: {
@@ -1072,12 +922,12 @@ const styles = StyleSheet.create({
   },
   metricValue: {
     color: '#061247',
-    fontSize: rs(20),
+    fontSize: fs(20),
     fontWeight: '900',
   },
   metricLabel: {
     color: '#5D607E',
-    fontSize: rs(12),
+    fontSize: fs(12),
     fontWeight: '700',
     marginTop: rs(5),
   },
@@ -1103,7 +953,7 @@ const styles = StyleSheet.create({
   },
   outlineButtonText: {
     color: '#173CFF',
-    fontSize: rs(14),
+    fontSize: fs(14),
     fontWeight: '900',
     marginLeft: rs(8),
   },
@@ -1118,7 +968,7 @@ const styles = StyleSheet.create({
   },
   primaryButtonText: {
     color: '#FFFFFF',
-    fontSize: rs(14),
+    fontSize: fs(14),
     fontWeight: '900',
     marginLeft: rs(8),
   },
@@ -1143,7 +993,7 @@ const styles = StyleSheet.create({
   },
   cardTitle: {
     color: '#111327',
-    fontSize: rs(20),
+    fontSize: fs(20),
     fontWeight: '900',
   },
   viewAllRow: {
@@ -1152,7 +1002,7 @@ const styles = StyleSheet.create({
   },
   viewAllText: {
     color: '#173CFF',
-    fontSize: rs(14),
+    fontSize: fs(14),
     fontWeight: '900',
     marginRight: rs(6),
   },
@@ -1174,7 +1024,7 @@ const styles = StyleSheet.create({
   },
   requestAvatarText: {
     color: '#061247',
-    fontSize: rs(15),
+    fontSize: fs(15),
     fontWeight: '900',
   },
   requestInfo: {
@@ -1182,12 +1032,12 @@ const styles = StyleSheet.create({
   },
   requestName: {
     color: '#111327',
-    fontSize: rs(15),
+    fontSize: fs(15),
     fontWeight: '900',
   },
   requestMeta: {
     color: '#5D607E',
-    fontSize: rs(12),
+    fontSize: fs(12),
     fontWeight: '600',
     marginTop: rs(3),
   },
@@ -1204,7 +1054,7 @@ const styles = StyleSheet.create({
   },
   pendingText: {
     color: '#F06419',
-    fontSize: rs(12),
+    fontSize: fs(12),
     fontWeight: '900',
   },
   approveButton: {
@@ -1220,7 +1070,7 @@ const styles = StyleSheet.create({
   },
   approveText: {
     color: '#138A36',
-    fontSize: rs(14),
+    fontSize: fs(14),
     fontWeight: '900',
     marginLeft: rs(8),
   },
@@ -1237,7 +1087,7 @@ const styles = StyleSheet.create({
   },
   rejectText: {
     color: '#E00014',
-    fontSize: rs(14),
+    fontSize: fs(14),
     fontWeight: '900',
     marginLeft: rs(8),
   },
@@ -1258,13 +1108,13 @@ const styles = StyleSheet.create({
   },
   rankText: {
     color: '#FFFFFF',
-    fontSize: rs(12),
+    fontSize: fs(12),
     fontWeight: '900',
   },
   rankName: {
     width: rs(220),
     color: '#111327',
-    fontSize: rs(13),
+    fontSize: fs(13),
     fontWeight: '900',
   },
   rankProgressTrack: {
@@ -1283,13 +1133,13 @@ const styles = StyleSheet.create({
     width: rs(70),
     textAlign: 'right',
     color: '#061247',
-    fontSize: rs(13),
+    fontSize: fs(13),
     fontWeight: '900',
     marginLeft: rs(18),
   },
   rankArrow: {
     color: '#138A36',
-    fontSize: rs(22),
+    fontSize: fs(22),
     fontWeight: '900',
     marginLeft: rs(18),
   },
