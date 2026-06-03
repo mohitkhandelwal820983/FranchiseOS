@@ -4,6 +4,7 @@ export const SESSION_EXPIRY_KEY = 'sessionExpiryTime';
 
 // For testing: 45 seconds
 export const SESSION_DURATION = 45 * 1000;
+
 // For production, use this instead:
 // export const SESSION_DURATION = 24 * 60 * 60 * 1000;
 

@@ -5,16 +5,29 @@ import {
 
 export const navigationRef = createNavigationContainerRef();
 
-export const isLoginRouteActive = () => {
+export const getCurrentRouteName = () => {
   if (!navigationRef.isReady()) {
-    return false;
+    return '';
   }
 
   const currentRoute = navigationRef.getCurrentRoute() as
     | {name?: string}
     | undefined;
 
-  return currentRoute?.name === 'Login';
+  return currentRoute?.name || '';
+};
+
+export const isLoginRouteActive = () => {
+  return getCurrentRouteName() === 'Login';
+};
+
+export const isAuthRouteActive = () => {
+  const routeName = getCurrentRouteName();
+
+  return (
+    routeName === 'Login' ||
+    routeName === 'ForgotPassword'
+  );
 };
 
 export const resetToLogin = () => {

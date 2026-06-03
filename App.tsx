@@ -21,30 +21,31 @@ import {
 } from './src/utils/sessionManager';
 
 import {
-  isLoginRouteActive,
+  isAuthRouteActive,
   resetToLogin,
 } from './src/navigation/navigationService';
+import { showErrorToast } from './src/utils/toast';
 
 const App = () => {
-  const checkSessionExpiry = async () => {
-    try {
-      const expired = await isSessionExpired();
+ const checkSessionExpiry = async () => {
+  try {
+    const expired = await isSessionExpired();
 
-      if (!expired) {
-        return;
-      }
-
-      await clearAuthStorage();
-
-      if (isLoginRouteActive()) {
-        return;
-      }
-
-      resetToLogin();
-    } catch (error) {
-      // Silent fail
+    if (!expired) {
+      return;
     }
-  };
+
+    if (isAuthRouteActive()) {
+      return;
+    }
+
+    await clearAuthStorage();
+
+    resetToLogin();
+  } catch {
+   showErrorToast('Session check failed. Please restart the app.');
+  }
+};
 
   useEffect(() => {
     initCrashlytics();
@@ -60,8 +61,8 @@ const App = () => {
         await getFcmToken();
 
         listenNotificationOpenedApp();
-      } catch (error) {
-        // Silent fail
+      } catch (_error) {
+        showErrorToast('Notification setup failed.');
       }
     };
 
