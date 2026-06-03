@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, { useEffect } from 'react';
 import {
   View,
   Text,
@@ -8,9 +8,10 @@ import {
   StatusBar,
 } from 'react-native';
 
-import {useNavigation} from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 import images from '../../../assets/images';
 import { authService } from '../../../services/authService';
+import { showErrorToast } from '../../../utils/toast';
 
 const SplashScreen = () => {
   const navigation = useNavigation<any>();
@@ -40,7 +41,8 @@ const SplashScreen = () => {
         } else {
           navigation.replace('SuperAdminTabs');
         }
-      } catch (error) {
+      } catch {
+        showErrorToast('Session expired. Please login again.');
         navigation.replace('Login');
       }
     };
@@ -54,34 +56,24 @@ const SplashScreen = () => {
 
   return (
     <>
-      <StatusBar
-        barStyle="light-content"
-        backgroundColor="#0F3D9E"
-      />
+      <StatusBar barStyle="light-content" backgroundColor="#0F3D9E" />
 
       <ImageBackground
         source={images.background}
         style={styles.container}
-        resizeMode="cover">
-
+        resizeMode="cover"
+      >
         <View style={styles.content}>
-
           <Image
             source={images.logo}
             style={styles.logo}
             resizeMode="contain"
           />
 
-          <Text style={styles.title}>
-            FranchiseOS
-          </Text>
+          <Text style={styles.title}>FranchiseOS</Text>
 
-          <Text style={styles.subtitle}>
-            Manage Smarter
-          </Text>
-
+          <Text style={styles.subtitle}>Manage Smarter</Text>
         </View>
-
       </ImageBackground>
     </>
   );

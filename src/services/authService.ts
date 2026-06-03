@@ -1,5 +1,9 @@
-import { authAPI } from '../api/auth.api';
+import {authAPI} from '../api/auth.api';
 import * as storageService from './storageService';
+import {
+  clearAuthStorage,
+  saveSessionExpiry,
+} from '../utils/sessionManager';
 
 const getUserData = (response: any) => response?.data || response?.user || response;
 
@@ -32,11 +36,15 @@ export const authService = {
       if (token) {
         await storageService.setItem('authToken', token);
         await storageService.setItem('token', token);
+
+        // Save session expiry time after successful login
+        await saveSessionExpiry();
       }
 
       await storageService.setItem('user', JSON.stringify(user));
       await storageService.setItem('userData', JSON.stringify(user));
       await storageService.setItem('role', role);
+      await storageService.setItem('isLoggedIn', 'true');
 
       return {
         ...user,
@@ -50,12 +58,9 @@ export const authService = {
   async logout() {
     try {
       await authAPI.logout();
-      await storageService.removeItem('authToken');
-      await storageService.removeItem('token');
-      await storageService.removeItem('user');
-      await storageService.removeItem('userData');
-      await storageService.removeItem('role');
+      await clearAuthStorage();
     } catch (error) {
+      await clearAuthStorage();
       throw error;
     }
   },

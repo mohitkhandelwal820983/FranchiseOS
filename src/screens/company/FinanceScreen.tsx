@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useMemo, useState} from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   ActivityIndicator,
   Dimensions,
@@ -23,16 +23,23 @@ import {
   Menu,
   WalletCards,
 } from 'lucide-react-native';
-import { CompanyFinanceData, DirectDealerRevenue, FinanceKpi, FinanceTabType, PeriodType, StockistRevenue } from '../../api/mock/company/companyFinance.mock';
+import {
+  CompanyFinanceData,
+  DirectDealerRevenue,
+  FinanceKpi,
+  FinanceTabType,
+  PeriodType,
+  StockistRevenue,
+} from '../../api/mock/company/companyFinance.mock';
 import { getCompanyFinance } from '../../api/company/companyFinance.api';
+import { showErrorToast } from '../../utils/toast';
 
-const {width: SCREEN_WIDTH} = Dimensions.get('window');
+const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
 const DESIGN_WIDTH = 832;
 const scale = SCREEN_WIDTH / DESIGN_WIDTH;
 const rs = (value: number) => Math.round(value * scale);
 const fs = (value: number) => rs(value + 2);
-
 
 const Header = () => {
   return (
@@ -69,8 +76,11 @@ const PeriodTabs = ({
             key={period}
             activeOpacity={0.8}
             onPress={() => onChange(period)}
-            style={[styles.periodPill, active && styles.activePeriodPill]}>
-            <Text style={[styles.periodText, active && styles.activePeriodText]}>
+            style={[styles.periodPill, active && styles.activePeriodPill]}
+          >
+            <Text
+              style={[styles.periodText, active && styles.activePeriodText]}
+            >
               {period}
             </Text>
           </TouchableOpacity>
@@ -80,9 +90,9 @@ const PeriodTabs = ({
   );
 };
 
-const KpiIcon = ({item}: {item: FinanceKpi}) => {
+const KpiIcon = ({ item }: { item: FinanceKpi }) => {
   return (
-    <View style={[styles.kpiIconBox, {backgroundColor: item.iconBg}]}>
+    <View style={[styles.kpiIconBox, { backgroundColor: item.iconBg }]}>
       {item.icon === 'revenue' && (
         <Database color="#FFFFFF" size={rs(31)} strokeWidth={2.3} />
       )}
@@ -102,15 +112,17 @@ const KpiIcon = ({item}: {item: FinanceKpi}) => {
   );
 };
 
-const KpiCard = ({item}: {item: FinanceKpi}) => {
+const KpiCard = ({ item }: { item: FinanceKpi }) => {
   return (
     <View style={styles.kpiCard}>
       <KpiIcon item={item} />
 
       <View style={styles.kpiTextBox}>
         <Text style={styles.kpiTitle}>{item.title}</Text>
-        <Text style={[styles.kpiValue, {color: item.color}]}>{item.value}</Text>
-        <Text style={[styles.kpiSubtitle, {color: item.color}]}>
+        <Text style={[styles.kpiValue, { color: item.color }]}>
+          {item.value}
+        </Text>
+        <Text style={[styles.kpiSubtitle, { color: item.color }]}>
           {item.subtitle}
         </Text>
       </View>
@@ -118,7 +130,7 @@ const KpiCard = ({item}: {item: FinanceKpi}) => {
   );
 };
 
-const KpiGrid = ({items}: {items: FinanceKpi[]}) => {
+const KpiGrid = ({ items }: { items: FinanceKpi[] }) => {
   return (
     <View style={styles.kpiGrid}>
       {items.map(item => (
@@ -152,8 +164,14 @@ const FinanceTabs = ({
             key={tab}
             activeOpacity={0.8}
             onPress={() => onChange(tab)}
-            style={[styles.financeTab, active && styles.activeFinanceTab]}>
-            <Text style={[styles.financeTabText, active && styles.activeFinanceTabText]}>
+            style={[styles.financeTab, active && styles.activeFinanceTab]}
+          >
+            <Text
+              style={[
+                styles.financeTabText,
+                active && styles.activeFinanceTabText,
+              ]}
+            >
               {tab}
             </Text>
           </TouchableOpacity>
@@ -163,7 +181,7 @@ const FinanceTabs = ({
   );
 };
 
-const RevenueSourceCard = ({data}: {data: CompanyFinanceData}) => {
+const RevenueSourceCard = ({ data }: { data: CompanyFinanceData }) => {
   return (
     <View style={styles.revenueSourceCard}>
       <Text style={styles.cardTitle}>Where Revenue Comes From</Text>
@@ -187,7 +205,8 @@ const RevenueSourceCard = ({data}: {data: CompanyFinanceData}) => {
           <View style={styles.darkDot} />
           <Text style={styles.legendLabel}>Via Stockists</Text>
           <Text style={styles.legendValue}>
-            {data.revenueSplit.stockistRevenue} ({data.revenueSplit.stockistPercent})
+            {data.revenueSplit.stockistRevenue} (
+            {data.revenueSplit.stockistPercent})
           </Text>
         </View>
 
@@ -195,7 +214,8 @@ const RevenueSourceCard = ({data}: {data: CompanyFinanceData}) => {
           <View style={styles.blueDot} />
           <Text style={styles.legendLabel}>Direct Dealers</Text>
           <Text style={styles.legendValue}>
-            {data.revenueSplit.directDealerRevenue} ({data.revenueSplit.directDealerPercent})
+            {data.revenueSplit.directDealerRevenue} (
+            {data.revenueSplit.directDealerPercent})
           </Text>
         </View>
       </View>
@@ -203,17 +223,16 @@ const RevenueSourceCard = ({data}: {data: CompanyFinanceData}) => {
   );
 };
 
-const ProgressBar = ({
-  value,
-  color,
-}: {
-  value: number;
-  color: string;
-}) => {
+const ProgressBar = ({ value, color }: { value: number; color: string }) => {
   return (
     <View style={styles.progressRow}>
       <View style={styles.progressTrack}>
-        <View style={[styles.progressFill, {width: `${value}%`, backgroundColor: color}]} />
+        <View
+          style={[
+            styles.progressFill,
+            { width: `${value}%`, backgroundColor: color },
+          ]}
+        />
       </View>
       <Text style={styles.progressText}>{value}%</Text>
     </View>
@@ -237,35 +256,49 @@ const RevenueByStockistCard = ({
       {stockists.map(stockist => (
         <View key={stockist.id} style={styles.stockistBlock}>
           <View style={styles.stockistTopRow}>
-            <View style={[styles.stockistAvatar, {backgroundColor: stockist.color}]}>
+            <View
+              style={[
+                styles.stockistAvatar,
+                { backgroundColor: stockist.color },
+              ]}
+            >
               <Text style={styles.avatarText}>{stockist.initials}</Text>
             </View>
 
             <View style={styles.stockistInfo}>
               <Text style={styles.stockistName}>{stockist.name}</Text>
-              <Text style={styles.stockistTargetText}>{stockist.targetText}</Text>
-              <ProgressBar value={stockist.progress} color={stockist.progressColor} />
+              <Text style={styles.stockistTargetText}>
+                {stockist.targetText}
+              </Text>
+              <ProgressBar
+                value={stockist.progress}
+                color={stockist.progressColor}
+              />
             </View>
 
             <View style={styles.stockistAmountBox}>
               <Text
                 style={[
                   styles.stockistRevenue,
-                  stockist.progressColor === '#D90014' && {color: '#D90014'},
-                ]}>
+                  stockist.progressColor === '#D90014' && { color: '#D90014' },
+                ]}
+              >
                 {stockist.revenue}
               </Text>
 
               <TouchableOpacity
                 activeOpacity={0.8}
                 onPress={() => onToggle(stockist.id)}
-                style={styles.showDealerButton}>
+                style={styles.showDealerButton}
+              >
                 <ChevronDown
                   color="#061247"
                   size={rs(18)}
                   strokeWidth={2.3}
                   style={{
-                    transform: [{rotate: stockist.expanded ? '0deg' : '-90deg'}],
+                    transform: [
+                      { rotate: stockist.expanded ? '0deg' : '-90deg' },
+                    ],
                   }}
                 />
                 <Text style={styles.showDealerText}>Show Dealers</Text>
@@ -277,8 +310,15 @@ const RevenueByStockistCard = ({
             <View style={styles.dealerTree}>
               {stockist.dealers.map(dealer => (
                 <View key={dealer.id} style={styles.dealerRevenueRow}>
-                  <View style={[styles.dealerAvatar, {backgroundColor: dealer.color}]}>
-                    <Text style={styles.dealerAvatarText}>{dealer.initials}</Text>
+                  <View
+                    style={[
+                      styles.dealerAvatar,
+                      { backgroundColor: dealer.color },
+                    ]}
+                  >
+                    <Text style={styles.dealerAvatarText}>
+                      {dealer.initials}
+                    </Text>
                   </View>
 
                   <Text style={styles.dealerName}>{dealer.name}</Text>
@@ -287,16 +327,28 @@ const RevenueByStockistCard = ({
                     <Text
                       style={[
                         styles.dealerRevenue,
-                        dealer.targetColor === '#F06419' && {color: '#F06419'},
-                      ]}>
+                        dealer.targetColor === '#F06419' && {
+                          color: '#F06419',
+                        },
+                      ]}
+                    >
                       {dealer.revenue}
                     </Text>
-                    <Text style={[styles.dealerTarget, {color: dealer.targetColor}]}>
+                    <Text
+                      style={[
+                        styles.dealerTarget,
+                        { color: dealer.targetColor },
+                      ]}
+                    >
                       {dealer.target}
                     </Text>
                   </View>
 
-                  <ChevronRight color="#061247" size={rs(22)} strokeWidth={2.4} />
+                  <ChevronRight
+                    color="#061247"
+                    size={rs(22)}
+                    strokeWidth={2.4}
+                  />
                 </View>
               ))}
 
@@ -324,7 +376,11 @@ const DirectDealersRevenueCard = ({
       </View>
 
       {dealers.map(item => (
-        <TouchableOpacity key={item.id} activeOpacity={0.8} style={styles.directDealerRow}>
+        <TouchableOpacity
+          key={item.id}
+          activeOpacity={0.8}
+          style={styles.directDealerRow}
+        >
           <View style={styles.directDealerAvatar}>
             <Text style={styles.directDealerAvatarText}>{item.initials}</Text>
           </View>
@@ -369,16 +425,27 @@ const MonthlyTrendCard = () => {
 
         <View style={styles.chartArea}>
           <View style={styles.gridLine} />
-          <View style={[styles.gridLine, {top: '35%'}]} />
-          <View style={[styles.gridLine, {top: '66%'}]} />
+          <View style={[styles.gridLine, { top: '35%' }]} />
+          <View style={[styles.gridLine, { top: '66%' }]} />
 
-          {['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'].map(
-            month => (
-              <Text key={month} style={styles.monthLabel}>
-                {month}
-              </Text>
-            ),
-          )}
+          {[
+            'Jan',
+            'Feb',
+            'Mar',
+            'Apr',
+            'May',
+            'Jun',
+            'Jul',
+            'Aug',
+            'Sep',
+            'Oct',
+            'Nov',
+            'Dec',
+          ].map(month => (
+            <Text key={month} style={styles.monthLabel}>
+              {month}
+            </Text>
+          ))}
 
           <View style={styles.lineOne} />
           <View style={styles.lineTwo} />
@@ -431,7 +498,9 @@ const CommissionOverview = ({
       <View style={styles.commissionStats}>
         <View style={styles.commissionStat}>
           <Text style={styles.commissionLabel}>Total Generated</Text>
-          <Text style={styles.commissionBlue}>{data.commission.totalGenerated}</Text>
+          <Text style={styles.commissionBlue}>
+            {data.commission.totalGenerated}
+          </Text>
         </View>
 
         <View style={styles.verticalDivider} />
@@ -456,14 +525,17 @@ const CommissionOverview = ({
 
         <View style={styles.commissionStat}>
           <Text style={styles.commissionLabel}>Pending Payout</Text>
-          <Text style={styles.commissionOrange}>{data.commission.pendingPayout}</Text>
+          <Text style={styles.commissionOrange}>
+            {data.commission.pendingPayout}
+          </Text>
         </View>
       </View>
 
       <TouchableOpacity
         activeOpacity={0.8}
         onPress={onApprove}
-        style={[styles.approveButton, approvedAll && styles.approvedButton]}>
+        style={[styles.approveButton, approvedAll && styles.approvedButton]}
+      >
         <Text style={styles.approveButtonText}>
           {approvedAll ? 'All Payouts Approved' : 'Approve All Payouts'}
         </Text>
@@ -474,22 +546,38 @@ const CommissionOverview = ({
         <Text style={styles.tableHeaderText}>Entity</Text>
         <Text style={styles.tableHeaderText}>Amount</Text>
         <Text style={styles.tableHeaderText}>Status</Text>
-        <View style={{width: rs(20)}} />
+        <View style={{ width: rs(20) }} />
       </View>
 
       {data.commission.rows.map(row => {
         const paid = approvedAll || row.status === 'Paid';
 
         return (
-          <TouchableOpacity key={row.id} activeOpacity={0.8} style={styles.commissionRow}>
+          <TouchableOpacity
+            key={row.id}
+            activeOpacity={0.8}
+            style={styles.commissionRow}
+          >
             <Text style={styles.entityText}>{row.entity}</Text>
             <Text style={styles.amountColumn}>{row.amount}</Text>
 
-            <View style={[styles.payoutBadge, paid ? styles.paidBadge : styles.pendingBadge]}>
-              <Text style={[styles.payoutText, paid ? styles.paidText : styles.pendingText]}>
+            <View
+              style={[
+                styles.payoutBadge,
+                paid ? styles.paidBadge : styles.pendingBadge,
+              ]}
+            >
+              <Text
+                style={[
+                  styles.payoutText,
+                  paid ? styles.paidText : styles.pendingText,
+                ]}
+              >
                 {paid ? 'Paid' : 'Pending'}
               </Text>
-              {paid && <CheckCircle2 color="#138A36" size={rs(14)} fill="#138A36" />}
+              {paid && (
+                <CheckCircle2 color="#138A36" size={rs(14)} fill="#138A36" />
+              )}
             </View>
 
             <ChevronRight color="#061247" size={rs(20)} strokeWidth={2.4} />
@@ -500,7 +588,7 @@ const CommissionOverview = ({
   );
 };
 
-const PaymentsSection = ({data}: {data: CompanyFinanceData}) => {
+const PaymentsSection = ({ data }: { data: CompanyFinanceData }) => {
   return (
     <View style={styles.simpleFullCard}>
       <Text style={styles.cardTitle}>Payments Overview</Text>
@@ -520,7 +608,7 @@ const PaymentsSection = ({data}: {data: CompanyFinanceData}) => {
   );
 };
 
-const IncentivesSection = ({data}: {data: CompanyFinanceData}) => {
+const IncentivesSection = ({ data }: { data: CompanyFinanceData }) => {
   return (
     <View style={styles.simpleFullCard}>
       <Text style={styles.cardTitle}>Incentives Overview</Text>
@@ -574,9 +662,16 @@ const FinanceScreen = () => {
       const response = await getCompanyFinance(activePeriod);
 
       setData(response);
-    } catch (err) {
-      console.log('Company Finance API Error:', err);
-      setError('Unable to load company finance');
+    } catch (err: any) {
+      const errorMessage =
+        err?.response?.data?.message ||
+        err?.response?.data?.error ||
+        err?.message ||
+        'Unable to load company finance';
+
+      showErrorToast(errorMessage);
+
+      setError(errorMessage);
     } finally {
       setLoading(false);
       setRefreshing(false);
@@ -605,7 +700,7 @@ const FinanceScreen = () => {
     setData({
       ...data,
       stockists: data.stockists.map(item =>
-        item.id === id ? {...item, expanded: !item.expanded} : item,
+        item.id === id ? { ...item, expanded: !item.expanded } : item,
       ),
     });
   };
@@ -636,7 +731,8 @@ const FinanceScreen = () => {
             fontWeight: '700',
             marginBottom: rs(18),
             textAlign: 'center',
-          }}>
+          }}
+        >
           {error || 'Something went wrong'}
         </Text>
 
@@ -648,8 +744,13 @@ const FinanceScreen = () => {
             paddingHorizontal: rs(28),
             paddingVertical: rs(14),
             borderRadius: rs(8),
-          }}>
-          <Text style={{color: '#FFFFFF', fontSize: fs(14), fontWeight: '800'}}>Retry</Text>
+          }}
+        >
+          <Text
+            style={{ color: '#FFFFFF', fontSize: fs(14), fontWeight: '800' }}
+          >
+            Retry
+          </Text>
         </TouchableOpacity>
       </SafeAreaView>
     );
@@ -667,7 +768,8 @@ const FinanceScreen = () => {
         contentContainerStyle={styles.scrollContent}
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-        }>
+        }
+      >
         <PeriodTabs activePeriod={activePeriod} onChange={setActivePeriod} />
 
         <KpiGrid items={displayedData.kpis} />
@@ -712,7 +814,8 @@ const PAGE_PADDING = rs(28);
 const CARD_GAP = rs(14);
 const KPI_WIDTH = (SCREEN_WIDTH - PAGE_PADDING * 2 - CARD_GAP) / 2;
 const LEFT_CARD_WIDTH = rs(272);
-const RIGHT_CARD_WIDTH = SCREEN_WIDTH - PAGE_PADDING * 2 - LEFT_CARD_WIDTH - CARD_GAP;
+const RIGHT_CARD_WIDTH =
+  SCREEN_WIDTH - PAGE_PADDING * 2 - LEFT_CARD_WIDTH - CARD_GAP;
 
 const styles = StyleSheet.create({
   safeArea: {
@@ -793,7 +896,7 @@ const styles = StyleSheet.create({
     shadowColor: '#000000',
     shadowOpacity: 0.04,
     shadowRadius: rs(12),
-    shadowOffset: {width: 0, height: rs(5)},
+    shadowOffset: { width: 0, height: rs(5) },
     elevation: 3,
   },
   kpiIconBox: {
@@ -864,7 +967,7 @@ const styles = StyleSheet.create({
     shadowColor: '#000000',
     shadowOpacity: 0.04,
     shadowRadius: rs(12),
-    shadowOffset: {width: 0, height: rs(5)},
+    shadowOffset: { width: 0, height: rs(5) },
     elevation: 3,
   },
   cardTitle: {
@@ -963,7 +1066,7 @@ const styles = StyleSheet.create({
     shadowColor: '#000000',
     shadowOpacity: 0.04,
     shadowRadius: rs(12),
-    shadowOffset: {width: 0, height: rs(5)},
+    shadowOffset: { width: 0, height: rs(5) },
     elevation: 3,
   },
   cardHeader: {
@@ -1123,7 +1226,7 @@ const styles = StyleSheet.create({
     shadowColor: '#000000',
     shadowOpacity: 0.04,
     shadowRadius: rs(12),
-    shadowOffset: {width: 0, height: rs(5)},
+    shadowOffset: { width: 0, height: rs(5) },
     elevation: 3,
   },
   directDealerTitle: {
@@ -1178,7 +1281,7 @@ const styles = StyleSheet.create({
     shadowColor: '#000000',
     shadowOpacity: 0.04,
     shadowRadius: rs(12),
-    shadowOffset: {width: 0, height: rs(5)},
+    shadowOffset: { width: 0, height: rs(5) },
     elevation: 3,
   },
   chartHeader: {
@@ -1259,7 +1362,7 @@ const styles = StyleSheet.create({
     height: rs(64),
     borderTopWidth: rs(3),
     borderColor: '#173CFF',
-    transform: [{rotate: '-5deg'}],
+    transform: [{ rotate: '-5deg' }],
   },
   lineTwo: {
     position: 'absolute',
@@ -1269,7 +1372,7 @@ const styles = StyleSheet.create({
     height: rs(74),
     borderTopWidth: rs(3),
     borderColor: '#173CFF',
-    transform: [{rotate: '7deg'}],
+    transform: [{ rotate: '7deg' }],
   },
   lineDot: {
     position: 'absolute',
@@ -1288,7 +1391,7 @@ const styles = StyleSheet.create({
     shadowColor: '#000000',
     shadowOpacity: 0.04,
     shadowRadius: rs(12),
-    shadowOffset: {width: 0, height: rs(5)},
+    shadowOffset: { width: 0, height: rs(5) },
     elevation: 3,
   },
   commissionStats: {
@@ -1411,7 +1514,7 @@ const styles = StyleSheet.create({
     shadowColor: '#000000',
     shadowOpacity: 0.04,
     shadowRadius: rs(12),
-    shadowOffset: {width: 0, height: rs(5)},
+    shadowOffset: { width: 0, height: rs(5) },
     elevation: 3,
   },
   infoRow: {

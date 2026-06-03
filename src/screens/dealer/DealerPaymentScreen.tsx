@@ -1,4 +1,4 @@
-import React, {useEffect, useMemo, useState} from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import {
   ActivityIndicator,
   Alert,
@@ -22,24 +22,24 @@ import {
   RefreshCw,
   TrendingUp,
   WalletCards,
-
 } from 'lucide-react-native';
-import { CollectionStatus,
+import {
+  CollectionStatus,
   CustomerCollection,
   DealerPaymentData,
   SummaryCardType,
   SupplierPayment,
-  Transaction, } from '../../api/mock/dealer/dealerPayment.mock';
+  Transaction,
+} from '../../api/mock/dealer/dealerPayment.mock';
 import { getDealerPayment } from '../../api/dealer/dealerPayment.api';
+import { showErrorToast } from '../../utils/toast';
 
-const {width: SCREEN_WIDTH} = Dimensions.get('window');
+const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
 const DESIGN_WIDTH = 832;
 const scale = SCREEN_WIDTH / DESIGN_WIDTH;
 const rs = (value: number) => Math.round(value * scale);
 const fs = (value: number) => rs(value + 3);
-
-
 
 const Header = () => {
   return (
@@ -57,9 +57,9 @@ const Header = () => {
   );
 };
 
-const SummaryIcon = ({item}: {item: SummaryCardType}) => {
+const SummaryIcon = ({ item }: { item: SummaryCardType }) => {
   return (
-    <View style={[styles.summaryIcon, {backgroundColor: item.bg}]}>
+    <View style={[styles.summaryIcon, { backgroundColor: item.bg }]}>
       {item.icon === 'collected' && (
         <IndianRupee color="#FFFFFF" size={rs(34)} strokeWidth={2.5} />
       )}
@@ -76,18 +76,18 @@ const SummaryIcon = ({item}: {item: SummaryCardType}) => {
   );
 };
 
-const PaymentSummaryCard = ({item}: {item: SummaryCardType}) => {
+const PaymentSummaryCard = ({ item }: { item: SummaryCardType }) => {
   return (
     <View style={styles.summaryCardBox}>
       <SummaryIcon item={item} />
 
       <View style={styles.summaryTextBox}>
         <Text style={styles.summaryTitle}>{item.title}</Text>
-        <Text style={[styles.summaryValue, {color: item.color}]}>
+        <Text style={[styles.summaryValue, { color: item.color }]}>
           {item.value}
         </Text>
 
-        <Text style={[styles.summarySubtitle, {color: item.color}]}>
+        <Text style={[styles.summarySubtitle, { color: item.color }]}>
           {item.subtitle}
         </Text>
       </View>
@@ -95,7 +95,7 @@ const PaymentSummaryCard = ({item}: {item: SummaryCardType}) => {
   );
 };
 
-const SummaryGrid = ({items}: {items: SummaryCardType[]}) => {
+const SummaryGrid = ({ items }: { items: SummaryCardType[] }) => {
   return (
     <View style={styles.summaryGrid}>
       {items.map(item => (
@@ -105,7 +105,7 @@ const SummaryGrid = ({items}: {items: SummaryCardType[]}) => {
   );
 };
 
-const StatusBadge = ({status}: {status: CollectionStatus}) => {
+const StatusBadge = ({ status }: { status: CollectionStatus }) => {
   const isOverdue = status === 'Overdue';
   const isDueSoon = status === 'Due Soon';
 
@@ -116,14 +116,16 @@ const StatusBadge = ({status}: {status: CollectionStatus}) => {
         isOverdue && styles.overdueBadge,
         isDueSoon && styles.dueSoonBadge,
         !isOverdue && !isDueSoon && styles.pendingBadge,
-      ]}>
+      ]}
+    >
       <Text
         style={[
           styles.statusText,
           isOverdue && styles.overdueText,
           isDueSoon && styles.dueSoonText,
           !isOverdue && !isDueSoon && styles.pendingText,
-        ]}>
+        ]}
+      >
         {status}
       </Text>
     </View>
@@ -151,18 +153,18 @@ const CustomerCollectionsCard = ({
       </View>
 
       <View style={styles.tableHeader}>
-        <Text style={[styles.tableHeadText, {flex: 1.5}]}>Customer</Text>
-        <Text style={[styles.tableHeadText, {flex: 0.8}]}>Amount</Text>
-        <Text style={[styles.tableHeadText, {flex: 0.9}]}>Due Date</Text>
-        <Text style={[styles.tableHeadText, {flex: 0.8}]}>Status</Text>
-        <Text style={[styles.tableHeadText, {flex: 0.9}]}>Actions</Text>
+        <Text style={[styles.tableHeadText, { flex: 1.5 }]}>Customer</Text>
+        <Text style={[styles.tableHeadText, { flex: 0.8 }]}>Amount</Text>
+        <Text style={[styles.tableHeadText, { flex: 0.9 }]}>Due Date</Text>
+        <Text style={[styles.tableHeadText, { flex: 0.8 }]}>Status</Text>
+        <Text style={[styles.tableHeadText, { flex: 0.9 }]}>Actions</Text>
       </View>
 
       {items.map(item => (
         <View key={item.id} style={styles.collectionRow}>
-          <View style={[styles.customerCell, {flex: 1.5}]}>
-            <View style={[styles.avatar, {backgroundColor: item.avatarBg}]}>
-              <Text style={[styles.avatarText, {color: item.avatarColor}]}>
+          <View style={[styles.customerCell, { flex: 1.5 }]}>
+            <View style={[styles.avatar, { backgroundColor: item.avatarBg }]}>
+              <Text style={[styles.avatarText, { color: item.avatarColor }]}>
                 {item.initials}
               </Text>
             </View>
@@ -173,29 +175,31 @@ const CustomerCollectionsCard = ({
             </View>
           </View>
 
-          <Text style={[styles.amountText, {flex: 0.8}]}>{item.amount}</Text>
+          <Text style={[styles.amountText, { flex: 0.8 }]}>{item.amount}</Text>
 
-          <View style={{flex: 0.9}}>
+          <View style={{ flex: 0.9 }}>
             <Text style={styles.dateText}>{item.dueDate}</Text>
             <Text
               style={[
                 styles.dueMetaText,
                 item.status === 'Overdue' && styles.redText,
                 item.status === 'Due Soon' && styles.orangeText,
-              ]}>
+              ]}
+            >
               {item.dueMeta}
             </Text>
           </View>
 
-          <View style={{flex: 0.8}}>
+          <View style={{ flex: 0.8 }}>
             <StatusBadge status={item.status} />
           </View>
 
-          <View style={[styles.actionsColumn, {flex: 0.9}]}>
+          <View style={[styles.actionsColumn, { flex: 0.9 }]}>
             <TouchableOpacity
               activeOpacity={0.85}
               onPress={() => onCollect(item)}
-              style={styles.collectButton}>
+              style={styles.collectButton}
+            >
               <IndianRupee color="#F06419" size={rs(17)} />
               <Text style={styles.collectText}>Collect</Text>
             </TouchableOpacity>
@@ -203,7 +207,8 @@ const CustomerCollectionsCard = ({
             <TouchableOpacity
               activeOpacity={0.85}
               onPress={() => onReminder(item)}
-              style={styles.reminderButton}>
+              style={styles.reminderButton}
+            >
               <Bell color="#173CFF" size={rs(16)} />
               <Text style={styles.reminderText}>Reminder</Text>
             </TouchableOpacity>
@@ -233,18 +238,26 @@ const SupplierPaymentsCard = ({
       </View>
 
       <View style={styles.tableHeader}>
-        <Text style={[styles.tableHeadText, {flex: 1.5}]}>Supplier</Text>
-        <Text style={[styles.tableHeadText, {flex: 0.9}]}>Invoice Amount</Text>
-        <Text style={[styles.tableHeadText, {flex: 0.9}]}>Due Date</Text>
-        <Text style={[styles.tableHeadText, {flex: 0.9}]}>Payment Status</Text>
-        <Text style={[styles.tableHeadText, {flex: 0.9}]}>Actions</Text>
+        <Text style={[styles.tableHeadText, { flex: 1.5 }]}>Supplier</Text>
+        <Text style={[styles.tableHeadText, { flex: 0.9 }]}>
+          Invoice Amount
+        </Text>
+        <Text style={[styles.tableHeadText, { flex: 0.9 }]}>Due Date</Text>
+        <Text style={[styles.tableHeadText, { flex: 0.9 }]}>
+          Payment Status
+        </Text>
+        <Text style={[styles.tableHeadText, { flex: 0.9 }]}>Actions</Text>
       </View>
 
       {items.map(item => (
         <View key={item.id} style={styles.collectionRow}>
-          <View style={[styles.customerCell, {flex: 1.5}]}>
-            <View style={[styles.supplierLogo, {backgroundColor: item.logoBg}]}>
-              <Text style={[styles.supplierLogoText, {color: item.logoColor}]}>
+          <View style={[styles.customerCell, { flex: 1.5 }]}>
+            <View
+              style={[styles.supplierLogo, { backgroundColor: item.logoBg }]}
+            >
+              <Text
+                style={[styles.supplierLogoText, { color: item.logoColor }]}
+              >
                 {item.logo}
               </Text>
             </View>
@@ -252,34 +265,39 @@ const SupplierPaymentsCard = ({
             <Text style={styles.nameText}>{item.name}</Text>
           </View>
 
-          <Text style={[styles.amountText, {flex: 0.9}]}>{item.amount}</Text>
+          <Text style={[styles.amountText, { flex: 0.9 }]}>{item.amount}</Text>
 
-          <View style={{flex: 0.9}}>
+          <View style={{ flex: 0.9 }}>
             <Text style={styles.dateText}>{item.dueDate}</Text>
             <Text
               style={[
                 styles.dueMetaText,
                 item.status === 'Overdue' && styles.redText,
                 item.status === 'Due Soon' && styles.orangeText,
-              ]}>
+              ]}
+            >
               {item.dueMeta}
             </Text>
           </View>
 
-          <View style={{flex: 0.9}}>
+          <View style={{ flex: 0.9 }}>
             <StatusBadge status={item.status} />
           </View>
 
-          <View style={[styles.actionsColumn, {flex: 0.9}]}>
+          <View style={[styles.actionsColumn, { flex: 0.9 }]}>
             <TouchableOpacity
               activeOpacity={0.85}
               onPress={() => onPayNow(item)}
-              style={styles.payNowButton}>
+              style={styles.payNowButton}
+            >
               <IndianRupee color="#173CFF" size={rs(17)} />
               <Text style={styles.payNowText}>Pay Now</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity activeOpacity={0.85} style={styles.downloadButton}>
+            <TouchableOpacity
+              activeOpacity={0.85}
+              style={styles.downloadButton}
+            >
               <Download color="#173CFF" size={rs(16)} />
               <Text style={styles.downloadText}>Download</Text>
             </TouchableOpacity>
@@ -327,16 +345,16 @@ const PaymentAnalyticsCard = () => {
 
           <View style={styles.barChart}>
             {[
-              {m: 'Jan', in: 56, out: 38},
-              {m: 'Feb', in: 86, out: 70},
-              {m: 'Mar', in: 65, out: 38},
-              {m: 'Apr', in: 78, out: 40},
-              {m: 'May', in: 80, out: 40},
+              { m: 'Jan', in: 56, out: 38 },
+              { m: 'Feb', in: 86, out: 70 },
+              { m: 'Mar', in: 65, out: 38 },
+              { m: 'Apr', in: 78, out: 40 },
+              { m: 'May', in: 80, out: 40 },
             ].map(item => (
               <View key={item.m} style={styles.barItem}>
                 <View style={styles.barWrap}>
-                  <View style={[styles.greenBar, {height: rs(item.in)}]} />
-                  <View style={[styles.blueBar, {height: rs(item.out)}]} />
+                  <View style={[styles.greenBar, { height: rs(item.in) }]} />
+                  <View style={[styles.blueBar, { height: rs(item.out) }]} />
                 </View>
                 <Text style={styles.monthText}>{item.m}</Text>
               </View>
@@ -349,12 +367,12 @@ const PaymentAnalyticsCard = () => {
 
           <View style={styles.lineChart}>
             <View style={styles.chartGridLine} />
-            <View style={[styles.chartGridLine, {top: '50%'}]} />
-            <View style={[styles.chartGridLine, {top: '76%'}]} />
+            <View style={[styles.chartGridLine, { top: '50%' }]} />
+            <View style={[styles.chartGridLine, { top: '76%' }]} />
 
-            <Text style={[styles.axisLabel, {top: rs(14)}]}>₹60K</Text>
-            <Text style={[styles.axisLabel, {top: rs(54)}]}>₹40K</Text>
-            <Text style={[styles.axisLabel, {top: rs(94)}]}>₹20K</Text>
+            <Text style={[styles.axisLabel, { top: rs(14) }]}>₹60K</Text>
+            <Text style={[styles.axisLabel, { top: rs(54) }]}>₹40K</Text>
+            <Text style={[styles.axisLabel, { top: rs(94) }]}>₹20K</Text>
 
             <View style={styles.redLineOne} />
             <View style={styles.redLineTwo} />
@@ -367,7 +385,7 @@ const PaymentAnalyticsCard = () => {
   );
 };
 
-const RecentTransactionsCard = ({items}: {items: Transaction[]}) => {
+const RecentTransactionsCard = ({ items }: { items: Transaction[] }) => {
   return (
     <View style={styles.transactionsCard}>
       <View style={styles.sectionHeader}>
@@ -380,8 +398,12 @@ const RecentTransactionsCard = ({items}: {items: Transaction[]}) => {
       </View>
 
       {items.map(item => (
-        <TouchableOpacity key={item.id} activeOpacity={0.85} style={styles.transactionRow}>
-          <View style={[styles.transactionIcon, {backgroundColor: item.bg}]}>
+        <TouchableOpacity
+          key={item.id}
+          activeOpacity={0.85}
+          style={styles.transactionRow}
+        >
+          <View style={[styles.transactionIcon, { backgroundColor: item.bg }]}>
             {item.icon === 'received' && (
               <Download color={item.color} size={rs(22)} strokeWidth={2.4} />
             )}
@@ -392,7 +414,9 @@ const RecentTransactionsCard = ({items}: {items: Transaction[]}) => {
               <RefreshCw color={item.color} size={rs(22)} strokeWidth={2.4} />
             )}
             {item.icon === 'failed' && (
-              <Text style={[styles.failedIconText, {color: item.color}]}>!</Text>
+              <Text style={[styles.failedIconText, { color: item.color }]}>
+                !
+              </Text>
             )}
           </View>
 
@@ -402,7 +426,7 @@ const RecentTransactionsCard = ({items}: {items: Transaction[]}) => {
           </View>
 
           <View style={styles.transactionRight}>
-            <Text style={[styles.transactionAmount, {color: item.color}]}>
+            <Text style={[styles.transactionAmount, { color: item.color }]}>
               {item.amount}
             </Text>
             <Text style={styles.transactionDate}>{item.date}</Text>
@@ -427,7 +451,8 @@ const BottomActions = ({
       <TouchableOpacity
         activeOpacity={0.85}
         style={styles.bottomActionButton}
-        onPress={onRecordPayment}>
+        onPress={onRecordPayment}
+      >
         <View style={styles.bottomIconCircle}>
           <Plus color="#173CFF" size={rs(25)} />
         </View>
@@ -439,7 +464,8 @@ const BottomActions = ({
       <TouchableOpacity
         activeOpacity={0.85}
         style={styles.bottomActionButton}
-        onPress={onSendReminder}>
+        onPress={onSendReminder}
+      >
         <View style={styles.bottomIconCircle}>
           <Plus color="#173CFF" size={rs(25)} />
         </View>
@@ -451,7 +477,8 @@ const BottomActions = ({
       <TouchableOpacity
         activeOpacity={0.85}
         style={styles.bottomActionButton}
-        onPress={onGenerateInvoice}>
+        onPress={onGenerateInvoice}
+      >
         <View style={styles.bottomIconCircle}>
           <Plus color="#173CFF" size={rs(25)} />
         </View>
@@ -470,9 +497,16 @@ const DealerPaymentScreen = () => {
       setLoading(true);
 
       const response = await getDealerPayment();
+
       setData(response);
-    } catch (error) {
-      console.log('Dealer Payment API Error:', error);
+    } catch (error: any) {
+      const errorMessage =
+        error?.response?.data?.message ||
+        error?.response?.data?.error ||
+        error?.message ||
+        'Unable to load payment data. Please try again.';
+
+      showErrorToast(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -485,14 +519,19 @@ const DealerPaymentScreen = () => {
   const handlers = useMemo(
     () => ({
       collect: (item: CustomerCollection) =>
-        Alert.alert('Collect Payment', `Collect ${item.amount} from ${item.name}.`),
+        Alert.alert(
+          'Collect Payment',
+          `Collect ${item.amount} from ${item.name}.`,
+        ),
       reminder: (item: CustomerCollection) =>
         Alert.alert('Reminder Sent', `Reminder sent to ${item.name}.`),
       payNow: (item: SupplierPayment) =>
         Alert.alert('Pay Supplier', `Pay ${item.amount} to ${item.name}.`),
-      recordPayment: () => Alert.alert('Record Payment', 'Record payment form opened.'),
+      recordPayment: () =>
+        Alert.alert('Record Payment', 'Record payment form opened.'),
       sendReminder: () => Alert.alert('Send Reminder', 'Reminder flow opened.'),
-      generateInvoice: () => Alert.alert('Generate Invoice', 'Invoice form opened.'),
+      generateInvoice: () =>
+        Alert.alert('Generate Invoice', 'Invoice form opened.'),
     }),
     [],
   );
@@ -515,7 +554,8 @@ const DealerPaymentScreen = () => {
       <ScrollView
         style={styles.scrollView}
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={styles.scrollContent}>
+        contentContainerStyle={styles.scrollContent}
+      >
         <SummaryGrid items={data.summary} />
 
         <CustomerCollectionsCard
@@ -600,7 +640,7 @@ const styles = StyleSheet.create({
     shadowColor: '#000000',
     shadowOpacity: 0.04,
     shadowRadius: rs(12),
-    shadowOffset: {width: 0, height: rs(5)},
+    shadowOffset: { width: 0, height: rs(5) },
     elevation: 3,
   },
   summaryIcon: {
@@ -639,7 +679,7 @@ const styles = StyleSheet.create({
     shadowColor: '#000000',
     shadowOpacity: 0.04,
     shadowRadius: rs(12),
-    shadowOffset: {width: 0, height: rs(5)},
+    shadowOffset: { width: 0, height: rs(5) },
     elevation: 3,
   },
   sectionHeader: {
@@ -855,7 +895,7 @@ const styles = StyleSheet.create({
     shadowColor: '#000000',
     shadowOpacity: 0.04,
     shadowRadius: rs(12),
-    shadowOffset: {width: 0, height: rs(5)},
+    shadowOffset: { width: 0, height: rs(5) },
     elevation: 3,
   },
   analyticsRow: {
@@ -991,7 +1031,7 @@ const styles = StyleSheet.create({
     width: rs(48),
     borderTopWidth: 2,
     borderColor: '#E00014',
-    transform: [{rotate: '-25deg'}],
+    transform: [{ rotate: '-25deg' }],
   },
   redLineTwo: {
     position: 'absolute',
@@ -1000,7 +1040,7 @@ const styles = StyleSheet.create({
     width: rs(48),
     borderTopWidth: 2,
     borderColor: '#E00014',
-    transform: [{rotate: '22deg'}],
+    transform: [{ rotate: '22deg' }],
   },
   redLineThree: {
     position: 'absolute',
@@ -1009,7 +1049,7 @@ const styles = StyleSheet.create({
     width: rs(48),
     borderTopWidth: 2,
     borderColor: '#E00014',
-    transform: [{rotate: '-32deg'}],
+    transform: [{ rotate: '-32deg' }],
   },
   redLineFour: {
     position: 'absolute',
@@ -1018,7 +1058,7 @@ const styles = StyleSheet.create({
     width: rs(42),
     borderTopWidth: 2,
     borderColor: '#E00014',
-    transform: [{rotate: '-38deg'}],
+    transform: [{ rotate: '-38deg' }],
   },
   transactionsCard: {
     backgroundColor: '#FFFFFF',
@@ -1028,7 +1068,7 @@ const styles = StyleSheet.create({
     shadowColor: '#000000',
     shadowOpacity: 0.04,
     shadowRadius: rs(12),
-    shadowOffset: {width: 0, height: rs(5)},
+    shadowOffset: { width: 0, height: rs(5) },
     elevation: 3,
   },
   transactionRow: {

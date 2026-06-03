@@ -1,4 +1,4 @@
-import React, {useEffect, useMemo, useState} from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import {
   ActivityIndicator,
   Alert,
@@ -12,9 +12,8 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import {SafeAreaView} from 'react-native-safe-area-context';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import {CommonActions, useNavigation} from '@react-navigation/native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+
 import {
   Award,
   Building2,
@@ -50,18 +49,17 @@ import {
   PerformanceItem,
   RowItem,
 } from '../../api/mock/dealer/dealerProfile.mock';
-import {getDealerProfile} from '../../api/dealer/dealerProfile.api';
+import { getDealerProfile } from '../../api/dealer/dealerProfile.api';
+import { clearAuthStorage } from '../../utils/sessionManager';
+import { resetToLogin } from '../../navigation/navigationService';
+import { showErrorToast } from '../../utils/toast';
 
-const {width: SCREEN_WIDTH} = Dimensions.get('window');
+const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
 const DESIGN_WIDTH = 832;
 const scale = SCREEN_WIDTH / DESIGN_WIDTH;
 const rs = (value: number) => Math.round(value * scale);
 const fs = (value: number) => rs(value + 3);
-
-const LOGIN_ROUTE_NAME = 'Auth';
-
-
 
 const Header = () => {
   return (
@@ -77,10 +75,14 @@ const Header = () => {
   );
 };
 
-const ProfileHero = ({profile}: {profile: DealerProfileData['profile']}) => {
+const ProfileHero = ({
+  profile,
+}: {
+  profile: DealerProfileData['profile'];
+}) => {
   return (
     <View style={styles.heroCard}>
-      <Image source={{uri: profile.image}} style={styles.profileImage} />
+      <Image source={{ uri: profile.image }} style={styles.profileImage} />
 
       <View style={styles.heroInfo}>
         <Text style={styles.profileName}>{profile.name}</Text>
@@ -95,7 +97,7 @@ const ProfileHero = ({profile}: {profile: DealerProfileData['profile']}) => {
   );
 };
 
-const CardTitle = ({title, icon}: {title: string; icon: string}) => {
+const CardTitle = ({ title, icon }: { title: string; icon: string }) => {
   return (
     <View style={styles.cardTitleRow}>
       <View style={styles.titleIconBox}>
@@ -107,7 +109,7 @@ const CardTitle = ({title, icon}: {title: string; icon: string}) => {
   );
 };
 
-const SectionIcon = ({type}: {type: string}) => {
+const SectionIcon = ({ type }: { type: string }) => {
   const size = rs(22);
 
   if (type === 'business') {
@@ -137,7 +139,7 @@ const SectionIcon = ({type}: {type: string}) => {
   return <SlidersHorizontal color="#173CFF" size={size} strokeWidth={2.2} />;
 };
 
-const BusinessIcon = ({type}: {type: BusinessInfoItem['icon']}) => {
+const BusinessIcon = ({ type }: { type: BusinessInfoItem['icon'] }) => {
   const size = rs(19);
 
   if (type === 'business') {
@@ -163,7 +165,7 @@ const BusinessIcon = ({type}: {type: BusinessInfoItem['icon']}) => {
   return <CalendarDays color="#173CFF" size={size} strokeWidth={2.2} />;
 };
 
-const RowIcon = ({type}: {type: string}) => {
+const RowIcon = ({ type }: { type: string }) => {
   const size = rs(20);
 
   if (type === 'lock') {
@@ -241,13 +243,17 @@ const RowIcon = ({type}: {type: string}) => {
   return <FileText color="#5D607E" size={size} strokeWidth={2.2} />;
 };
 
-const BusinessInfoCard = ({items}: {items: BusinessInfoItem[]}) => {
+const BusinessInfoCard = ({ items }: { items: BusinessInfoItem[] }) => {
   return (
     <View style={styles.fullCard}>
       <CardTitle title="Business Information" icon="business" />
 
       {items.map(item => (
-        <TouchableOpacity key={item.id} activeOpacity={0.8} style={styles.businessRow}>
+        <TouchableOpacity
+          key={item.id}
+          activeOpacity={0.8}
+          style={styles.businessRow}
+        >
           <View style={styles.smallIconBox}>
             <BusinessIcon type={item.icon} />
           </View>
@@ -263,7 +269,7 @@ const BusinessInfoCard = ({items}: {items: BusinessInfoItem[]}) => {
   );
 };
 
-const PerformanceIcon = ({item}: {item: PerformanceItem}) => {
+const PerformanceIcon = ({ item }: { item: PerformanceItem }) => {
   const size = rs(25);
 
   if (item.icon === 'revenue') {
@@ -281,7 +287,7 @@ const PerformanceIcon = ({item}: {item: PerformanceItem}) => {
   return <ShieldCheck color={item.color} size={size} strokeWidth={2.2} />;
 };
 
-const BusinessPerformanceCard = ({items}: {items: PerformanceItem[]}) => {
+const BusinessPerformanceCard = ({ items }: { items: PerformanceItem[] }) => {
   return (
     <View style={styles.fullCard}>
       <CardTitle title="Business Performance" icon="performance" />
@@ -289,7 +295,12 @@ const BusinessPerformanceCard = ({items}: {items: PerformanceItem[]}) => {
       <View style={styles.performanceRow}>
         {items.map((item, index) => (
           <View key={item.id} style={styles.performanceItem}>
-            <View style={[styles.performanceIconCircle, {backgroundColor: `${item.color}16`}]}>
+            <View
+              style={[
+                styles.performanceIconCircle,
+                { backgroundColor: `${item.color}16` },
+              ]}
+            >
               <PerformanceIcon item={item} />
             </View>
 
@@ -297,7 +308,9 @@ const BusinessPerformanceCard = ({items}: {items: PerformanceItem[]}) => {
             <Text style={styles.performanceValue}>{item.value}</Text>
             <Text style={styles.performanceGrowth}>{item.growth}</Text>
 
-            {index !== items.length - 1 && <View style={styles.performanceDivider} />}
+            {index !== items.length - 1 && (
+              <View style={styles.performanceDivider} />
+            )}
           </View>
         ))}
       </View>
@@ -319,7 +332,7 @@ const SettingsCard = ({
   const toggle = (id: string) => {
     setLocalItems(prev =>
       prev.map(item =>
-        item.id === id ? {...item, enabled: !item.enabled} : item,
+        item.id === id ? { ...item, enabled: !item.enabled } : item,
       ),
     );
   };
@@ -329,7 +342,11 @@ const SettingsCard = ({
       <CardTitle title={title} icon={icon} />
 
       {localItems.map(item => (
-        <TouchableOpacity key={item.id} activeOpacity={0.8} style={styles.settingRow}>
+        <TouchableOpacity
+          key={item.id}
+          activeOpacity={0.8}
+          style={styles.settingRow}
+        >
           <View style={styles.smallIconBox}>
             <RowIcon type={item.icon} />
           </View>
@@ -337,7 +354,9 @@ const SettingsCard = ({
           <Text style={styles.settingLabel}>{item.label}</Text>
 
           {!!item.value && (
-            <Text style={[styles.settingValue, item.green && styles.greenValue]}>
+            <Text
+              style={[styles.settingValue, item.green && styles.greenValue]}
+            >
               {item.value}
             </Text>
           )}
@@ -346,7 +365,7 @@ const SettingsCard = ({
             <Switch
               value={!!item.enabled}
               onValueChange={() => toggle(item.id)}
-              trackColor={{false: '#D0D3DA', true: '#173CFF'}}
+              trackColor={{ false: '#D0D3DA', true: '#173CFF' }}
               thumbColor="#FFFFFF"
             />
           )}
@@ -364,13 +383,13 @@ const SettingsCard = ({
   );
 };
 
-const PreferencesCard = ({items}: {items: RowItem[]}) => {
+const PreferencesCard = ({ items }: { items: RowItem[] }) => {
   const [localItems, setLocalItems] = useState(items);
 
   const toggle = (id: string) => {
     setLocalItems(prev =>
       prev.map(item =>
-        item.id === id ? {...item, enabled: !item.enabled} : item,
+        item.id === id ? { ...item, enabled: !item.enabled } : item,
       ),
     );
   };
@@ -380,20 +399,26 @@ const PreferencesCard = ({items}: {items: RowItem[]}) => {
       <CardTitle title="Preferences" icon="preferences" />
 
       {localItems.map(item => (
-        <TouchableOpacity key={item.id} activeOpacity={0.8} style={styles.preferenceRow}>
+        <TouchableOpacity
+          key={item.id}
+          activeOpacity={0.8}
+          style={styles.preferenceRow}
+        >
           <View style={styles.smallIconBox}>
             <RowIcon type={item.icon} />
           </View>
 
           <Text style={styles.settingLabel}>{item.label}</Text>
 
-          {!!item.value && <Text style={styles.settingValue}>{item.value}</Text>}
+          {!!item.value && (
+            <Text style={styles.settingValue}>{item.value}</Text>
+          )}
 
           {item.type === 'switch' && (
             <Switch
               value={!!item.enabled}
               onValueChange={() => toggle(item.id)}
-              trackColor={{false: '#D0D3DA', true: '#173CFF'}}
+              trackColor={{ false: '#D0D3DA', true: '#173CFF' }}
               thumbColor="#FFFFFF"
             />
           )}
@@ -408,43 +433,7 @@ const PreferencesCard = ({items}: {items: RowItem[]}) => {
 };
 
 const LogoutButton = () => {
-  const navigation = useNavigation<any>();
   const [isLoggingOut, setIsLoggingOut] = useState(false);
-
-  const clearAuthStorage = async () => {
-    const keysToRemove = [
-      'token',
-      'authToken',
-      'accessToken',
-      'refreshToken',
-      'userToken',
-      'user',
-      'userData',
-      'role',
-      'company',
-      'companyId',
-      'stockistId',
-      'isLoggedIn',
-    ];
-
-    await Promise.all(keysToRemove.map(key => AsyncStorage.removeItem(key)));
-  };
-
-  const resetToLogin = () => {
-    navigation.dispatch(
-      CommonActions.reset({
-        index: 0,
-        routes: [
-          {
-            name: LOGIN_ROUTE_NAME,
-            state: {
-              routes: [{ name: 'Login' }],
-            },
-          },
-        ],
-      }),
-    );
-  };
 
   const handleLogout = () => {
     Alert.alert('Logout', 'Are you sure you want to logout?', [
@@ -458,11 +447,14 @@ const LogoutButton = () => {
         onPress: async () => {
           try {
             setIsLoggingOut(true);
+
             await clearAuthStorage();
+
             resetToLogin();
           } catch (error: any) {
             setIsLoggingOut(false);
-            Alert.alert('Logout failed', 'Please try again.', error);
+
+            Alert.alert('Logout failed', error?.message || 'Please try again.');
           }
         },
       },
@@ -493,9 +485,16 @@ const DealerProfileScreen = () => {
       setLoading(true);
 
       const response = await getDealerProfile();
+
       setData(response);
-    } catch (error) {
-      console.log('Dealer Profile API Error:', error);
+    } catch (error: any) {
+      const errorMessage =
+        error?.response?.data?.message ||
+        error?.response?.data?.error ||
+        error?.message ||
+        'Unable to load dealer profile. Please try again.';
+
+      showErrorToast(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -556,7 +555,8 @@ const DealerProfileScreen = () => {
       <ScrollView
         style={styles.scrollView}
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={styles.scrollContent}>
+        contentContainerStyle={styles.scrollContent}
+      >
         <ProfileHero profile={data.profile} />
 
         <BusinessInfoCard items={data.businessInfo} />
@@ -684,7 +684,7 @@ const styles = StyleSheet.create({
     shadowColor: '#000000',
     shadowOpacity: 0.04,
     shadowRadius: rs(12),
-    shadowOffset: {width: 0, height: rs(5)},
+    shadowOffset: { width: 0, height: rs(5) },
     elevation: 3,
   },
   halfCard: {
@@ -697,7 +697,7 @@ const styles = StyleSheet.create({
     shadowColor: '#000000',
     shadowOpacity: 0.04,
     shadowRadius: rs(12),
-    shadowOffset: {width: 0, height: rs(5)},
+    shadowOffset: { width: 0, height: rs(5) },
     elevation: 3,
   },
   twoColumnRow: {

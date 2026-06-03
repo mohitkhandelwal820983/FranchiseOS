@@ -1,4 +1,4 @@
-import React, {useEffect, useMemo, useState} from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import {
   ActivityIndicator,
   Alert,
@@ -33,22 +33,24 @@ import {
   Users,
   WalletCards,
 } from 'lucide-react-native';
-import {   Customer,
+import {
+  Customer,
   CustomerFilter,
   CustomerStatus,
   DealerCustomerData,
-  Insight, } from '../../api/mock/dealer/dealerCustomer.mock';
+  Insight,
+} from '../../api/mock/dealer/dealerCustomer.mock';
 import { getDealerCustomer } from '../../api/dealer/dealerCustomer.api';
+import { showErrorToast } from '../../utils/toast';
 
-const {width: SCREEN_WIDTH} = Dimensions.get('window');
+const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
 const DESIGN_WIDTH = 832;
 const scale = SCREEN_WIDTH / DESIGN_WIDTH;
 const rs = (value: number) => Math.round(value * scale);
 const fs = (value: number) => rs(value + 3);
 
-
-const Header = ({onAdd}: {onAdd: () => void}) => {
+const Header = ({ onAdd }: { onAdd: () => void }) => {
   return (
     <View style={styles.header}>
       <TouchableOpacity activeOpacity={0.8}>
@@ -110,8 +112,11 @@ const FilterChips = ({
             key={item}
             activeOpacity={0.85}
             onPress={() => onChange(item)}
-            style={[styles.filterChip, isActive && styles.activeFilterChip]}>
-            <Text style={[styles.filterText, isActive && styles.activeFilterText]}>
+            style={[styles.filterChip, isActive && styles.activeFilterChip]}
+          >
+            <Text
+              style={[styles.filterText, isActive && styles.activeFilterText]}
+            >
               {item}
             </Text>
           </TouchableOpacity>
@@ -121,11 +126,15 @@ const FilterChips = ({
   );
 };
 
-const SummaryCard = ({summary}: {summary: DealerCustomerData['summary']}) => {
+const SummaryCard = ({
+  summary,
+}: {
+  summary: DealerCustomerData['summary'];
+}) => {
   return (
     <View style={styles.summaryCard}>
       <View style={styles.summaryItem}>
-        <View style={[styles.summaryIcon, {backgroundColor: '#EEF3FF'}]}>
+        <View style={[styles.summaryIcon, { backgroundColor: '#EEF3FF' }]}>
           <Users color="#173CFF" size={rs(32)} strokeWidth={2.3} />
         </View>
 
@@ -138,7 +147,7 @@ const SummaryCard = ({summary}: {summary: DealerCustomerData['summary']}) => {
       <View style={styles.summaryDivider} />
 
       <View style={styles.summaryItem}>
-        <View style={[styles.summaryIcon, {backgroundColor: '#138A36'}]}>
+        <View style={[styles.summaryIcon, { backgroundColor: '#138A36' }]}>
           <IndianRupee color="#FFFFFF" size={rs(32)} strokeWidth={2.4} />
         </View>
 
@@ -153,7 +162,7 @@ const SummaryCard = ({summary}: {summary: DealerCustomerData['summary']}) => {
       <View style={styles.summaryDivider} />
 
       <View style={styles.summaryItem}>
-        <View style={[styles.summaryIcon, {backgroundColor: '#F06419'}]}>
+        <View style={[styles.summaryIcon, { backgroundColor: '#F06419' }]}>
           <WalletCards color="#FFFFFF" size={rs(32)} strokeWidth={2.3} />
         </View>
 
@@ -168,7 +177,7 @@ const SummaryCard = ({summary}: {summary: DealerCustomerData['summary']}) => {
   );
 };
 
-const StatusBadge = ({status}: {status: CustomerStatus}) => {
+const StatusBadge = ({ status }: { status: CustomerStatus }) => {
   const isActive = status === 'Active';
   const isPaymentDue = status === 'Payment Due';
   const isTopBuyer = status === 'Top Buyer';
@@ -180,14 +189,16 @@ const StatusBadge = ({status}: {status: CustomerStatus}) => {
         isActive && styles.activeBadge,
         isPaymentDue && styles.paymentBadge,
         isTopBuyer && styles.topBadge,
-      ]}>
+      ]}
+    >
       <Text
         style={[
           styles.statusText,
           isActive && styles.activeText,
           isPaymentDue && styles.paymentText,
           isTopBuyer && styles.topText,
-        ]}>
+        ]}
+      >
         {status}
       </Text>
     </View>
@@ -207,7 +218,7 @@ const CustomerMetric = ({
 }) => {
   return (
     <View style={styles.metricBlock}>
-      <View style={[styles.metricIconSoft, {backgroundColor: `${color}14`}]}>
+      <View style={[styles.metricIconSoft, { backgroundColor: `${color}14` }]}>
         {icon === 'purchase' && (
           <Briefcase color={color} size={rs(24)} strokeWidth={2.2} />
         )}
@@ -244,8 +255,8 @@ const CustomerCard = ({
   return (
     <View style={styles.customerCard}>
       <View style={styles.customerTopRow}>
-        <View style={[styles.avatar, {backgroundColor: item.avatarBg}]}>
-          <Text style={[styles.avatarText, {color: item.avatarColor}]}>
+        <View style={[styles.avatar, { backgroundColor: item.avatarBg }]}>
+          <Text style={[styles.avatarText, { color: item.avatarColor }]}>
             {item.initials}
           </Text>
         </View>
@@ -275,10 +286,12 @@ const CustomerCard = ({
 
       {isPaymentDue && (
         <TouchableOpacity activeOpacity={0.85} style={styles.outstandingBox}>
-          <Text style={styles.outstandingLabel}>⚠  Outstanding Amount</Text>
+          <Text style={styles.outstandingLabel}>⚠ Outstanding Amount</Text>
 
           <View style={styles.outstandingRight}>
-            <Text style={styles.outstandingAmount}>{item.outstandingAmount}</Text>
+            <Text style={styles.outstandingAmount}>
+              {item.outstandingAmount}
+            </Text>
             <ChevronRight color="#F06419" size={rs(24)} strokeWidth={2.3} />
           </View>
         </TouchableOpacity>
@@ -327,12 +340,16 @@ const CustomerCard = ({
             <TouchableOpacity
               activeOpacity={0.85}
               onPress={() => onReward(item)}
-              style={styles.outlineButtonHalf}>
+              style={styles.outlineButtonHalf}
+            >
               <Trophy color="#173CFF" size={rs(20)} strokeWidth={2.3} />
               <Text style={styles.outlineButtonText}>Reward</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity activeOpacity={0.85} style={styles.outlineButtonHalf}>
+            <TouchableOpacity
+              activeOpacity={0.85}
+              style={styles.outlineButtonHalf}
+            >
               <List color="#173CFF" size={rs(20)} strokeWidth={2.3} />
               <Text style={styles.outlineButtonText}>Details</Text>
             </TouchableOpacity>
@@ -348,13 +365,21 @@ const CustomerCard = ({
               <TouchableOpacity
                 activeOpacity={0.85}
                 onPress={() => onReminder(item)}
-                style={styles.orangeOutlineButton}>
+                style={styles.orangeOutlineButton}
+              >
                 <Bell color="#F06419" size={rs(20)} strokeWidth={2.3} />
                 <Text style={styles.orangeOutlineText}>Reminder</Text>
               </TouchableOpacity>
             ) : (
-              <TouchableOpacity activeOpacity={0.85} style={styles.outlineButton}>
-                <ClipboardList color="#173CFF" size={rs(20)} strokeWidth={2.3} />
+              <TouchableOpacity
+                activeOpacity={0.85}
+                style={styles.outlineButton}
+              >
+                <ClipboardList
+                  color="#173CFF"
+                  size={rs(20)}
+                  strokeWidth={2.3}
+                />
                 <Text style={styles.outlineButtonText}>Ledger</Text>
               </TouchableOpacity>
             )}
@@ -362,7 +387,10 @@ const CustomerCard = ({
             <TouchableOpacity
               activeOpacity={0.85}
               onPress={() => onCollect(item)}
-              style={isPaymentDue ? styles.orangePrimaryButton : styles.primaryButton}>
+              style={
+                isPaymentDue ? styles.orangePrimaryButton : styles.primaryButton
+              }
+            >
               <IndianRupee color="#FFFFFF" size={rs(20)} strokeWidth={2.3} />
               <Text style={styles.primaryButtonText}>Collect</Text>
             </TouchableOpacity>
@@ -373,9 +401,11 @@ const CustomerCard = ({
   );
 };
 
-const InsightIcon = ({item}: {item: Insight}) => {
+const InsightIcon = ({ item }: { item: Insight }) => {
   if (item.icon === 'top') {
-    return <UserRoundCheck color={item.color} size={rs(28)} strokeWidth={2.2} />;
+    return (
+      <UserRoundCheck color={item.color} size={rs(28)} strokeWidth={2.2} />
+    );
   }
 
   if (item.icon === 'repeat') {
@@ -389,7 +419,7 @@ const InsightIcon = ({item}: {item: Insight}) => {
   return <IndianRupee color={item.color} size={rs(28)} strokeWidth={2.2} />;
 };
 
-const CustomerInsights = ({items}: {items: Insight[]}) => {
+const CustomerInsights = ({ items }: { items: Insight[] }) => {
   return (
     <View style={styles.insightCard}>
       <View style={styles.insightTitleRow}>
@@ -404,7 +434,7 @@ const CustomerInsights = ({items}: {items: Insight[]}) => {
       <View style={styles.insightItemsRow}>
         {items.map((item, index) => (
           <View key={item.id} style={styles.insightItem}>
-            <View style={[styles.insightIcon, {backgroundColor: item.bg}]}>
+            <View style={[styles.insightIcon, { backgroundColor: item.bg }]}>
               <InsightIcon item={item} />
             </View>
 
@@ -413,7 +443,9 @@ const CustomerInsights = ({items}: {items: Insight[]}) => {
               <Text style={styles.insightLabel}>{item.label}</Text>
             </View>
 
-            {index !== items.length - 1 && <View style={styles.insightDivider} />}
+            {index !== items.length - 1 && (
+              <View style={styles.insightDivider} />
+            )}
           </View>
         ))}
       </View>
@@ -421,9 +453,13 @@ const CustomerInsights = ({items}: {items: Insight[]}) => {
   );
 };
 
-const FloatingAddButton = ({onPress}: {onPress: () => void}) => {
+const FloatingAddButton = ({ onPress }: { onPress: () => void }) => {
   return (
-    <TouchableOpacity activeOpacity={0.85} style={styles.floatingAddButton} onPress={onPress}>
+    <TouchableOpacity
+      activeOpacity={0.85}
+      style={styles.floatingAddButton}
+      onPress={onPress}
+    >
       <Plus color="#FFFFFF" size={rs(34)} strokeWidth={2.5} />
       <Text style={styles.floatingAddText}>Add Customer</Text>
     </TouchableOpacity>
@@ -435,15 +471,21 @@ const DealerCustomerScreen = () => {
   const [search, setSearch] = useState('');
   const [activeFilter, setActiveFilter] = useState<CustomerFilter>('All');
   const [loading, setLoading] = useState<boolean>(true);
-
   const loadCustomerData = async () => {
     try {
       setLoading(true);
 
       const response = await getDealerCustomer();
+
       setData(response);
-    } catch (error) {
-      console.log('Dealer Customer API Error:', error);
+    } catch (error: any) {
+      const errorMessage =
+        error?.response?.data?.message ||
+        error?.response?.data?.error ||
+        error?.message ||
+        'Unable to load customer data. Please try again.';
+
+      showErrorToast(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -515,7 +557,8 @@ const DealerCustomerScreen = () => {
       <ScrollView
         style={styles.scrollView}
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={styles.scrollContent}>
+        contentContainerStyle={styles.scrollContent}
+      >
         <SearchBox value={search} onChangeText={setSearch} />
 
         <FilterChips active={activeFilter} onChange={setActiveFilter} />
@@ -635,7 +678,7 @@ const styles = StyleSheet.create({
     shadowColor: '#000000',
     shadowOpacity: 0.04,
     shadowRadius: rs(12),
-    shadowOffset: {width: 0, height: rs(5)},
+    shadowOffset: { width: 0, height: rs(5) },
     elevation: 3,
   },
   summaryItem: {
@@ -683,7 +726,7 @@ const styles = StyleSheet.create({
     shadowColor: '#000000',
     shadowOpacity: 0.04,
     shadowRadius: rs(12),
-    shadowOffset: {width: 0, height: rs(5)},
+    shadowOffset: { width: 0, height: rs(5) },
     elevation: 3,
   },
   customerTopRow: {
@@ -924,7 +967,7 @@ const styles = StyleSheet.create({
     shadowColor: '#000000',
     shadowOpacity: 0.04,
     shadowRadius: rs(12),
-    shadowOffset: {width: 0, height: rs(5)},
+    shadowOffset: { width: 0, height: rs(5) },
     elevation: 3,
   },
   insightTitleRow: {
@@ -1011,7 +1054,7 @@ const styles = StyleSheet.create({
     shadowColor: '#000000',
     shadowOpacity: 0.18,
     shadowRadius: rs(12),
-    shadowOffset: {width: 0, height: rs(5)},
+    shadowOffset: { width: 0, height: rs(5) },
     elevation: 10,
   },
   floatingAddText: {

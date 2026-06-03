@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useMemo, useState} from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   ActivityIndicator,
   Dimensions,
@@ -22,19 +22,25 @@ import {
   Menu,
   Search,
 } from 'lucide-react-native';
-import {useNavigation} from '@react-navigation/native';
-import { CompanyNetworkData, DirectDealer, FilterChip, filterChips, SortOption, Stockist } from '../../api/mock/company/companyNetwork.mock';
+import { useNavigation } from '@react-navigation/native';
+import {
+  CompanyNetworkData,
+  DirectDealer,
+  FilterChip,
+  filterChips,
+  SortOption,
+  Stockist,
+} from '../../api/mock/company/companyNetwork.mock';
 import { getCompanyNetwork } from '../../api/company/companyNetwork.api';
+import { showErrorToast } from '../../utils/toast';
 
-const {width: SCREEN_WIDTH} = Dimensions.get('window');
+const { width: SCREEN_WIDTH } = Dimensions.get('window');
 const DESIGN_WIDTH = 928;
 const scale = SCREEN_WIDTH / DESIGN_WIDTH;
 const rs = (value: number) => Math.round(value * scale);
 const fs = (value: number) => rs(value + 3);
 
-
-
-const Header = ({count}: {count: string}) => {
+const Header = ({ count }: { count: string }) => {
   return (
     <View style={styles.header}>
       <TouchableOpacity activeOpacity={0.8}>
@@ -91,7 +97,8 @@ const FilterChips = ({
     <ScrollView
       horizontal
       showsHorizontalScrollIndicator={false}
-      contentContainerStyle={styles.chipsRow}>
+      contentContainerStyle={styles.chipsRow}
+    >
       {filterChips.map(item => {
         const active = activeFilter === item.value;
 
@@ -100,8 +107,11 @@ const FilterChips = ({
             key={item.id}
             activeOpacity={0.8}
             onPress={() => onChange(item.value)}
-            style={[styles.filterChip, active && styles.activeFilterChip]}>
-            <Text style={[styles.filterChipText, active && styles.activeFilterText]}>
+            style={[styles.filterChip, active && styles.activeFilterChip]}
+          >
+            <Text
+              style={[styles.filterChipText, active && styles.activeFilterText]}
+            >
               {item.label}
             </Text>
           </TouchableOpacity>
@@ -118,11 +128,11 @@ const SortBy = ({
   activeSort: SortOption;
   onChange: (value: SortOption) => void;
 }) => {
-  const options: {label: string; value: SortOption}[] = [
-    {label: 'Revenue', value: 'revenue'},
-    {label: 'Name', value: 'name'},
-    {label: 'Score', value: 'score'},
-    {label: 'Orders', value: 'orders'},
+  const options: { label: string; value: SortOption }[] = [
+    { label: 'Revenue', value: 'revenue' },
+    { label: 'Name', value: 'name' },
+    { label: 'Score', value: 'score' },
+    { label: 'Orders', value: 'orders' },
   ];
 
   return (
@@ -138,8 +148,14 @@ const SortBy = ({
               key={item.value}
               activeOpacity={0.8}
               onPress={() => onChange(item.value)}
-              style={[styles.sortButton, active && styles.activeSortButton]}>
-              <Text style={[styles.sortButtonText, active && styles.activeSortButtonText]}>
+              style={[styles.sortButton, active && styles.activeSortButton]}
+            >
+              <Text
+                style={[
+                  styles.sortButtonText,
+                  active && styles.activeSortButtonText,
+                ]}
+              >
                 {item.label}
               </Text>
               {item.value === 'revenue' && active && (
@@ -164,8 +180,18 @@ const ProgressBar = ({
 }) => {
   return (
     <View style={styles.progressRow}>
-      <View style={[styles.progressTrack, widthPercent ? {width: `${widthPercent}%`} : null]}>
-        <View style={[styles.progressFill, {width: `${value}%`, backgroundColor: color}]} />
+      <View
+        style={[
+          styles.progressTrack,
+          widthPercent ? { width: `${widthPercent}%` } : null,
+        ]}
+      >
+        <View
+          style={[
+            styles.progressFill,
+            { width: `${value}%`, backgroundColor: color },
+          ]}
+        />
       </View>
       <Text style={styles.progressValue}>{value}%</Text>
     </View>
@@ -182,9 +208,13 @@ const StockistCard = ({
   const isRisk = item.status === 'At Risk';
 
   return (
-    <TouchableOpacity activeOpacity={0.86} onPress={() => onPress(item)} style={styles.stockistCard}>
+    <TouchableOpacity
+      activeOpacity={0.86}
+      onPress={() => onPress(item)}
+      style={styles.stockistCard}
+    >
       <View style={styles.stockistTopRow}>
-        <View style={[styles.avatar, {backgroundColor: item.color}]}>
+        <View style={[styles.avatar, { backgroundColor: item.color }]}>
           <Text style={styles.avatarText}>{item.initials}</Text>
         </View>
 
@@ -219,8 +249,9 @@ const StockistCard = ({
                 backgroundColor: item.statusBg,
                 borderColor: item.statusBorder,
               },
-            ]}>
-            <Text style={[styles.statusText, {color: item.statusColor}]}>
+            ]}
+          >
+            <Text style={[styles.statusText, { color: item.statusColor }]}>
               {item.status}
             </Text>
             {isRisk && <View style={styles.riskDot} />}
@@ -229,8 +260,9 @@ const StockistCard = ({
           <View
             style={[
               styles.scoreBadge,
-              isRisk && {backgroundColor: '#D90014'},
-            ]}>
+              isRisk && { backgroundColor: '#D90014' },
+            ]}
+          >
             <Text style={styles.scoreText}>{item.score}/100</Text>
           </View>
 
@@ -252,7 +284,11 @@ const StockistCard = ({
         </View>
       </View>
 
-      <ProgressBar value={item.target} color={item.progressColor} widthPercent={58} />
+      <ProgressBar
+        value={item.target}
+        color={item.progressColor}
+        widthPercent={58}
+      />
 
       {!!item.riskNote && <Text style={styles.riskNote}>{item.riskNote}</Text>}
     </TouchableOpacity>
@@ -267,8 +303,12 @@ const DirectDealerRow = ({
   onPress: (item: DirectDealer) => void;
 }) => {
   return (
-    <TouchableOpacity activeOpacity={0.86} onPress={() => onPress(item)} style={styles.dealerRow}>
-      <View style={[styles.dealerAvatar, {backgroundColor: item.color}]}>
+    <TouchableOpacity
+      activeOpacity={0.86}
+      onPress={() => onPress(item)}
+      style={styles.dealerRow}
+    >
+      <View style={[styles.dealerAvatar, { backgroundColor: item.color }]}>
         <Text style={styles.dealerAvatarText}>{item.initials}</Text>
       </View>
 
@@ -291,8 +331,6 @@ const DirectDealerRow = ({
   );
 };
 
-
-
 const NetworkScreen = () => {
   const navigation = useNavigation<any>();
 
@@ -312,9 +350,16 @@ const NetworkScreen = () => {
       const response = await getCompanyNetwork();
 
       setData(response);
-    } catch (err) {
-      console.log('Company Network API Error:', err);
-      setError('Unable to load company network');
+    } catch (err: any) {
+      const errorMessage =
+        err?.response?.data?.message ||
+        err?.response?.data?.error ||
+        err?.message ||
+        'Unable to load company network';
+
+      showErrorToast(errorMessage);
+
+      setError(errorMessage);
     } finally {
       setLoading(false);
       setRefreshing(false);
@@ -486,7 +531,8 @@ const NetworkScreen = () => {
             fontWeight: '700',
             marginBottom: rs(18),
             textAlign: 'center',
-          }}>
+          }}
+        >
           {error || 'Something went wrong'}
         </Text>
 
@@ -498,8 +544,13 @@ const NetworkScreen = () => {
             paddingHorizontal: rs(28),
             paddingVertical: rs(14),
             borderRadius: rs(8),
-          }}>
-          <Text style={{color: '#FFFFFF', fontSize: fs(14), fontWeight: '800'}}>Retry</Text>
+          }}
+        >
+          <Text
+            style={{ color: '#FFFFFF', fontSize: fs(14), fontWeight: '800' }}
+          >
+            Retry
+          </Text>
         </TouchableOpacity>
       </SafeAreaView>
     );
@@ -517,7 +568,8 @@ const NetworkScreen = () => {
         contentContainerStyle={styles.scrollContent}
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-        }>
+        }
+      >
         <SearchAndFilter search={search} onSearchChange={setSearch} />
 
         <FilterChips activeFilter={activeFilter} onChange={setActiveFilter} />
@@ -765,7 +817,7 @@ const styles = StyleSheet.create({
     shadowColor: '#000000',
     shadowOpacity: 0.04,
     shadowRadius: rs(14),
-    shadowOffset: {width: 0, height: rs(6)},
+    shadowOffset: { width: 0, height: rs(6) },
     elevation: 3,
   },
   stockistTopRow: {
@@ -970,7 +1022,7 @@ const styles = StyleSheet.create({
     shadowColor: '#000000',
     shadowOpacity: 0.04,
     shadowRadius: rs(14),
-    shadowOffset: {width: 0, height: rs(6)},
+    shadowOffset: { width: 0, height: rs(6) },
     elevation: 3,
   },
   dealerRow: {
@@ -1055,7 +1107,7 @@ const styles = StyleSheet.create({
     shadowColor: '#000000',
     shadowOpacity: 0.08,
     shadowRadius: rs(16),
-    shadowOffset: {width: 0, height: -rs(6)},
+    shadowOffset: { width: 0, height: -rs(6) },
     elevation: 14,
   },
   bottomTab: {

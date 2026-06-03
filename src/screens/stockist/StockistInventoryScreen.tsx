@@ -1,4 +1,4 @@
-import React, {useEffect, useMemo, useState} from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import {
   ActivityIndicator,
   Dimensions,
@@ -28,18 +28,22 @@ import {
   IndianRupee,
   RotateCw,
 } from 'lucide-react-native';
-import { InventoryFilter, InventoryProduct, InventorySummary, ProductStatus, StockistInventoryData } from '../../api/mock/stockist/stockistInventory.mock';
+import {
+  InventoryFilter,
+  InventoryProduct,
+  InventorySummary,
+  ProductStatus,
+  StockistInventoryData,
+} from '../../api/mock/stockist/stockistInventory.mock';
 import { getStockistInventory } from '../../api/stockist/stockistInventory.api';
+import { showErrorToast } from '../../utils/toast';
 
-const {width: SCREEN_WIDTH} = Dimensions.get('window');
+const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
 const DESIGN_WIDTH = 832;
 const scale = SCREEN_WIDTH / DESIGN_WIDTH;
 const rs = (value: number) => Math.round(value * scale);
 const fs = (value: number) => rs(value + 3);
-
-
-
 
 const Header = () => {
   return (
@@ -98,7 +102,8 @@ const FilterChips = ({
     <ScrollView
       horizontal
       showsHorizontalScrollIndicator={false}
-      contentContainerStyle={styles.filterContent}>
+      contentContainerStyle={styles.filterContent}
+    >
       {filters.map(item => {
         const isActive = active === item;
 
@@ -107,7 +112,8 @@ const FilterChips = ({
             key={item}
             activeOpacity={0.8}
             onPress={() => onChange(item)}
-            style={[styles.filterChip, isActive && styles.activeFilterChip]}>
+            style={[styles.filterChip, isActive && styles.activeFilterChip]}
+          >
             <Text
               style={[
                 styles.filterText,
@@ -116,7 +122,8 @@ const FilterChips = ({
                 item === 'Out of Stock' && !isActive && styles.redText,
                 item === 'Fast Moving' && !isActive && styles.greenText,
                 item === 'Expiring Soon' && !isActive && styles.purpleText,
-              ]}>
+              ]}
+            >
               {item}
             </Text>
           </TouchableOpacity>
@@ -126,7 +133,7 @@ const FilterChips = ({
   );
 };
 
-const SummaryCard = ({data}: {data: InventorySummary}) => {
+const SummaryCard = ({ data }: { data: InventorySummary }) => {
   return (
     <View style={styles.summaryCard}>
       <View style={styles.summaryItem}>
@@ -166,7 +173,7 @@ const SummaryCard = ({data}: {data: InventorySummary}) => {
   );
 };
 
-const StatusBadge = ({status}: {status: ProductStatus}) => {
+const StatusBadge = ({ status }: { status: ProductStatus }) => {
   const isFast = status === 'Fast Moving';
   const isLow = status === 'Low Stock';
   const isOut = status === 'Out of Stock';
@@ -180,7 +187,8 @@ const StatusBadge = ({status}: {status: ProductStatus}) => {
         isLow && styles.lowBadge,
         isOut && styles.outBadge,
         isExpiring && styles.expireBadge,
-      ]}>
+      ]}
+    >
       {isFast && <Text style={styles.fastBadgeText}>↗ {status}</Text>}
       {isLow && <Text style={styles.lowBadgeText}>⚠ {status}</Text>}
       {isOut && <Text style={styles.outBadgeText}>{status}</Text>}
@@ -189,13 +197,7 @@ const StatusBadge = ({status}: {status: ProductStatus}) => {
   );
 };
 
-const StockProgress = ({
-  value,
-  color,
-}: {
-  value: number;
-  color: string;
-}) => {
+const StockProgress = ({ value, color }: { value: number; color: string }) => {
   return (
     <View style={styles.progressRow}>
       <View style={styles.progressTrack}>
@@ -226,15 +228,15 @@ const StatBlock = ({
   return (
     <View style={styles.statBlock}>
       <Text style={styles.statLabel}>{label}</Text>
-      <Text style={[styles.statValue, {color}]}>{value}</Text>
+      <Text style={[styles.statValue, { color }]}>{value}</Text>
     </View>
   );
 };
 
-const FastMovingCard = ({item}: {item: InventoryProduct}) => {
+const FastMovingCard = ({ item }: { item: InventoryProduct }) => {
   return (
     <View style={styles.productCard}>
-      <Image source={{uri: item.image}} style={styles.productImage} />
+      <Image source={{ uri: item.image }} style={styles.productImage} />
 
       <View style={styles.productMain}>
         <View style={styles.productHeader}>
@@ -242,7 +244,7 @@ const FastMovingCard = ({item}: {item: InventoryProduct}) => {
             <Text style={styles.productName}>{item.name}</Text>
 
             <View style={styles.skuRow}>
-              <Text style={styles.skuText}>SKU:  {item.sku}</Text>
+              <Text style={styles.skuText}>SKU: {item.sku}</Text>
               <Text style={styles.dotText}>•</Text>
               <Text style={styles.skuText}>{item.warehouse}</Text>
               <Link2 color="#5D607E" size={rs(16)} strokeWidth={2.1} />
@@ -255,9 +257,21 @@ const FastMovingCard = ({item}: {item: InventoryProduct}) => {
         <View style={styles.productBodyRow}>
           <View style={styles.leftStockArea}>
             <View style={styles.statsRow}>
-              <StatBlock label="Available" value={item.available} color="#138A36" />
-              <StatBlock label="Reserved" value={item.reserved} color="#173CFF" />
-              <StatBlock label="Incoming" value={item.incoming} color="#7B22EA" />
+              <StatBlock
+                label="Available"
+                value={item.available}
+                color="#138A36"
+              />
+              <StatBlock
+                label="Reserved"
+                value={item.reserved}
+                color="#173CFF"
+              />
+              <StatBlock
+                label="Incoming"
+                value={item.incoming}
+                color="#7B22EA"
+              />
             </View>
 
             <StockProgress value={item.progress} color="#138A36" />
@@ -293,17 +307,17 @@ const FastMovingCard = ({item}: {item: InventoryProduct}) => {
   );
 };
 
-const LowStockCard = ({item}: {item: InventoryProduct}) => {
+const LowStockCard = ({ item }: { item: InventoryProduct }) => {
   return (
     <View style={styles.productCard}>
-      <Image source={{uri: item.image}} style={styles.productImage} />
+      <Image source={{ uri: item.image }} style={styles.productImage} />
 
       <View style={styles.productMain}>
         <View style={styles.productHeader}>
           <View>
             <Text style={styles.productName}>{item.name}</Text>
             <View style={styles.skuRow}>
-              <Text style={styles.skuText}>SKU:  {item.sku}</Text>
+              <Text style={styles.skuText}>SKU: {item.sku}</Text>
               <Text style={styles.dotText}>•</Text>
               <Text style={styles.skuText}>{item.warehouse}</Text>
               <Link2 color="#5D607E" size={rs(16)} strokeWidth={2.1} />
@@ -321,9 +335,21 @@ const LowStockCard = ({item}: {item: InventoryProduct}) => {
             </View>
 
             <View style={styles.statsRow}>
-              <StatBlock label="Available" value={item.available} color="#F06419" />
-              <StatBlock label="Reserved" value={item.reserved} color="#173CFF" />
-              <StatBlock label="Incoming" value={item.incoming} color="#7B22EA" />
+              <StatBlock
+                label="Available"
+                value={item.available}
+                color="#F06419"
+              />
+              <StatBlock
+                label="Reserved"
+                value={item.reserved}
+                color="#173CFF"
+              />
+              <StatBlock
+                label="Incoming"
+                value={item.incoming}
+                color="#7B22EA"
+              />
             </View>
 
             <StockProgress value={item.progress} color="#F06419" />
@@ -334,7 +360,9 @@ const LowStockCard = ({item}: {item: InventoryProduct}) => {
             <Text style={styles.reorderSub}>{item.suggestedReorder}</Text>
 
             <TouchableOpacity activeOpacity={0.8} style={styles.purchaseButton}>
-              <Text style={styles.purchaseButtonText}>Create Purchase Request</Text>
+              <Text style={styles.purchaseButtonText}>
+                Create Purchase Request
+              </Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -343,17 +371,17 @@ const LowStockCard = ({item}: {item: InventoryProduct}) => {
   );
 };
 
-const OutOfStockCard = ({item}: {item: InventoryProduct}) => {
+const OutOfStockCard = ({ item }: { item: InventoryProduct }) => {
   return (
     <View style={styles.productCard}>
-      <Image source={{uri: item.image}} style={styles.productImage} />
+      <Image source={{ uri: item.image }} style={styles.productImage} />
 
       <View style={styles.productMain}>
         <View style={styles.productHeader}>
           <View>
             <Text style={styles.productName}>{item.name}</Text>
             <View style={styles.skuRow}>
-              <Text style={styles.skuText}>SKU:  {item.sku}</Text>
+              <Text style={styles.skuText}>SKU: {item.sku}</Text>
               <Text style={styles.dotText}>•</Text>
               <Text style={styles.skuText}>{item.warehouse}</Text>
               <Link2 color="#5D607E" size={rs(16)} strokeWidth={2.1} />
@@ -384,17 +412,17 @@ const OutOfStockCard = ({item}: {item: InventoryProduct}) => {
   );
 };
 
-const ExpiringCard = ({item}: {item: InventoryProduct}) => {
+const ExpiringCard = ({ item }: { item: InventoryProduct }) => {
   return (
     <View style={styles.productCard}>
-      <Image source={{uri: item.image}} style={styles.productImage} />
+      <Image source={{ uri: item.image }} style={styles.productImage} />
 
       <View style={styles.productMain}>
         <View style={styles.productHeader}>
           <View>
             <Text style={styles.productName}>{item.name}</Text>
             <View style={styles.skuRow}>
-              <Text style={styles.skuText}>SKU:  {item.sku}</Text>
+              <Text style={styles.skuText}>SKU: {item.sku}</Text>
               <Text style={styles.dotText}>•</Text>
               <Text style={styles.skuText}>{item.warehouse}</Text>
               <Link2 color="#5D607E" size={rs(16)} strokeWidth={2.1} />
@@ -415,14 +443,29 @@ const ExpiringCard = ({item}: {item: InventoryProduct}) => {
             </View>
 
             <View style={styles.statsRow}>
-              <StatBlock label="Available" value={item.available} color="#7B22EA" />
-              <StatBlock label="Reserved" value={item.reserved} color="#173CFF" />
-              <StatBlock label="Incoming" value={item.incoming} color="#7B22EA" />
+              <StatBlock
+                label="Available"
+                value={item.available}
+                color="#7B22EA"
+              />
+              <StatBlock
+                label="Reserved"
+                value={item.reserved}
+                color="#173CFF"
+              />
+              <StatBlock
+                label="Incoming"
+                value={item.incoming}
+                color="#7B22EA"
+              />
             </View>
 
             <StockProgress value={item.progress} color="#7B22EA" />
 
-            <TouchableOpacity activeOpacity={0.8} style={styles.createOfferButton}>
+            <TouchableOpacity
+              activeOpacity={0.8}
+              style={styles.createOfferButton}
+            >
               <Text style={styles.createOfferText}>Create Offer</Text>
             </TouchableOpacity>
           </View>
@@ -436,16 +479,20 @@ const ExpiringCard = ({item}: {item: InventoryProduct}) => {
 
 const QuickMenu = () => {
   const items = [
-    {id: '1', title: 'Add Product', icon: 'box'},
-    {id: '2', title: 'Stock Adjustment', icon: 'adjust'},
-    {id: '3', title: 'Warehouse Transfer', icon: 'truck'},
-    {id: '4', title: 'Bulk Upload CSV', icon: 'file'},
+    { id: '1', title: 'Add Product', icon: 'box' },
+    { id: '2', title: 'Stock Adjustment', icon: 'adjust' },
+    { id: '3', title: 'Warehouse Transfer', icon: 'truck' },
+    { id: '4', title: 'Bulk Upload CSV', icon: 'file' },
   ];
 
   return (
     <View style={styles.quickMenu}>
       {items.map(item => (
-        <TouchableOpacity key={item.id} activeOpacity={0.8} style={styles.quickMenuRow}>
+        <TouchableOpacity
+          key={item.id}
+          activeOpacity={0.8}
+          style={styles.quickMenuRow}
+        >
           {item.icon === 'box' && <Box color="#173CFF" size={rs(25)} />}
           {item.icon === 'adjust' && (
             <SlidersHorizontal color="#173CFF" size={rs(25)} />
@@ -459,7 +506,7 @@ const QuickMenu = () => {
   );
 };
 
-const ProductCard = ({item}: {item: InventoryProduct}) => {
+const ProductCard = ({ item }: { item: InventoryProduct }) => {
   if (item.status === 'Fast Moving') {
     return <FastMovingCard item={item} />;
   }
@@ -475,8 +522,6 @@ const ProductCard = ({item}: {item: InventoryProduct}) => {
   return <ExpiringCard item={item} />;
 };
 
-
-
 const StockistInventoryScreen = () => {
   const [data, setData] = useState<StockistInventoryData | null>(null);
   const [search, setSearch] = useState('');
@@ -488,9 +533,16 @@ const StockistInventoryScreen = () => {
       setLoading(true);
 
       const response = await getStockistInventory();
+
       setData(response);
-    } catch (error) {
-      console.log('Stockist Inventory API Error:', error);
+    } catch (error: any) {
+      const errorMessage =
+        error?.response?.data?.message ||
+        error?.response?.data?.error ||
+        error?.message ||
+        'Unable to load stockist inventory. Please try again.';
+
+      showErrorToast(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -540,7 +592,8 @@ const StockistInventoryScreen = () => {
       <ScrollView
         style={styles.scrollView}
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={styles.scrollContent}>
+        contentContainerStyle={styles.scrollContent}
+      >
         <SearchBar value={search} onChangeText={setSearch} />
 
         <FilterChips active={activeFilter} onChange={setActiveFilter} />
@@ -661,7 +714,7 @@ const styles = StyleSheet.create({
     shadowColor: '#000000',
     shadowOpacity: 0.04,
     shadowRadius: rs(12),
-    shadowOffset: {width: 0, height: rs(5)},
+    shadowOffset: { width: 0, height: rs(5) },
     elevation: 3,
   },
   summaryItem: {
@@ -722,7 +775,7 @@ const styles = StyleSheet.create({
     shadowColor: '#000000',
     shadowOpacity: 0.04,
     shadowRadius: rs(14),
-    shadowOffset: {width: 0, height: rs(5)},
+    shadowOffset: { width: 0, height: rs(5) },
     elevation: 3,
   },
   productImage: {
@@ -1071,7 +1124,7 @@ const styles = StyleSheet.create({
     shadowColor: '#000000',
     shadowOpacity: 0.12,
     shadowRadius: rs(16),
-    shadowOffset: {width: 0, height: rs(7)},
+    shadowOffset: { width: 0, height: rs(7) },
     elevation: 8,
   },
   quickMenuRow: {
@@ -1098,7 +1151,7 @@ const styles = StyleSheet.create({
     shadowColor: '#000000',
     shadowOpacity: 0.2,
     shadowRadius: rs(12),
-    shadowOffset: {width: 0, height: rs(5)},
+    shadowOffset: { width: 0, height: rs(5) },
     elevation: 10,
   },
 });

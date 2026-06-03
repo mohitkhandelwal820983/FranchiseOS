@@ -11,8 +11,6 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { CommonActions, useNavigation } from '@react-navigation/native';
 import {
   Bell,
   Building2,
@@ -47,7 +45,20 @@ import {
 } from 'lucide-react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { getProfile } from '../../../api/superadmin/profile.api';
-import { AdminDetail, AdminUser, DeveloperSetting, HelpInfo, LoginItem, PlatformControl, ProfileData, SecurityItem, SettingItem } from '../../../api/mock/superadmin/profile.mock';
+import {
+  AdminDetail,
+  AdminUser,
+  DeveloperSetting,
+  HelpInfo,
+  LoginItem,
+  PlatformControl,
+  ProfileData,
+  SecurityItem,
+  SettingItem,
+} from '../../../api/mock/superadmin/profile.mock';
+import { clearAuthStorage } from '../../../utils/sessionManager';
+import { resetToLogin } from '../../../navigation/navigationService';
+import { showErrorToast } from '../../../utils/toast';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
@@ -55,10 +66,6 @@ const DESIGN_WIDTH = 832;
 const scale = SCREEN_WIDTH / DESIGN_WIDTH;
 const rs = (value: number) => Math.round(value * scale);
 const fs = (value: number) => Math.round((value + 6) * scale);
-
-const LOGIN_ROUTE_NAME = 'Auth';
-
-
 
 const Header = () => {
   return (
@@ -177,8 +184,6 @@ const AdminDetailsCard = ({ items }: { items: AdminDetail[] }) => {
     </View>
   );
 };
-
-
 
 const SecurityIcon = ({ type }: { type: SecurityItem['icon'] }) => {
   const color = '#5D607E';
@@ -593,42 +598,7 @@ const HelpInfoCard = ({ items }: { items: HelpInfo[] }) => {
 };
 
 const LogoutButton = () => {
-  const navigation = useNavigation<any>();
   const [isLoggingOut, setIsLoggingOut] = useState(false);
-
-  const clearAuthStorage = async () => {
-    const keysToRemove = [
-      'token',
-      'authToken',
-      'accessToken',
-      'refreshToken',
-      'userToken',
-      'user',
-      'userData',
-      'role',
-      'company',
-      'companyId',
-      'isLoggedIn',
-    ];
-
-    await Promise.all(keysToRemove.map(key => AsyncStorage.removeItem(key)));
-  };
-
-  const resetToLogin = () => {
-    navigation.dispatch(
-      CommonActions.reset({
-        index: 0,
-        routes: [
-          {
-            name: LOGIN_ROUTE_NAME,
-            state: {
-              routes: [{ name: 'Login' }],
-            },
-          },
-        ],
-      }),
-    );
-  };
 
   const handleLogout = () => {
     Alert.alert('Logout', 'Are you sure you want to logout?', [
@@ -642,11 +612,14 @@ const LogoutButton = () => {
         onPress: async () => {
           try {
             setIsLoggingOut(true);
+
             await clearAuthStorage();
+
             resetToLogin();
-          } catch (error) {
+          } catch (error: any) {
             setIsLoggingOut(false);
-            Alert.alert('Logout failed', 'Please try again.' + error);
+
+            Alert.alert('Logout failed', error?.message || 'Please try again.');
           }
         },
       },
@@ -681,9 +654,16 @@ const ProfileScreen = () => {
       const response = await getProfile();
 
       setData(response);
-    } catch (err) {
-      console.log('Profile API Error:', err);
-      setError('Unable to load profile data');
+    } catch (err: any) {
+      const errorMessage =
+        err?.response?.data?.message ||
+        err?.response?.data?.error ||
+        err?.message ||
+        'Unable to load profile data';
+
+      showErrorToast(errorMessage);
+
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }

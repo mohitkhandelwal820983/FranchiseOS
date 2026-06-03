@@ -1,4 +1,4 @@
-import React, {useEffect, useMemo, useState} from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import {
   ActivityIndicator,
   Dimensions,
@@ -37,22 +37,27 @@ import {
   Clock3,
   Warehouse,
 } from 'lucide-react-native';
-import {useNavigation} from '@react-navigation/native';
-import { DealerOrder, DealerStatus, MainTab, PurchaseOrder, PurchaseStatus, StepItem, StockistOrdersData } from '../../api/mock/stockist/stockistOrders.mock';
+import { useNavigation } from '@react-navigation/native';
+import {
+  DealerOrder,
+  DealerStatus,
+  MainTab,
+  PurchaseOrder,
+  PurchaseStatus,
+  StepItem,
+  StockistOrdersData,
+} from '../../api/mock/stockist/stockistOrders.mock';
 import { getStockistOrders } from '../../api/stockist/stockistOrders.api';
+import { showErrorToast } from '../../utils/toast';
 
-const {width: SCREEN_WIDTH} = Dimensions.get('window');
+const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
 const DESIGN_WIDTH = 832;
 const scale = SCREEN_WIDTH / DESIGN_WIDTH;
 const rs = (value: number) => Math.round(value * scale);
 const fs = (value: number) => rs(value + 3);
 
-
-
-
-
-const Header = ({activeTab}: {activeTab: MainTab}) => {
+const Header = ({ activeTab }: { activeTab: MainTab }) => {
   return (
     <View style={styles.header}>
       <TouchableOpacity activeOpacity={0.8}>
@@ -85,12 +90,14 @@ const MainTabs = ({
         style={[
           styles.mainTabButton,
           activeTab === 'dealer' && styles.activeMainTab,
-        ]}>
+        ]}
+      >
         <Text
           style={[
             styles.mainTabText,
             activeTab === 'dealer' && styles.activeMainTabText,
-          ]}>
+          ]}
+        >
           Dealer Orders
         </Text>
       </TouchableOpacity>
@@ -101,12 +108,14 @@ const MainTabs = ({
         style={[
           styles.mainTabButton,
           activeTab === 'purchase' && styles.activeMainTab,
-        ]}>
+        ]}
+      >
         <Text
           style={[
             styles.mainTabText,
             activeTab === 'purchase' && styles.activeMainTabText,
-          ]}>
+          ]}
+        >
           Purchase Orders
         </Text>
       </TouchableOpacity>
@@ -183,7 +192,8 @@ const StatusFilters = ({
     <ScrollView
       horizontal
       showsHorizontalScrollIndicator={false}
-      contentContainerStyle={styles.filterRow}>
+      contentContainerStyle={styles.filterRow}
+    >
       {tabs.map(tab => {
         const active =
           activeTab === 'dealer'
@@ -201,12 +211,14 @@ const StatusFilters = ({
                 setPurchaseStatus(tab as PurchaseStatus);
               }
             }}
-            style={[styles.statusChip, active && styles.activeStatusChip]}>
+            style={[styles.statusChip, active && styles.activeStatusChip]}
+          >
             <Text
               style={[
                 styles.statusChipText,
                 active && styles.activeStatusChipText,
-              ]}>
+              ]}
+            >
               {tab}
             </Text>
           </TouchableOpacity>
@@ -282,7 +294,7 @@ const SummaryBar = ({
     <View style={styles.summaryBar}>
       {items.map((item, index) => (
         <View key={item.label} style={styles.summaryItem}>
-          <View style={[styles.summaryIcon, {backgroundColor: item.color}]}>
+          <View style={[styles.summaryIcon, { backgroundColor: item.color }]}>
             {item.icon === 'orders' && (
               <ClipboardList color="#FFFFFF" size={rs(27)} />
             )}
@@ -295,7 +307,7 @@ const SummaryBar = ({
           </View>
 
           <View>
-            <Text style={[styles.summaryValue, {color: item.color}]}>
+            <Text style={[styles.summaryValue, { color: item.color }]}>
               {item.value}
             </Text>
             <Text style={styles.summaryLabel}>{item.label}</Text>
@@ -318,15 +330,17 @@ const StatusBadge = ({
   bg: string;
 }) => {
   return (
-    <View style={[styles.badgePill, {backgroundColor: bg, borderColor: color}]}>
-      <Text style={[styles.badgePillText, {color}]}>{text}</Text>
+    <View
+      style={[styles.badgePill, { backgroundColor: bg, borderColor: color }]}
+    >
+      <Text style={[styles.badgePillText, { color }]}>{text}</Text>
     </View>
   );
 };
 
-const OrderIcon = ({item}: {item: DealerOrder}) => {
+const OrderIcon = ({ item }: { item: DealerOrder }) => {
   return (
-    <View style={[styles.orderIcon, {backgroundColor: item.iconBg}]}>
+    <View style={[styles.orderIcon, { backgroundColor: item.iconBg }]}>
       {item.icon === 'approval' && (
         <ClipboardList color="#FFFFFF" size={rs(30)} />
       )}
@@ -338,7 +352,7 @@ const OrderIcon = ({item}: {item: DealerOrder}) => {
   );
 };
 
-const StepTimeline = ({steps}: {steps: StepItem[]}) => {
+const StepTimeline = ({ steps }: { steps: StepItem[] }) => {
   return (
     <View style={styles.timelineRow}>
       {steps.map((step, index) => {
@@ -353,7 +367,8 @@ const StepTimeline = ({steps}: {steps: StepItem[]}) => {
                   styles.stepCircle,
                   done && styles.doneStep,
                   active && styles.activeStep,
-                ]}>
+                ]}
+              >
                 {done && <CheckCircle2 color="#FFFFFF" size={rs(18)} />}
                 {active && <Text style={styles.activeStepText}>⌛</Text>}
               </View>
@@ -391,10 +406,11 @@ const DealerOrderCard = ({
     <View
       style={[
         styles.orderCard,
-        isPending && {borderLeftColor: '#F06419'},
-        isReady && {borderLeftColor: '#173CFF'},
-        isDelivered && {borderLeftColor: '#138A36'},
-      ]}>
+        isPending && { borderLeftColor: '#F06419' },
+        isReady && { borderLeftColor: '#173CFF' },
+        isDelivered && { borderLeftColor: '#138A36' },
+      ]}
+    >
       <View style={styles.orderHeader}>
         <OrderIcon item={item} />
 
@@ -451,7 +467,7 @@ const DealerOrderCard = ({
 
       {isDelivered && (
         <View style={styles.paidBox}>
-          <Text style={styles.paidText}>Paid Full  ✅</Text>
+          <Text style={styles.paidText}>Paid Full ✅</Text>
         </View>
       )}
 
@@ -460,7 +476,8 @@ const DealerOrderCard = ({
           <TouchableOpacity
             activeOpacity={0.85}
             onPress={() => onApprove(item.id)}
-            style={styles.primaryAction}>
+            style={styles.primaryAction}
+          >
             <CheckCircle2 color="#FFFFFF" size={rs(20)} />
             <Text style={styles.primaryActionText}>Approve</Text>
           </TouchableOpacity>
@@ -468,7 +485,8 @@ const DealerOrderCard = ({
           <TouchableOpacity
             activeOpacity={0.85}
             onPress={() => onReject(item.id)}
-            style={styles.dangerOutlineAction}>
+            style={styles.dangerOutlineAction}
+          >
             <X color="#E00014" size={rs(20)} />
             <Text style={styles.dangerOutlineText}>Reject</Text>
           </TouchableOpacity>
@@ -485,7 +503,8 @@ const DealerOrderCard = ({
           <TouchableOpacity
             activeOpacity={0.85}
             onPress={() => onDispatch(item.id)}
-            style={styles.primaryAction}>
+            style={styles.primaryAction}
+          >
             <Truck color="#FFFFFF" size={rs(20)} />
             <Text style={styles.primaryActionText}>Dispatch Now</Text>
           </TouchableOpacity>
@@ -504,12 +523,18 @@ const DealerOrderCard = ({
 
       {isDelivered && (
         <View style={styles.actionRow}>
-          <TouchableOpacity activeOpacity={0.85} style={styles.outlineActionWide}>
+          <TouchableOpacity
+            activeOpacity={0.85}
+            style={styles.outlineActionWide}
+          >
             <RefreshCw color="#173CFF" size={rs(20)} />
             <Text style={styles.outlineActionText}>Repeat Order</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity activeOpacity={0.85} style={styles.outlineActionWide}>
+          <TouchableOpacity
+            activeOpacity={0.85}
+            style={styles.outlineActionWide}
+          >
             <Download color="#173CFF" size={rs(20)} />
             <Text style={styles.outlineActionText}>Download Invoice</Text>
           </TouchableOpacity>
@@ -530,9 +555,9 @@ const SectionTitle = ({
 }) => {
   return (
     <View style={styles.sectionTitleRow}>
-      <View style={[styles.sectionLine, {backgroundColor: color}]} />
+      <View style={[styles.sectionLine, { backgroundColor: color }]} />
       <Text style={styles.sectionTitle}>{title}</Text>
-      <View style={[styles.countBadge, {backgroundColor: color}]}>
+      <View style={[styles.countBadge, { backgroundColor: color }]}>
         <Text style={styles.countBadgeText}>{count}</Text>
       </View>
 
@@ -544,9 +569,9 @@ const SectionTitle = ({
   );
 };
 
-const PurchaseIcon = ({item}: {item: PurchaseOrder}) => {
+const PurchaseIcon = ({ item }: { item: PurchaseOrder }) => {
   return (
-    <View style={[styles.orderIcon, {backgroundColor: item.iconBg}]}>
+    <View style={[styles.orderIcon, { backgroundColor: item.iconBg }]}>
       {item.icon === 'supplier' && <Home color="#FFFFFF" size={rs(32)} />}
       {item.icon === 'truck' && <Truck color="#FFFFFF" size={rs(32)} />}
       {item.icon === 'warning' && (
@@ -652,7 +677,8 @@ const PurchaseOrderCard = ({
           <TouchableOpacity
             activeOpacity={0.85}
             onPress={() => onCancel(item.id)}
-            style={styles.dangerOutlineAction}>
+            style={styles.dangerOutlineAction}
+          >
             <X color="#E00014" size={rs(20)} />
             <Text style={styles.dangerOutlineText}>Cancel</Text>
           </TouchableOpacity>
@@ -685,17 +711,26 @@ const PurchaseOrderCard = ({
 
       {delayed && (
         <View style={styles.actionRow}>
-          <TouchableOpacity activeOpacity={0.85} style={styles.dangerOutlineAction}>
+          <TouchableOpacity
+            activeOpacity={0.85}
+            style={styles.dangerOutlineAction}
+          >
             <Phone color="#E00014" size={rs(20)} />
             <Text style={styles.dangerOutlineText}>Contact Supplier</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity activeOpacity={0.85} style={styles.purpleOutlineAction}>
+          <TouchableOpacity
+            activeOpacity={0.85}
+            style={styles.purpleOutlineAction}
+          >
             <RefreshCw color="#7B22EA" size={rs(20)} />
             <Text style={styles.purpleOutlineText}>Alternative Vendor</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity activeOpacity={0.85} style={styles.dangerOutlineAction}>
+          <TouchableOpacity
+            activeOpacity={0.85}
+            style={styles.dangerOutlineAction}
+          >
             <AlertTriangle color="#E00014" size={rs(20)} />
             <Text style={styles.dangerOutlineText}>Escalate</Text>
           </TouchableOpacity>
@@ -721,7 +756,8 @@ const FloatingButton = () => {
     <TouchableOpacity
       activeOpacity={0.85}
       style={styles.floatingButton}
-      onPress={() => navigation.navigate('PlaceNewOrder')}>
+      onPress={() => navigation.navigate('PlaceNewOrder')}
+    >
       <Plus color="#FFFFFF" size={rs(38)} strokeWidth={2.4} />
     </TouchableOpacity>
   );
@@ -740,9 +776,16 @@ const StockistOrderScreen = () => {
       setLoading(true);
 
       const response = await getStockistOrders();
+
       setData(response);
-    } catch (error) {
-      console.log('Stockist Orders API Error:', error);
+    } catch (error: any) {
+      const errorMessage =
+        error?.response?.data?.message ||
+        error?.response?.data?.error ||
+        error?.message ||
+        'Unable to load stockist orders. Please try again.';
+
+      showErrorToast(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -882,7 +925,8 @@ const StockistOrderScreen = () => {
       <ScrollView
         style={styles.scrollView}
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={styles.scrollContent}>
+        contentContainerStyle={styles.scrollContent}
+      >
         <MainTabs activeTab={activeTab} setActiveTab={setActiveTab} />
 
         <SearchBox
@@ -951,59 +995,59 @@ const PAGE_PADDING = rs(28);
 
 const styles = StyleSheet.create({
   summaryBar: {
-  minHeight: rs(112),
-  borderRadius: rs(8),
-  backgroundColor: '#FFFFFF',
-  flexDirection: 'row',
-  alignItems: 'center',
-  marginBottom: rs(24),
-  paddingVertical: rs(12),
-  shadowColor: '#000000',
-  shadowOpacity: 0.04,
-  shadowRadius: rs(12),
-  shadowOffset: {width: 0, height: rs(5)},
-  elevation: 3,
-},
+    minHeight: rs(112),
+    borderRadius: rs(8),
+    backgroundColor: '#FFFFFF',
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: rs(24),
+    paddingVertical: rs(12),
+    shadowColor: '#000000',
+    shadowOpacity: 0.04,
+    shadowRadius: rs(12),
+    shadowOffset: { width: 0, height: rs(5) },
+    elevation: 3,
+  },
 
-summaryItem: {
-  flex: 1,
-  alignItems: 'center',
-  justifyContent: 'center',
-  paddingHorizontal: rs(6),
-  position: 'relative',
-},
+  summaryItem: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: rs(6),
+    position: 'relative',
+  },
 
-summaryIcon: {
-  width: rs(50),
-  height: rs(50),
-  borderRadius: rs(25),
-  alignItems: 'center',
-  justifyContent: 'center',
-  marginBottom: rs(8),
-},
+  summaryIcon: {
+    width: rs(50),
+    height: rs(50),
+    borderRadius: rs(25),
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: rs(8),
+  },
 
-summaryValue: {
-  fontSize: fs(22),
-  fontWeight: '900',
-  textAlign: 'center',
-},
+  summaryValue: {
+    fontSize: fs(22),
+    fontWeight: '900',
+    textAlign: 'center',
+  },
 
-summaryLabel: {
-  color: '#5D607E',
-  fontSize: fs(11),
-  fontWeight: '700',
-  marginTop: rs(5),
-  textAlign: 'center',
-  lineHeight: fs(14),
-},
+  summaryLabel: {
+    color: '#5D607E',
+    fontSize: fs(11),
+    fontWeight: '700',
+    marginTop: rs(5),
+    textAlign: 'center',
+    lineHeight: fs(14),
+  },
 
-summaryDivider: {
-  position: 'absolute',
-  right: 0,
-  width: 1,
-  height: rs(70),
-  backgroundColor: '#D9DCE8',
-},
+  summaryDivider: {
+    position: 'absolute',
+    right: 0,
+    width: 1,
+    height: rs(70),
+    backgroundColor: '#D9DCE8',
+  },
   safeArea: {
     flex: 1,
     backgroundColor: '#F8F9FD',
@@ -1108,7 +1152,7 @@ summaryDivider: {
   activeStatusChipText: {
     color: '#FFFFFF',
   },
- 
+
   sectionTitleRow: {
     height: rs(52),
     flexDirection: 'row',
@@ -1159,7 +1203,7 @@ summaryDivider: {
     shadowColor: '#000000',
     shadowOpacity: 0.04,
     shadowRadius: rs(12),
-    shadowOffset: {width: 0, height: rs(5)},
+    shadowOffset: { width: 0, height: rs(5) },
     elevation: 3,
   },
   purchaseCard: {
@@ -1170,7 +1214,7 @@ summaryDivider: {
     shadowColor: '#000000',
     shadowOpacity: 0.04,
     shadowRadius: rs(12),
-    shadowOffset: {width: 0, height: rs(5)},
+    shadowOffset: { width: 0, height: rs(5) },
     elevation: 3,
   },
   orderHeader: {
@@ -1509,7 +1553,6 @@ summaryDivider: {
     shadowColor: '#000000',
     shadowOpacity: 0.2,
     shadowRadius: rs(12),
-    shadowOffset: {width: 0, height: rs(5)},
-    
+    shadowOffset: { width: 0, height: rs(5) },
   },
 });

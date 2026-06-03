@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useMemo, useState} from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   ActivityIndicator,
   RefreshControl,
@@ -8,7 +8,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import {SafeAreaView} from 'react-native-safe-area-context';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 import DashboardHeader from './components/DashboardHeader';
 import WelcomeCard from './components/WelcomeCard';
@@ -20,12 +20,11 @@ import AttentionToday from './components/AttentionToday';
 import RecentCompanies from './components/RecentCompanies';
 import BroadcastMessage from './components/BroadcastMessage';
 
-import {dashboardData} from './constants/dashboardData';
-import {C} from './constants/dashboardTheme';
-import {makeStyles} from './styles';
+import { dashboardData } from './constants/dashboardData';
+import { C } from './constants/dashboardTheme';
+import { makeStyles } from './styles';
 import { getSuperAdminDashboard } from '../../../api/superadmin/dashboard.api';
-
-
+import { showErrorToast } from '../../../utils/toast';
 
 type DashboardDataType = typeof dashboardData;
 
@@ -44,9 +43,16 @@ const DashboardScreen = () => {
       const response = await getSuperAdminDashboard();
 
       setData(response);
-    } catch (err) {
-      console.log('Dashboard API Error:', err);
-      setError('Unable to load dashboard data');
+    } catch (err: any) {
+      const errorMessage =
+        err?.response?.data?.message ||
+        err?.response?.data?.error ||
+        err?.message ||
+        'Unable to load dashboard data';
+
+      showErrorToast(errorMessage);
+
+      setError(errorMessage);
     } finally {
       setLoading(false);
       setRefreshing(false);
@@ -73,9 +79,10 @@ const DashboardScreen = () => {
             justifyContent: 'center',
             alignItems: 'center',
             backgroundColor: C.navy,
-          }}>
+          }}
+        >
           <ActivityIndicator size="large" color="#FFFFFF" />
-          <Text style={{color: '#FFFFFF', marginTop: 12}}>
+          <Text style={{ color: '#FFFFFF', marginTop: 12 }}>
             Loading dashboard...
           </Text>
         </View>
@@ -95,14 +102,16 @@ const DashboardScreen = () => {
             alignItems: 'center',
             padding: 20,
             backgroundColor: C.navy,
-          }}>
+          }}
+        >
           <Text
             style={{
               color: '#FFFFFF',
               fontSize: 16,
               marginBottom: 16,
               textAlign: 'center',
-            }}>
+            }}
+          >
             {error || 'Something went wrong'}
           </Text>
 
@@ -116,8 +125,9 @@ const DashboardScreen = () => {
               paddingHorizontal: 20,
               paddingVertical: 10,
               borderRadius: 10,
-            }}>
-            <Text style={{color: C.navy, fontWeight: '700'}}>Retry</Text>
+            }}
+          >
+            <Text style={{ color: C.navy, fontWeight: '700' }}>Retry</Text>
           </TouchableOpacity>
         </View>
       </SafeAreaView>
@@ -138,7 +148,8 @@ const DashboardScreen = () => {
         contentContainerStyle={styles.body}
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-        }>
+        }
+      >
         <WelcomeCard
           styles={styles}
           adminName={data.adminName}
@@ -157,14 +168,13 @@ const DashboardScreen = () => {
           smallCards={data.overview.smallCards}
         />
 
-         <SystemHealth styles={styles} items={data.health} />
+        <SystemHealth styles={styles} items={data.health} />
 
-         <RevenueCard
-            styles={styles}
-            amount={data.revenue.amount}
-            items={data.revenue.items}
-          />
-
+        <RevenueCard
+          styles={styles}
+          amount={data.revenue.amount}
+          items={data.revenue.items}
+        />
 
         <AttentionToday styles={styles} items={data.attention} />
 

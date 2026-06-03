@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   ActivityIndicator,
   Dimensions,
@@ -25,21 +25,28 @@ import {
   Truck,
   UserPlus,
   Users,
-  
 } from 'lucide-react-native';
-import { DealerItem, InventoryItem, OverviewCard, PriorityAction, ProductItem, QuickAction, RecentOrder, StockistDashboardData } from '../../api/mock/stockist/stockistDashboard.mock';
+import {
+  DealerItem,
+  InventoryItem,
+  OverviewCard,
+  PriorityAction,
+  ProductItem,
+  QuickAction,
+  RecentOrder,
+  StockistDashboardData,
+} from '../../api/mock/stockist/stockistDashboard.mock';
 import { getStockistDashboard } from '../../api/stockist/stockistDashboard.api';
+import { showErrorToast } from '../../utils/toast';
 
-const {width: SCREEN_WIDTH} = Dimensions.get('window');
+const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
 const DESIGN_WIDTH = 832;
 const scale = SCREEN_WIDTH / DESIGN_WIDTH;
 const rs = (value: number) => Math.round(value * scale);
 const fs = (value: number) => rs(value + 3);
 
-
-
-const DashboardHeader = ({data}: {data: StockistDashboardData}) => {
+const DashboardHeader = ({ data }: { data: StockistDashboardData }) => {
   return (
     <View style={styles.header}>
       <TouchableOpacity activeOpacity={0.8}>
@@ -58,7 +65,7 @@ const DashboardHeader = ({data}: {data: StockistDashboardData}) => {
   );
 };
 
-const WelcomeCard = ({data}: {data: StockistDashboardData}) => {
+const WelcomeCard = ({ data }: { data: StockistDashboardData }) => {
   return (
     <View style={styles.welcomeCard}>
       <View style={styles.leftBlueLine} />
@@ -73,9 +80,9 @@ const WelcomeCard = ({data}: {data: StockistDashboardData}) => {
   );
 };
 
-const OverviewIcon = ({item}: {item: OverviewCard}) => {
+const OverviewIcon = ({ item }: { item: OverviewCard }) => {
   return (
-    <View style={[styles.overviewIconBox, {backgroundColor: item.bg}]}>
+    <View style={[styles.overviewIconBox, { backgroundColor: item.bg }]}>
       {item.icon === 'stock' && (
         <Building2 color="#FFFFFF" size={rs(34)} strokeWidth={2.2} />
       )}
@@ -98,14 +105,14 @@ const OverviewIcon = ({item}: {item: OverviewCard}) => {
   );
 };
 
-const OverviewCardScreen = ({item}: {item: OverviewCard}) => {
+const OverviewCardScreen = ({ item }: { item: OverviewCard }) => {
   return (
     <View style={styles.overviewCard}>
       <OverviewIcon item={item} />
 
       <View style={styles.overviewTextBox}>
         <Text style={styles.overviewTitle}>{item.title}</Text>
-        <Text style={[styles.overviewValue, {color: item.color}]}>
+        <Text style={[styles.overviewValue, { color: item.color }]}>
           {item.value}
         </Text>
         <Text
@@ -113,7 +120,8 @@ const OverviewCardScreen = ({item}: {item: OverviewCard}) => {
             styles.overviewSubtitle,
             item.color === '#D90014' && styles.redText,
             item.color === '#F06419' && styles.orangeText,
-          ]}>
+          ]}
+        >
           {item.subtitle}
         </Text>
       </View>
@@ -121,7 +129,7 @@ const OverviewCardScreen = ({item}: {item: OverviewCard}) => {
   );
 };
 
-const BusinessOverview = ({data}: {data: StockistDashboardData}) => {
+const BusinessOverview = ({ data }: { data: StockistDashboardData }) => {
   return (
     <>
       <View style={styles.sectionHeader}>
@@ -138,7 +146,7 @@ const BusinessOverview = ({data}: {data: StockistDashboardData}) => {
   );
 };
 
-const PriorityIcon = ({item}: {item: PriorityAction}) => {
+const PriorityIcon = ({ item }: { item: PriorityAction }) => {
   if (item.icon === 'warning') {
     return <AlertTriangle color={item.color} size={rs(26)} strokeWidth={2.2} />;
   }
@@ -154,7 +162,7 @@ const PriorityIcon = ({item}: {item: PriorityAction}) => {
   return <UserPlus color={item.color} size={rs(26)} strokeWidth={2.2} />;
 };
 
-const PriorityActionsCard = ({items}: {items: PriorityAction[]}) => {
+const PriorityActionsCard = ({ items }: { items: PriorityAction[] }) => {
   return (
     <View style={styles.priorityCard}>
       <View style={styles.cardTitleRow}>
@@ -166,7 +174,9 @@ const PriorityActionsCard = ({items}: {items: PriorityAction[]}) => {
 
       {items.map(item => (
         <View key={item.id} style={styles.priorityRow}>
-          <View style={[styles.priorityLine, {backgroundColor: item.color}]} />
+          <View
+            style={[styles.priorityLine, { backgroundColor: item.color }]}
+          />
 
           <View style={styles.priorityIconWrap}>
             <PriorityIcon item={item} />
@@ -186,7 +196,7 @@ const PriorityActionsCard = ({items}: {items: PriorityAction[]}) => {
   );
 };
 
-const ProgressBar = ({item}: {item: InventoryItem}) => {
+const ProgressBar = ({ item }: { item: InventoryItem }) => {
   return (
     <View style={styles.healthRow}>
       <View style={styles.healthLabelRow}>
@@ -198,7 +208,7 @@ const ProgressBar = ({item}: {item: InventoryItem}) => {
         <View
           style={[
             styles.progressFill,
-            {width: `${item.value}%`, backgroundColor: item.color},
+            { width: `${item.value}%`, backgroundColor: item.color },
           ]}
         />
       </View>
@@ -206,7 +216,7 @@ const ProgressBar = ({item}: {item: InventoryItem}) => {
   );
 };
 
-const InventoryHealthCard = ({items}: {items: InventoryItem[]}) => {
+const InventoryHealthCard = ({ items }: { items: InventoryItem[] }) => {
   return (
     <View style={styles.healthCard}>
       <View style={styles.cardTitleRow}>
@@ -223,24 +233,24 @@ const InventoryHealthCard = ({items}: {items: InventoryItem[]}) => {
   );
 };
 
-const TrendMini = ({color}: {color: string}) => {
+const TrendMini = ({ color }: { color: string }) => {
   return (
     <View style={styles.trendMini}>
-      <View style={[styles.trendLineOne, {borderColor: color}]} />
-      <View style={[styles.trendLineTwo, {borderColor: color}]} />
-      <View style={[styles.trendDot, {backgroundColor: color}]} />
+      <View style={[styles.trendLineOne, { borderColor: color }]} />
+      <View style={[styles.trendLineTwo, { borderColor: color }]} />
+      <View style={[styles.trendDot, { backgroundColor: color }]} />
     </View>
   );
 };
 
-const TopSellingProducts = ({items}: {items: ProductItem[]}) => {
+const TopSellingProducts = ({ items }: { items: ProductItem[] }) => {
   return (
     <View style={styles.productsCard}>
       <Text style={styles.cardTitle}>Top Selling Products</Text>
 
       {items.map(item => (
         <View key={item.id} style={styles.productRow}>
-          <Image source={{uri: item.image}} style={styles.productImage} />
+          <Image source={{ uri: item.image }} style={styles.productImage} />
 
           <View style={styles.productInfo}>
             <Text style={styles.productName}>{item.name}</Text>
@@ -255,7 +265,7 @@ const TopSellingProducts = ({items}: {items: ProductItem[]}) => {
   );
 };
 
-const DealerPerformance = ({items}: {items: DealerItem[]}) => {
+const DealerPerformance = ({ items }: { items: DealerItem[] }) => {
   return (
     <View style={styles.dealerCard}>
       <View style={styles.cardTitleRow}>
@@ -265,7 +275,7 @@ const DealerPerformance = ({items}: {items: DealerItem[]}) => {
 
       {items.map(item => (
         <View key={item.id} style={styles.dealerRow}>
-          <View style={[styles.dealerAvatar, {backgroundColor: item.color}]}>
+          <View style={[styles.dealerAvatar, { backgroundColor: item.color }]}>
             <Text style={styles.dealerAvatarText}>{item.initials}</Text>
           </View>
 
@@ -275,8 +285,12 @@ const DealerPerformance = ({items}: {items: DealerItem[]}) => {
             <Text style={styles.dealerSub}>{item.score}</Text>
           </View>
 
-          <View style={[styles.dealerStatus, {backgroundColor: item.statusBg}]}>
-            <Text style={[styles.dealerStatusText, {color: item.statusColor}]}>
+          <View
+            style={[styles.dealerStatus, { backgroundColor: item.statusBg }]}
+          >
+            <Text
+              style={[styles.dealerStatusText, { color: item.statusColor }]}
+            >
               {item.status}
             </Text>
           </View>
@@ -286,7 +300,7 @@ const DealerPerformance = ({items}: {items: DealerItem[]}) => {
   );
 };
 
-const RecentOrdersCard = ({items}: {items: RecentOrder[]}) => {
+const RecentOrdersCard = ({ items }: { items: RecentOrder[] }) => {
   return (
     <View style={styles.recentOrdersCard}>
       <Text style={styles.cardTitle}>Recent Orders</Text>
@@ -297,8 +311,10 @@ const RecentOrdersCard = ({items}: {items: RecentOrder[]}) => {
           <Text style={styles.orderDealer}>{item.dealer}</Text>
           <Text style={styles.orderAmount}>{item.amount}</Text>
 
-          <View style={[styles.orderStatus, {backgroundColor: item.statusBg}]}>
-            <Text style={[styles.orderStatusText, {color: item.statusColor}]}>
+          <View
+            style={[styles.orderStatus, { backgroundColor: item.statusBg }]}
+          >
+            <Text style={[styles.orderStatusText, { color: item.statusColor }]}>
               {item.status}
             </Text>
           </View>
@@ -308,11 +324,15 @@ const RecentOrdersCard = ({items}: {items: RecentOrder[]}) => {
   );
 };
 
-const QuickActionsCard = ({items}: {items: QuickAction[]}) => {
+const QuickActionsCard = ({ items }: { items: QuickAction[] }) => {
   return (
     <View style={styles.quickActionsCard}>
       {items.map(item => (
-        <TouchableOpacity key={item.id} activeOpacity={0.8} style={styles.quickActionRow}>
+        <TouchableOpacity
+          key={item.id}
+          activeOpacity={0.8}
+          style={styles.quickActionRow}
+        >
           {item.icon === 'create' && (
             <FilePlus2 color="#061247" size={rs(28)} strokeWidth={2.2} />
           )}
@@ -329,9 +349,6 @@ const QuickActionsCard = ({items}: {items: QuickAction[]}) => {
   );
 };
 
-
-
-
 const StockistDashboardScreen = () => {
   const [data, setData] = useState<StockistDashboardData | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
@@ -341,9 +358,16 @@ const StockistDashboardScreen = () => {
       setLoading(true);
 
       const response = await getStockistDashboard();
+
       setData(response);
-    } catch (error) {
-      console.log('Stockist Dashboard API Error:', error);
+    } catch (error: any) {
+      const errorMessage =
+        error?.response?.data?.message ||
+        error?.response?.data?.error ||
+        error?.message ||
+        'Unable to load stockist dashboard. Please try again.';
+
+      showErrorToast(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -371,7 +395,8 @@ const StockistDashboardScreen = () => {
       <ScrollView
         style={styles.scrollView}
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={styles.scrollContent}>
+        contentContainerStyle={styles.scrollContent}
+      >
         <WelcomeCard data={data} />
 
         <BusinessOverview data={data} />
@@ -470,7 +495,7 @@ const styles = StyleSheet.create({
     shadowColor: '#000000',
     shadowOpacity: 0.05,
     shadowRadius: rs(14),
-    shadowOffset: {width: 0, height: rs(5)},
+    shadowOffset: { width: 0, height: rs(5) },
     elevation: 3,
   },
   leftBlueLine: {
@@ -532,7 +557,7 @@ const styles = StyleSheet.create({
     shadowColor: '#000000',
     shadowOpacity: 0.04,
     shadowRadius: rs(12),
-    shadowOffset: {width: 0, height: rs(5)},
+    shadowOffset: { width: 0, height: rs(5) },
     elevation: 3,
   },
   overviewIconBox: {
@@ -583,7 +608,7 @@ const styles = StyleSheet.create({
     shadowColor: '#000000',
     shadowOpacity: 0.04,
     shadowRadius: rs(12),
-    shadowOffset: {width: 0, height: rs(5)},
+    shadowOffset: { width: 0, height: rs(5) },
     elevation: 3,
   },
   healthCard: {
@@ -594,7 +619,7 @@ const styles = StyleSheet.create({
     shadowColor: '#000000',
     shadowOpacity: 0.04,
     shadowRadius: rs(12),
-    shadowOffset: {width: 0, height: rs(5)},
+    shadowOffset: { width: 0, height: rs(5) },
     elevation: 3,
   },
   cardTitleRow: {
@@ -718,7 +743,7 @@ const styles = StyleSheet.create({
     shadowColor: '#000000',
     shadowOpacity: 0.04,
     shadowRadius: rs(12),
-    shadowOffset: {width: 0, height: rs(5)},
+    shadowOffset: { width: 0, height: rs(5) },
     elevation: 3,
   },
   productRow: {
@@ -767,7 +792,7 @@ const styles = StyleSheet.create({
     width: rs(18),
     height: rs(13),
     borderTopWidth: rs(3),
-    transform: [{rotate: '-28deg'}],
+    transform: [{ rotate: '-28deg' }],
   },
   trendLineTwo: {
     position: 'absolute',
@@ -776,7 +801,7 @@ const styles = StyleSheet.create({
     width: rs(18),
     height: rs(13),
     borderTopWidth: rs(3),
-    transform: [{rotate: '-28deg'}],
+    transform: [{ rotate: '-28deg' }],
   },
   trendDot: {
     position: 'absolute',
@@ -794,7 +819,7 @@ const styles = StyleSheet.create({
     shadowColor: '#000000',
     shadowOpacity: 0.04,
     shadowRadius: rs(12),
-    shadowOffset: {width: 0, height: rs(5)},
+    shadowOffset: { width: 0, height: rs(5) },
     elevation: 3,
   },
   seeAllText: {
@@ -861,7 +886,7 @@ const styles = StyleSheet.create({
     shadowColor: '#000000',
     shadowOpacity: 0.04,
     shadowRadius: rs(12),
-    shadowOffset: {width: 0, height: rs(5)},
+    shadowOffset: { width: 0, height: rs(5) },
     elevation: 3,
   },
   orderRow: {
@@ -909,7 +934,7 @@ const styles = StyleSheet.create({
     shadowColor: '#000000',
     shadowOpacity: 0.04,
     shadowRadius: rs(12),
-    shadowOffset: {width: 0, height: rs(5)},
+    shadowOffset: { width: 0, height: rs(5) },
     elevation: 3,
   },
   quickActionRow: {
@@ -938,7 +963,7 @@ const styles = StyleSheet.create({
     shadowColor: '#000000',
     shadowOpacity: 0.2,
     shadowRadius: rs(12),
-    shadowOffset: {width: 0, height: rs(5)},
+    shadowOffset: { width: 0, height: rs(5) },
     elevation: 10,
   },
   bottomNav: {
@@ -956,7 +981,7 @@ const styles = StyleSheet.create({
     shadowColor: '#000000',
     shadowOpacity: 0.08,
     shadowRadius: rs(16),
-    shadowOffset: {width: 0, height: -rs(6)},
+    shadowOffset: { width: 0, height: -rs(6) },
     elevation: 14,
   },
   bottomTab: {

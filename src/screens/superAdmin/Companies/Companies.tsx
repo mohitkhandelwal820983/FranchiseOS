@@ -34,6 +34,7 @@ import {
   type Company,
   type CompanyStatus,
 } from '../../../api/mock/superadmin/companies.mock';
+import { showErrorToast } from '../../../utils/toast';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
@@ -394,9 +395,16 @@ const CompaniesScreen = () => {
       const response = await getCompanies();
 
       setData(response);
-    } catch (err) {
-      console.log('Companies API Error:', err);
-      setError('Unable to load companies');
+    } catch (err: any) {
+      const errorMessage =
+        err?.response?.data?.message ||
+        err?.response?.data?.error ||
+        err?.message ||
+        'Unable to load companies';
+
+      showErrorToast(errorMessage);
+
+      setError(errorMessage);
     } finally {
       setLoading(false);
       setRefreshing(false);

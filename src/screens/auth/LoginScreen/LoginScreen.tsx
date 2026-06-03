@@ -1,7 +1,6 @@
 import React, {useState} from 'react';
 import {
   ActivityIndicator,
-  Alert,
   Dimensions,
   KeyboardAvoidingView,
   Platform,
@@ -17,6 +16,7 @@ import {useNavigation} from '@react-navigation/native';
 import {Eye, EyeOff, User} from 'lucide-react-native';
 
 import {authService} from '../../../services/authService';
+import { showErrorToast } from '../../../utils/toast';
 
 const {width: SCREEN_WIDTH, height: SCREEN_HEIGHT} = Dimensions.get('window');
 
@@ -33,40 +33,43 @@ const LoginScreen = () => {
   const [loading, setLoading] = useState(false);
 
   const onLogin = async () => {
-    if (!email.trim()) {
-      Alert.alert('Validation', 'Please enter Email or Phone Number');
-      return;
+  if (!email.trim()) {
+    showErrorToast('Please enter Email or Phone Number');
+    return;
+  }
+
+  if (!password.trim()) {
+    showErrorToast('Please enter Password');
+    return;
+  }
+
+  try {
+    setLoading(true);
+
+    const userData = await authService.login(email.trim(), password);
+    const userRole = userData?.role || '';
+
+    if (userRole === 'COMPANY' || userRole === 'COMPANY_ADMIN') {
+      navigation.replace('CompanyTabs');
+    } else if (userRole === 'STOCKIST') {
+      navigation.replace('StockistTabs');
+    } else if (userRole === 'DEALER') {
+      navigation.replace('DealerTabs');
+    } else {
+      navigation.replace('SuperAdminTabs');
     }
+  } catch (error: any) {
+    const errorMessage =
+      error?.response?.data?.message ||
+      error?.response?.data?.error ||
+      error?.message ||
+      'Invalid Email/Phone or Password';
 
-    if (!password.trim()) {
-      Alert.alert('Validation', 'Please enter Password');
-      return;
-    }
-
-    try {
-      setLoading(true);
-
-      const userData = await authService.login(email.trim(), password);
-      const userRole = userData?.role || '';
-
-      if (userRole === 'COMPANY' || userRole === 'COMPANY_ADMIN') {
-        navigation.replace('CompanyTabs');
-      } else if (userRole === 'STOCKIST') {
-        navigation.replace('StockistTabs');
-      } else if (userRole === 'DEALER') {
-        navigation.replace('DealerTabs');
-      } else {
-        navigation.replace('SuperAdminTabs');
-      }
-    } catch (error: any) {
-      Alert.alert(
-        'Login Failed',
-        error?.message || 'Invalid Email/Phone or Password',
-      );
-    } finally {
-      setLoading(false);
-    }
-  };
+    showErrorToast(errorMessage);
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
     <View style={styles.safeArea}>

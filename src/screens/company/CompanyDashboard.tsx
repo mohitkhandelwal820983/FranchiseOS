@@ -37,6 +37,7 @@ import type {
   RevenueData,
   SnapshotItem,
 } from '../../api/mock/company/companyDashboard.mock';
+import { showErrorToast } from '../../utils/toast';
 
 const {width: SCREEN_WIDTH} = Dimensions.get('window');
 
@@ -434,20 +435,27 @@ const DashboardScreen = () => {
   const [error, setError] = useState<string>('');
 
   const loadDashboard = useCallback(async () => {
-    try {
-      setError('');
+  try {
+    setError('');
 
-      const response = await getCompanyDashboard();
+    const response = await getCompanyDashboard();
 
-      setDashboardData(response);
-    } catch (err) {
-      console.log('Company Dashboard API Error:', err);
-      setError('Unable to load company dashboard');
-    } finally {
-      setLoading(false);
-      setRefreshing(false);
-    }
-  }, []);
+    setDashboardData(response);
+  } catch (err: any) {
+    const errorMessage =
+      err?.response?.data?.message ||
+      err?.response?.data?.error ||
+      err?.message ||
+      'Unable to load company dashboard';
+
+    showErrorToast(errorMessage);
+
+    setError(errorMessage);
+  } finally {
+    setLoading(false);
+    setRefreshing(false);
+  }
+}, []);
 
   useEffect(() => {
     loadDashboard();

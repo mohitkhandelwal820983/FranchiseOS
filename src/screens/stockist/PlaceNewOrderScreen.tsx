@@ -23,6 +23,7 @@ import {
 import {useNavigation} from '@react-navigation/native';
 import { PlaceNewOrderData } from '../../api/mock/stockist/placeNewOrder.mock';
 import { getPlaceNewOrder } from '../../api/stockist/placeNewOrder.api';
+import { showErrorToast } from '../../utils/toast';
 
 const {width: SCREEN_WIDTH} = Dimensions.get('window');
 const DESIGN_WIDTH = 390;
@@ -42,22 +43,28 @@ const PlaceNewOrderScreen = () => {
   const [quantities, setQuantities] = useState<Record<string, number>>({});
   const [loading, setLoading] = useState<boolean>(true);
 
-  const loadPlaceNewOrder = async () => {
-    try {
-      setLoading(true);
+ const loadPlaceNewOrder = async () => {
+  try {
+    setLoading(true);
 
-      const response = await getPlaceNewOrder();
+    const response = await getPlaceNewOrder();
 
-      setData(response);
-      setCustomer(response.defaultCustomer);
-      setDeliveryAddress(response.defaultDeliveryAddress);
-      setQuantities(response.defaultQuantities);
-    } catch (error) {
-      console.log('Place New Order API Error:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
+    setData(response);
+    setCustomer(response.defaultCustomer);
+    setDeliveryAddress(response.defaultDeliveryAddress);
+    setQuantities(response.defaultQuantities);
+  } catch (error: any) {
+    const errorMessage =
+      error?.response?.data?.message ||
+      error?.response?.data?.error ||
+      error?.message ||
+      'Unable to load place new order data. Please try again.';
+
+    showErrorToast(errorMessage);
+  } finally {
+    setLoading(false);
+  }
+};
 
   useEffect(() => {
     loadPlaceNewOrder();

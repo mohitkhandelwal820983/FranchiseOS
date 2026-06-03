@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useMemo, useState} from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   ActivityIndicator,
   Alert,
@@ -11,7 +11,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import {SafeAreaView} from 'react-native-safe-area-context';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import {
   AlertTriangle,
   CheckCircle2,
@@ -26,7 +26,7 @@ import {
   Upload,
 } from 'lucide-react-native';
 
-import {getPayments} from '../../../api/superadmin/payment.api';
+import { getPayments } from '../../../api/superadmin/payment.api';
 
 import type {
   BreakdownItem,
@@ -36,6 +36,7 @@ import type {
   PeriodTab,
   SummaryCard,
 } from '../../../api/mock/superadmin/payment.mock';
+import { showErrorToast } from '../../../utils/toast';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
@@ -43,9 +44,6 @@ const DESIGN_WIDTH = 832;
 const scale = SCREEN_WIDTH / DESIGN_WIDTH;
 const rs = (value: number) => Math.round(value * scale);
 const fs = (value: number) => rs(value + 5);
-
-
-
 
 const Header = () => {
   return (
@@ -266,8 +264,8 @@ const CompanyBreakdownCard = ({ items }: { items: BreakdownItem[] }) => {
       <View style={styles.breakdownList}>
         {items.map(item => {
           const collectedWidth = `${(item.collected / maxValue) * 100}%` as any;
-const pendingWidth = `${(item.pending / maxValue) * 100}%` as any;
-const overdueWidth = `${(item.overdue / maxValue) * 100}%` as any;
+          const pendingWidth = `${(item.pending / maxValue) * 100}%` as any;
+          const overdueWidth = `${(item.overdue / maxValue) * 100}%` as any;
 
           return (
             <View key={item.id} style={styles.breakdownRow}>
@@ -456,9 +454,16 @@ const PaymentScreen = () => {
       const response = await getPayments();
 
       setAllData(response);
-    } catch (err) {
-      console.log('Payments API Error:', err);
-      setError('Unable to load payment data');
+    } catch (err: any) {
+      const errorMessage =
+        err?.response?.data?.message ||
+        err?.response?.data?.error ||
+        err?.message ||
+        'Unable to load payment data';
+
+      showErrorToast(errorMessage);
+
+      setError(errorMessage);
     } finally {
       setLoading(false);
       setRefreshing(false);
@@ -508,7 +513,8 @@ const PaymentScreen = () => {
             fontWeight: '700',
             marginBottom: rs(18),
             textAlign: 'center',
-          }}>
+          }}
+        >
           {error || 'Something went wrong'}
         </Text>
 
@@ -520,8 +526,9 @@ const PaymentScreen = () => {
             paddingHorizontal: rs(28),
             paddingVertical: rs(14),
             borderRadius: rs(8),
-          }}>
-          <Text style={{color: '#FFFFFF', fontWeight: '800'}}>Retry</Text>
+          }}
+        >
+          <Text style={{ color: '#FFFFFF', fontWeight: '800' }}>Retry</Text>
         </TouchableOpacity>
       </SafeAreaView>
     );
@@ -539,7 +546,8 @@ const PaymentScreen = () => {
         contentContainerStyle={styles.scrollContent}
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-        }>
+        }
+      >
         <PeriodTabs active={activeTab} onChange={setActiveTab} />
 
         <SummaryGrid items={activeData.summary} />

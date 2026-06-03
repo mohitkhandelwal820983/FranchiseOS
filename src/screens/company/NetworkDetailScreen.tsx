@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useMemo, useState} from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   ActivityIndicator,
   Dimensions,
@@ -30,7 +30,7 @@ import {
   TrendingUp,
   Wallet,
 } from 'lucide-react-native';
-import {getCompanyNetworkDetail} from '../../api/company/companyNetworkDetail.api';
+import { getCompanyNetworkDetail } from '../../api/company/companyNetworkDetail.api';
 
 import type {
   CompanyNetworkDetailData,
@@ -38,17 +38,16 @@ import type {
   DetailType,
   MetricItem,
 } from '../../api/mock/company/companyNetworkDetail';
-import {useNavigation, useRoute} from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
+import { showErrorToast } from '../../utils/toast';
 
-const {width: SCREEN_WIDTH} = Dimensions.get('window');
+const { width: SCREEN_WIDTH } = Dimensions.get('window');
 const DESIGN_WIDTH = 832;
 const scale = SCREEN_WIDTH / DESIGN_WIDTH;
 const rs = (value: number) => Math.round(value * scale);
 const fs = (value: number) => rs(value + 3);
 
-
-
-const Header = ({title}: {title: string}) => {
+const Header = ({ title }: { title: string }) => {
   const navigation = useNavigation<any>();
 
   return (
@@ -66,9 +65,9 @@ const Header = ({title}: {title: string}) => {
   );
 };
 
-const ProfileCard = ({data}: {data: CompanyNetworkDetailData}) => {
+const ProfileCard = ({ data }: { data: CompanyNetworkDetailData }) => {
   return (
-    <View style={[styles.profileCard, {backgroundColor: data.color}]}>
+    <View style={[styles.profileCard, { backgroundColor: data.color }]}>
       <View style={styles.profileAvatarWrap}>
         <View style={styles.profileAvatar}>
           <Text style={styles.profileAvatarText}>{data.initials}</Text>
@@ -122,7 +121,8 @@ const Tabs = ({
             key={tab}
             activeOpacity={0.8}
             style={styles.tabItem}
-            onPress={() => onChangeTab(tab)}>
+            onPress={() => onChangeTab(tab)}
+          >
             <Text style={[styles.tabText, active && styles.activeTabText]}>
               {tab}
             </Text>
@@ -134,7 +134,7 @@ const Tabs = ({
   );
 };
 
-const MetricIcon = ({item}: {item: MetricItem}) => {
+const MetricIcon = ({ item }: { item: MetricItem }) => {
   if (item.icon === 'revenue') {
     return <TrendingUp color={item.color} size={rs(30)} strokeWidth={2.4} />;
   }
@@ -154,24 +154,25 @@ const MetricIcon = ({item}: {item: MetricItem}) => {
   return <Wallet color={item.color} size={rs(30)} strokeWidth={2.4} />;
 };
 
-const MetricCard = ({item}: {item: MetricItem}) => {
+const MetricCard = ({ item }: { item: MetricItem }) => {
   return (
     <View style={styles.metricCard}>
       <MetricIcon item={item} />
       <Text style={styles.metricTitle}>{item.title}</Text>
-      <Text style={[styles.metricValue, {color: item.color}]}>
+      <Text style={[styles.metricValue, { color: item.color }]}>
         {item.value}
       </Text>
     </View>
   );
 };
 
-const MetricsRow = ({items}: {items: MetricItem[]}) => {
+const MetricsRow = ({ items }: { items: MetricItem[] }) => {
   return (
     <ScrollView
       horizontal
       showsHorizontalScrollIndicator={false}
-      contentContainerStyle={styles.metricsContent}>
+      contentContainerStyle={styles.metricsContent}
+    >
       {items.map(item => (
         <MetricCard key={item.id} item={item} />
       ))}
@@ -207,8 +208,8 @@ const StockistPerformanceCard = () => {
 
         <View style={styles.fakeLineChart}>
           <View style={styles.chartGridLine} />
-          <View style={[styles.chartGridLine, {top: '33%'}]} />
-          <View style={[styles.chartGridLine, {top: '66%'}]} />
+          <View style={[styles.chartGridLine, { top: '33%' }]} />
+          <View style={[styles.chartGridLine, { top: '66%' }]} />
 
           {[
             'Jan',
@@ -286,9 +287,11 @@ const DealerRevenueTrendCard = () => {
   );
 };
 
-const PaymentCard = ({data}: {data: CompanyNetworkDetailData}) => {
+const PaymentCard = ({ data }: { data: CompanyNetworkDetailData }) => {
   return (
-    <View style={data.type === 'stockist' ? styles.paymentCard : styles.halfCard}>
+    <View
+      style={data.type === 'stockist' ? styles.paymentCard : styles.halfCard}
+    >
       <Text style={styles.cardTitle}>{data.payment.title}</Text>
 
       <View style={styles.paymentLine}>
@@ -320,7 +323,7 @@ const PaymentCard = ({data}: {data: CompanyNetworkDetailData}) => {
   );
 };
 
-const IncentiveCard = ({data}: {data: CompanyNetworkDetailData}) => {
+const IncentiveCard = ({ data }: { data: CompanyNetworkDetailData }) => {
   return (
     <View style={styles.halfCard}>
       <Text style={styles.cardTitle}>Incentive Progress</Text>
@@ -331,7 +334,7 @@ const IncentiveCard = ({data}: {data: CompanyNetworkDetailData}) => {
           <View
             style={[
               styles.incentiveFillBlue,
-              {width: `${data.incentives.firstProgress}%`},
+              { width: `${data.incentives.firstProgress}%` },
             ]}
           />
         </View>
@@ -353,7 +356,7 @@ const IncentiveCard = ({data}: {data: CompanyNetworkDetailData}) => {
           <View
             style={[
               styles.incentiveFillGreen,
-              {width: `${data.incentives.secondProgress}%`},
+              { width: `${data.incentives.secondProgress}%` },
             ]}
           />
         </View>
@@ -367,7 +370,7 @@ const IncentiveCard = ({data}: {data: CompanyNetworkDetailData}) => {
   );
 };
 
-const TimelineCard = ({data}: {data: CompanyNetworkDetailData}) => {
+const TimelineCard = ({ data }: { data: CompanyNetworkDetailData }) => {
   return (
     <View style={styles.halfCard}>
       <Text style={styles.cardTitle}>
@@ -388,7 +391,7 @@ const TimelineCard = ({data}: {data: CompanyNetworkDetailData}) => {
 
           <View style={styles.paymentProgressRow}>
             <View style={styles.paymentProgressTrack}>
-              <View style={[styles.paymentProgressFill, {width: '90%'}]} />
+              <View style={[styles.paymentProgressFill, { width: '90%' }]} />
             </View>
           </View>
 
@@ -482,7 +485,9 @@ const PeerComparisonCard = () => {
         </View>
       ))}
 
-      <Text style={styles.aboveAverage}>Above zone average in all metrics ✓</Text>
+      <Text style={styles.aboveAverage}>
+        Above zone average in all metrics ✓
+      </Text>
     </View>
   );
 };
@@ -502,7 +507,7 @@ const SimpleSectionCard = ({
   );
 };
 
-const OrdersSummaryCard = ({type}: {type: DetailType}) => {
+const OrdersSummaryCard = ({ type }: { type: DetailType }) => {
   const rows =
     type === 'stockist'
       ? [
@@ -530,7 +535,7 @@ const OrdersSummaryCard = ({type}: {type: DetailType}) => {
   );
 };
 
-const RevenueSummaryCard = ({type}: {type: DetailType}) => {
+const RevenueSummaryCard = ({ type }: { type: DetailType }) => {
   const rows =
     type === 'stockist'
       ? [
@@ -558,32 +563,35 @@ const RevenueSummaryCard = ({type}: {type: DetailType}) => {
   );
 };
 
-const AdminActions = ({type}: {type: DetailType}) => {
+const AdminActions = ({ type }: { type: DetailType }) => {
   const actions =
     type === 'stockist'
       ? [
-          {label: 'Nudge', icon: 'send', color: '#173CFF'},
-          {label: 'Flag', icon: 'flag', color: '#F06419'},
-          {label: 'Reward', icon: 'gift', color: '#138A36'},
-          {label: 'Suspend', icon: 'lock', color: '#E00014'},
+          { label: 'Nudge', icon: 'send', color: '#173CFF' },
+          { label: 'Flag', icon: 'flag', color: '#F06419' },
+          { label: 'Reward', icon: 'gift', color: '#138A36' },
+          { label: 'Suspend', icon: 'lock', color: '#E00014' },
         ]
       : [
-          {label: 'Send Nudge', icon: 'send', color: '#173CFF'},
-          {label: 'Flag for Review', icon: 'flag', color: '#F06419'},
-          {label: 'Give Reward', icon: 'gift', color: '#138A36'},
-          {label: 'Suspend', icon: 'lock', color: '#E00014'},
+          { label: 'Send Nudge', icon: 'send', color: '#173CFF' },
+          { label: 'Flag for Review', icon: 'flag', color: '#F06419' },
+          { label: 'Give Reward', icon: 'gift', color: '#138A36' },
+          { label: 'Suspend', icon: 'lock', color: '#E00014' },
         ];
 
   return (
     <View style={styles.adminCard}>
-      {type === 'stockist' && <Text style={styles.cardTitle}>Admin Action</Text>}
+      {type === 'stockist' && (
+        <Text style={styles.cardTitle}>Admin Action</Text>
+      )}
 
       <View style={styles.actionsRow}>
         {actions.map(item => (
           <TouchableOpacity
             key={item.label}
             activeOpacity={0.8}
-            style={[styles.actionButton, {borderColor: item.color}]}>
+            style={[styles.actionButton, { borderColor: item.color }]}
+          >
             {item.icon === 'send' && (
               <Send color={item.color} size={rs(26)} strokeWidth={2.3} />
             )}
@@ -597,7 +605,7 @@ const AdminActions = ({type}: {type: DetailType}) => {
               <Lock color={item.color} size={rs(26)} strokeWidth={2.3} />
             )}
 
-            <Text style={[styles.actionText, {color: item.color}]}>
+            <Text style={[styles.actionText, { color: item.color }]}>
               {item.label}
             </Text>
           </TouchableOpacity>
@@ -663,17 +671,23 @@ const DealersUnderStockist = ({
   }, [dealers, dealerSearch, activeFilter, sortByRevenueHigh]);
 
   const chips = [
-    {label: `All (${dealers.length})`, value: 'all' as const},
+    { label: `All (${dealers.length})`, value: 'all' as const },
     {
-      label: `Active (${dealers.filter(item => item.status === 'Active').length})`,
+      label: `Active (${
+        dealers.filter(item => item.status === 'Active').length
+      })`,
       value: 'active' as const,
     },
     {
-      label: `At Risk (${dealers.filter(item => item.status === 'At Risk').length})`,
+      label: `At Risk (${
+        dealers.filter(item => item.status === 'At Risk').length
+      })`,
       value: 'risk' as const,
     },
     {
-      label: `Overdue (${dealers.filter(item => item.status === 'Overdue').length})`,
+      label: `Overdue (${
+        dealers.filter(item => item.status === 'Overdue').length
+      })`,
       value: 'overdue' as const,
     },
   ];
@@ -700,7 +714,8 @@ const DealersUnderStockist = ({
           <TouchableOpacity
             activeOpacity={0.8}
             style={styles.dealerFilterButton}
-            onPress={() => setSortByRevenueHigh(prev => !prev)}>
+            onPress={() => setSortByRevenueHigh(prev => !prev)}
+          >
             <ChevronDown color="#061B66" size={rs(20)} />
           </TouchableOpacity>
         </View>
@@ -715,14 +730,16 @@ const DealersUnderStockist = ({
               key={item.value}
               activeOpacity={0.8}
               onPress={() => setActiveFilter(item.value)}
-              style={[styles.dealerChip, active && styles.activeDealerChip]}>
+              style={[styles.dealerChip, active && styles.activeDealerChip]}
+            >
               <Text
                 style={[
                   styles.dealerChipText,
                   active && styles.activeDealerChipText,
-                  item.value === 'risk' && !active && {color: '#F06419'},
-                  item.value === 'overdue' && !active && {color: '#E00014'},
-                ]}>
+                  item.value === 'risk' && !active && { color: '#F06419' },
+                  item.value === 'overdue' && !active && { color: '#E00014' },
+                ]}
+              >
                 {item.label}
               </Text>
             </TouchableOpacity>
@@ -735,7 +752,8 @@ const DealersUnderStockist = ({
         <TouchableOpacity
           activeOpacity={0.8}
           style={styles.sortDealerButton}
-          onPress={() => setSortByRevenueHigh(prev => !prev)}>
+          onPress={() => setSortByRevenueHigh(prev => !prev)}
+        >
           <Text style={styles.sortDealerButtonText}>
             {sortByRevenueHigh
               ? 'Revenue (High to Low)'
@@ -755,9 +773,17 @@ const DealersUnderStockist = ({
               key={item.id}
               activeOpacity={0.86}
               onPress={() => onDealerPress(item)}
-              style={styles.dealerTableRow}>
-              <View style={[styles.smallDealerAvatar, {backgroundColor: item.color}]}>
-                <Text style={styles.smallDealerAvatarText}>{item.initials}</Text>
+              style={styles.dealerTableRow}
+            >
+              <View
+                style={[
+                  styles.smallDealerAvatar,
+                  { backgroundColor: item.color },
+                ]}
+              >
+                <Text style={styles.smallDealerAvatarText}>
+                  {item.initials}
+                </Text>
               </View>
 
               <View style={styles.dealerNameBlock}>
@@ -771,8 +797,9 @@ const DealersUnderStockist = ({
                 <Text
                   style={[
                     styles.tableRevenue,
-                    (isRisk || isOverdue) && {color: '#E00014'},
-                  ]}>
+                    (isRisk || isOverdue) && { color: '#E00014' },
+                  ]}
+                >
                   {item.revenue}
                 </Text>
                 <Text style={styles.tableSubText}>MTD Revenue</Text>
@@ -792,12 +819,14 @@ const DealersUnderStockist = ({
                       borderColor: '#FFB6B6',
                       backgroundColor: '#FFF0F0',
                     },
-                  ]}>
+                  ]}
+                >
                   <Text
                     style={[
                       styles.smallScoreText,
-                      (isRisk || isOverdue) && {color: '#E00014'},
-                    ]}>
+                      (isRisk || isOverdue) && { color: '#E00014' },
+                    ]}
+                  >
                     {item.score}
                   </Text>
                 </View>
@@ -811,13 +840,15 @@ const DealersUnderStockist = ({
                   styles.tableStatusBadge,
                   isRisk && styles.tableRiskBadge,
                   isOverdue && styles.tableOverdueBadge,
-                ]}>
+                ]}
+              >
                 <Text
                   style={[
                     styles.tableStatusText,
-                    isRisk && {color: '#F06419'},
-                    isOverdue && {color: '#E00014'},
-                  ]}>
+                    isRisk && { color: '#F06419' },
+                    isOverdue && { color: '#E00014' },
+                  ]}
+                >
                   {item.status}
                 </Text>
               </View>
@@ -857,9 +888,16 @@ const NetworkDetailScreen = () => {
 
       setData(response);
       setActiveTab('Overview');
-    } catch (err) {
-      console.log('Company Network Detail API Error:', err);
-      setError('Unable to load network detail');
+    } catch (err: any) {
+      const errorMessage =
+        err?.response?.data?.message ||
+        err?.response?.data?.error ||
+        err?.message ||
+        'Unable to load network detail';
+
+      showErrorToast(errorMessage);
+
+      setError(errorMessage);
     } finally {
       setLoading(false);
       setRefreshing(false);
@@ -916,7 +954,8 @@ const NetworkDetailScreen = () => {
             fontWeight: '700',
             marginBottom: rs(18),
             textAlign: 'center',
-          }}>
+          }}
+        >
           {error || 'Something went wrong'}
         </Text>
 
@@ -928,8 +967,13 @@ const NetworkDetailScreen = () => {
             paddingHorizontal: rs(28),
             paddingVertical: rs(14),
             borderRadius: rs(8),
-          }}>
-          <Text style={{color: '#FFFFFF', fontSize: fs(14), fontWeight: '800'}}>Retry</Text>
+          }}
+        >
+          <Text
+            style={{ color: '#FFFFFF', fontSize: fs(14), fontWeight: '800' }}
+          >
+            Retry
+          </Text>
         </TouchableOpacity>
       </SafeAreaView>
     );
@@ -947,10 +991,15 @@ const NetworkDetailScreen = () => {
         contentContainerStyle={styles.scrollContent}
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-        }>
+        }
+      >
         <ProfileCard data={data} />
 
-        <Tabs tabs={data.tabs} activeTab={activeTab} onChangeTab={setActiveTab} />
+        <Tabs
+          tabs={data.tabs}
+          activeTab={activeTab}
+          onChangeTab={setActiveTab}
+        />
 
         <MetricsRow items={data.metrics} />
 
@@ -1209,7 +1258,7 @@ const styles = StyleSheet.create({
     shadowColor: '#000000',
     shadowOpacity: 0.05,
     shadowRadius: rs(12),
-    shadowOffset: {width: 0, height: rs(5)},
+    shadowOffset: { width: 0, height: rs(5) },
     elevation: 3,
   },
   tabItem: {
@@ -1249,7 +1298,7 @@ const styles = StyleSheet.create({
     shadowColor: '#000000',
     shadowOpacity: 0.04,
     shadowRadius: rs(12),
-    shadowOffset: {width: 0, height: rs(5)},
+    shadowOffset: { width: 0, height: rs(5) },
     elevation: 3,
   },
   metricTitle: {
@@ -1279,7 +1328,7 @@ const styles = StyleSheet.create({
     shadowColor: '#000000',
     shadowOpacity: 0.04,
     shadowRadius: rs(12),
-    shadowOffset: {width: 0, height: rs(5)},
+    shadowOffset: { width: 0, height: rs(5) },
     elevation: 3,
   },
   paymentCard: {
@@ -1291,7 +1340,7 @@ const styles = StyleSheet.create({
     shadowColor: '#000000',
     shadowOpacity: 0.04,
     shadowRadius: rs(12),
-    shadowOffset: {width: 0, height: rs(5)},
+    shadowOffset: { width: 0, height: rs(5) },
     elevation: 3,
   },
   halfCard: {
@@ -1303,7 +1352,7 @@ const styles = StyleSheet.create({
     shadowColor: '#000000',
     shadowOpacity: 0.04,
     shadowRadius: rs(12),
-    shadowOffset: {width: 0, height: rs(5)},
+    shadowOffset: { width: 0, height: rs(5) },
     elevation: 3,
   },
   fullCard: {
@@ -1314,7 +1363,7 @@ const styles = StyleSheet.create({
     shadowColor: '#000000',
     shadowOpacity: 0.04,
     shadowRadius: rs(12),
-    shadowOffset: {width: 0, height: rs(5)},
+    shadowOffset: { width: 0, height: rs(5) },
     elevation: 3,
   },
   simpleCardBody: {
@@ -1398,7 +1447,7 @@ const styles = StyleSheet.create({
     height: rs(80),
     borderTopWidth: rs(4),
     borderColor: '#173CFF',
-    transform: [{rotate: '-8deg'}],
+    transform: [{ rotate: '-8deg' }],
   },
   fakeLineTwo: {
     position: 'absolute',
@@ -1408,7 +1457,7 @@ const styles = StyleSheet.create({
     height: rs(72),
     borderTopWidth: rs(4),
     borderColor: '#173CFF',
-    transform: [{rotate: '5deg'}],
+    transform: [{ rotate: '5deg' }],
   },
   fakeLineThree: {
     position: 'absolute',
@@ -1569,7 +1618,7 @@ const styles = StyleSheet.create({
     shadowColor: '#000000',
     shadowOpacity: 0.04,
     shadowRadius: rs(12),
-    shadowOffset: {width: 0, height: rs(5)},
+    shadowOffset: { width: 0, height: rs(5) },
     elevation: 3,
   },
   actionsRow: {
@@ -1599,7 +1648,7 @@ const styles = StyleSheet.create({
     shadowColor: '#000000',
     shadowOpacity: 0.04,
     shadowRadius: rs(12),
-    shadowOffset: {width: 0, height: rs(5)},
+    shadowOffset: { width: 0, height: rs(5) },
     elevation: 3,
   },
   dealersHeader: {

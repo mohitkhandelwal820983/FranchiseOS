@@ -38,7 +38,7 @@ const displayBackgroundNotification = async remoteMessage => {
 };
 
 messaging().setBackgroundMessageHandler(async remoteMessage => {
-  console.log('Background/closed notification:', remoteMessage);
+  
 
   /**
    * If notification payload exists, Android may show it automatically

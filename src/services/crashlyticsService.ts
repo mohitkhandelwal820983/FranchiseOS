@@ -4,9 +4,8 @@ export const initCrashlytics = async () => {
   try {
     await crashlytics().setCrashlyticsCollectionEnabled(true);
     crashlytics().log('Crashlytics initialized');
-    console.log('Crashlytics initialized');
   } catch (error) {
-    console.log('Crashlytics init error:', error);
+    // Silent fail to avoid blocking app startup
   }
 };
 
@@ -22,13 +21,11 @@ export const recordCrashError = (error: unknown, screenName?: string) => {
       crashlytics().recordError(new Error(String(error)));
     }
   } catch (err) {
-    console.log('Crashlytics record error:', err);
+    // Silent fail to avoid app crash while recording error
   }
 };
 
 export const forceTestCrash = async () => {
-  console.log('Force test crash clicked');
-
   await crashlytics().setCrashlyticsCollectionEnabled(true);
   crashlytics().log('Force test crash clicked');
 

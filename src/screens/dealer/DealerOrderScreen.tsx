@@ -1,4 +1,4 @@
-import React, {useEffect, useMemo, useState} from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import {
   ActivityIndicator,
   Alert,
@@ -31,24 +31,25 @@ import {
   WalletCards,
   X,
 } from 'lucide-react-native';
-import {   CustomerOrder,
+import {
+  CustomerOrder,
   CustomerOrderStatus,
   DealerOrdersData,
   MainTab,
   OrderFilter,
   StockOrder,
   StockOrderStatus,
-  SummaryItem,} from '../../api/mock/dealer/dealerOrders.mock';
+  SummaryItem,
+} from '../../api/mock/dealer/dealerOrders.mock';
 import { getDealerOrders } from '../../api/dealer/dealerOrders.api';
+import { showErrorToast } from '../../utils/toast';
 
-const {width: SCREEN_WIDTH} = Dimensions.get('window');
+const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
 const DESIGN_WIDTH = 832;
 const scale = SCREEN_WIDTH / DESIGN_WIDTH;
 const rs = (value: number) => Math.round(value * scale);
 const fs = (value: number) => rs(value + 3);
-
-
 
 const Header = () => {
   return (
@@ -81,12 +82,14 @@ const MainTabs = ({
         style={[
           styles.mainTabButton,
           activeTab === 'customer' && styles.activeMainTab,
-        ]}>
+        ]}
+      >
         <Text
           style={[
             styles.mainTabText,
             activeTab === 'customer' && styles.activeMainTabText,
-          ]}>
+          ]}
+        >
           Customer Orders
         </Text>
       </TouchableOpacity>
@@ -97,12 +100,14 @@ const MainTabs = ({
         style={[
           styles.mainTabButton,
           activeTab === 'stock' && styles.activeMainTab,
-        ]}>
+        ]}
+      >
         <Text
           style={[
             styles.mainTabText,
             activeTab === 'stock' && styles.activeMainTabText,
-          ]}>
+          ]}
+        >
           Stock Orders
         </Text>
       </TouchableOpacity>
@@ -151,7 +156,8 @@ const FilterChips = ({
     <ScrollView
       horizontal
       showsHorizontalScrollIndicator={false}
-      contentContainerStyle={styles.filterRow}>
+      contentContainerStyle={styles.filterRow}
+    >
       {filters.map(item => {
         const active = activeFilter === item;
 
@@ -160,8 +166,11 @@ const FilterChips = ({
             key={item}
             activeOpacity={0.85}
             onPress={() => onChange(item)}
-            style={[styles.filterChip, active && styles.activeFilterChip]}>
-            <Text style={[styles.filterText, active && styles.activeFilterText]}>
+            style={[styles.filterChip, active && styles.activeFilterChip]}
+          >
+            <Text
+              style={[styles.filterText, active && styles.activeFilterText]}
+            >
               {item}
             </Text>
           </TouchableOpacity>
@@ -171,16 +180,10 @@ const FilterChips = ({
   );
 };
 
-const SectionTitle = ({
-  title,
-  color,
-}: {
-  title: string;
-  color: string;
-}) => {
+const SectionTitle = ({ title, color }: { title: string; color: string }) => {
   return (
     <View style={styles.sectionTitleRow}>
-      <View style={[styles.sectionLine, {backgroundColor: color}]} />
+      <View style={[styles.sectionLine, { backgroundColor: color }]} />
       <Text style={styles.sectionTitle}>{title}</Text>
     </View>
   );
@@ -206,7 +209,8 @@ const StatusBadge = ({
         isTransit && styles.transitBadge,
         isPending && styles.pendingBadge,
         isCancelled && styles.cancelledBadge,
-      ]}>
+      ]}
+    >
       <Text
         style={[
           styles.statusText,
@@ -215,7 +219,8 @@ const StatusBadge = ({
           isTransit && styles.transitText,
           isPending && styles.pendingText,
           isCancelled && styles.cancelledText,
-        ]}>
+        ]}
+      >
         {status}
       </Text>
     </View>
@@ -241,7 +246,8 @@ const CustomerOrderCard = ({
           style={[
             styles.orderIcon,
             isDelivered ? styles.greenSoftIcon : styles.blueSoftIcon,
-          ]}>
+          ]}
+        >
           <ShoppingCart
             color={isDelivered ? '#138A36' : '#173CFF'}
             size={rs(36)}
@@ -311,7 +317,8 @@ const CustomerOrderCard = ({
           <TouchableOpacity
             activeOpacity={0.85}
             onPress={() => onDeliver(item.id)}
-            style={styles.primaryAction}>
+            style={styles.primaryAction}
+          >
             <Truck color="#FFFFFF" size={rs(22)} strokeWidth={2.2} />
             <Text style={styles.primaryActionText}>Deliver</Text>
           </TouchableOpacity>
@@ -331,11 +338,15 @@ const CustomerOrderCard = ({
           <TouchableOpacity
             activeOpacity={0.85}
             onPress={() => onRepeat(item.id)}
-            style={styles.greenOutlineAction}>
+            style={styles.greenOutlineAction}
+          >
             <Text style={styles.greenOutlineText}>↻ Repeat</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity activeOpacity={0.85} style={styles.greenOutlineAction}>
+          <TouchableOpacity
+            activeOpacity={0.85}
+            style={styles.greenOutlineAction}
+          >
             <ClipboardList color="#138A36" size={rs(22)} strokeWidth={2.2} />
             <Text style={styles.greenOutlineText}>Invoice</Text>
           </TouchableOpacity>
@@ -417,19 +428,28 @@ const StockOrderCard = ({
 
       {isTransit ? (
         <View style={styles.actionRow}>
-          <TouchableOpacity activeOpacity={0.85} style={styles.primaryActionWide}>
+          <TouchableOpacity
+            activeOpacity={0.85}
+            style={styles.primaryActionWide}
+          >
             <Truck color="#FFFFFF" size={rs(22)} strokeWidth={2.2} />
             <Text style={styles.primaryActionText}>Track</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity activeOpacity={0.85} style={styles.outlineActionWide}>
+          <TouchableOpacity
+            activeOpacity={0.85}
+            style={styles.outlineActionWide}
+          >
             <ClipboardList color="#173CFF" size={rs(22)} strokeWidth={2.2} />
             <Text style={styles.outlineActionText}>Invoice</Text>
           </TouchableOpacity>
         </View>
       ) : (
         <View style={styles.actionRow}>
-          <TouchableOpacity activeOpacity={0.85} style={styles.orangeOutlineAction}>
+          <TouchableOpacity
+            activeOpacity={0.85}
+            style={styles.orangeOutlineAction}
+          >
             <Edit3 color="#F06419" size={rs(22)} strokeWidth={2.2} />
             <Text style={styles.orangeOutlineText}>Edit</Text>
           </TouchableOpacity>
@@ -437,7 +457,8 @@ const StockOrderCard = ({
           <TouchableOpacity
             activeOpacity={0.85}
             onPress={() => onCancel(item.id)}
-            style={styles.dangerOutlineAction}>
+            style={styles.dangerOutlineAction}
+          >
             <X color="#E00014" size={rs(22)} strokeWidth={2.2} />
             <Text style={styles.dangerOutlineText}>Cancel</Text>
           </TouchableOpacity>
@@ -447,7 +468,7 @@ const StockOrderCard = ({
   );
 };
 
-const OrderSummary = ({items}: {items: SummaryItem[]}) => {
+const OrderSummary = ({ items }: { items: SummaryItem[] }) => {
   return (
     <View style={styles.summaryCard}>
       <View style={styles.summaryTitleRow}>
@@ -458,7 +479,7 @@ const OrderSummary = ({items}: {items: SummaryItem[]}) => {
       <View style={styles.summaryItemsRow}>
         {items.map((item, index) => (
           <View key={item.id} style={styles.summaryItem}>
-            <View style={[styles.summaryIcon, {backgroundColor: item.bg}]}>
+            <View style={[styles.summaryIcon, { backgroundColor: item.bg }]}>
               {item.icon === 'customer' && (
                 <ShoppingCart color="#FFFFFF" size={rs(31)} strokeWidth={2.2} />
               )}
@@ -478,7 +499,9 @@ const OrderSummary = ({items}: {items: SummaryItem[]}) => {
               <Text style={styles.summaryLabel}>{item.label}</Text>
             </View>
 
-            {index !== items.length - 1 && <View style={styles.summaryDivider} />}
+            {index !== items.length - 1 && (
+              <View style={styles.summaryDivider} />
+            )}
           </View>
         ))}
       </View>
@@ -498,7 +521,8 @@ const FloatingActions = ({
       <TouchableOpacity
         activeOpacity={0.85}
         onPress={onCustomerOrder}
-        style={styles.floatingButton}>
+        style={styles.floatingButton}
+      >
         <Plus color="#173CFF" size={rs(30)} strokeWidth={2.5} />
         <Text style={styles.floatingText}>Create{'\n'}Customer Order</Text>
       </TouchableOpacity>
@@ -506,7 +530,8 @@ const FloatingActions = ({
       <TouchableOpacity
         activeOpacity={0.85}
         onPress={onStockOrder}
-        style={styles.floatingButton}>
+        style={styles.floatingButton}
+      >
         <Plus color="#173CFF" size={rs(30)} strokeWidth={2.5} />
         <Text style={styles.floatingText}>Create{'\n'}Stock Order</Text>
       </TouchableOpacity>
@@ -526,9 +551,16 @@ const DealerOrderScreen = () => {
       setLoading(true);
 
       const response = await getDealerOrders();
+
       setData(response);
-    } catch (error) {
-      console.log('Dealer Orders API Error:', error);
+    } catch (error: any) {
+      const errorMessage =
+        error?.response?.data?.message ||
+        error?.response?.data?.error ||
+        error?.message ||
+        'Unable to load dealer orders. Please try again.';
+
+      showErrorToast(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -598,7 +630,7 @@ const DealerOrderScreen = () => {
     setData({
       ...data,
       customerOrders: data.customerOrders.map(item =>
-        item.id === id ? {...item, status, date: 'Delivered just now'} : item,
+        item.id === id ? { ...item, status, date: 'Delivered just now' } : item,
       ),
     });
   };
@@ -611,7 +643,7 @@ const DealerOrderScreen = () => {
     setData({
       ...data,
       stockOrders: data.stockOrders.map(item =>
-        item.id === id ? {...item, status} : item,
+        item.id === id ? { ...item, status } : item,
       ),
     });
   };
@@ -642,7 +674,8 @@ const DealerOrderScreen = () => {
       <ScrollView
         style={styles.scrollView}
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={styles.scrollContent}>
+        contentContainerStyle={styles.scrollContent}
+      >
         <MainTabs activeTab={activeTab} onChange={handleTabChange} />
 
         <Text style={styles.subTitle}>
@@ -842,7 +875,7 @@ const styles = StyleSheet.create({
     shadowColor: '#000000',
     shadowOpacity: 0.04,
     shadowRadius: rs(12),
-    shadowOffset: {width: 0, height: rs(5)},
+    shadowOffset: { width: 0, height: rs(5) },
     elevation: 3,
   },
   orderTopRow: {
@@ -1097,7 +1130,7 @@ const styles = StyleSheet.create({
     shadowColor: '#000000',
     shadowOpacity: 0.04,
     shadowRadius: rs(12),
-    shadowOffset: {width: 0, height: rs(5)},
+    shadowOffset: { width: 0, height: rs(5) },
     elevation: 3,
   },
   summaryTitleRow: {
@@ -1165,7 +1198,7 @@ const styles = StyleSheet.create({
     shadowColor: '#000000',
     shadowOpacity: 0.18,
     shadowRadius: rs(12),
-    shadowOffset: {width: 0, height: rs(5)},
+    shadowOffset: { width: 0, height: rs(5) },
     elevation: 10,
   },
   floatingText: {

@@ -1,6 +1,5 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {
-  Alert,
   KeyboardAvoidingView,
   Platform,
   ScrollView,
@@ -11,11 +10,13 @@ import {
   TouchableOpacity,
   View,
   Dimensions,
+  SafeAreaView,
 } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-import { ArrowLeft, Phone } from 'lucide-react-native';
+import {useNavigation} from '@react-navigation/native';
+import {ArrowLeft, Phone} from 'lucide-react-native';
+import {showErrorToast, showSuccessToast} from '../../../utils/toast';
 
-const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
+const {width: SCREEN_WIDTH, height: SCREEN_HEIGHT} = Dimensions.get('window');
 
 const DESIGN_WIDTH = 263;
 const scale = SCREEN_WIDTH / DESIGN_WIDTH;
@@ -43,15 +44,21 @@ const ForgotPasswordScreen = () => {
     return () => clearInterval(timer);
   }, [otpSent, seconds]);
 
+  const goToLogin = () => {
+    navigation.replace('Login');
+  };
+
   const onSendOtp = () => {
     if (!emailOrPhone.trim()) {
-      Alert.alert('Validation', 'Please enter Mobile Number or Email');
+      showErrorToast('Please enter Mobile Number or Email');
       return;
     }
 
     setOtpSent(true);
     setSeconds(45);
     setOtp(['', '', '', '', '', '']);
+
+    showSuccessToast('OTP sent successfully');
 
     setTimeout(() => {
       otpRefs.current[0]?.focus();
@@ -65,18 +72,19 @@ const ForgotPasswordScreen = () => {
 
     setSeconds(45);
     setOtp(['', '', '', '', '', '']);
-    Alert.alert('OTP Sent', 'OTP has been resent successfully.');
+
+    showSuccessToast('OTP has been resent successfully.');
   };
 
   const onVerifyOtp = () => {
     const otpValue = otp.join('');
 
     if (otpValue.length !== 6) {
-      Alert.alert('Validation', 'Please enter valid OTP');
+      showErrorToast('Please enter valid OTP');
       return;
     }
 
-    Alert.alert('Success', 'OTP Verified Successfully');
+    showSuccessToast('OTP Verified Successfully');
   };
 
   const handleOtpChange = (text: string, index: number) => {
@@ -98,25 +106,22 @@ const ForgotPasswordScreen = () => {
   };
 
   return (
-    <>
+    <SafeAreaView style={styles.safeArea}>
       <StatusBar backgroundColor="#0D3696" barStyle="light-content" />
 
       <KeyboardAvoidingView
-        style={[styles.container]}
-        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-      >
+        style={styles.container}
+        behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
         <ScrollView
           keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}
-          contentContainerStyle={styles.scrollContent}
-        >
-          <View style={[styles.screenWrap]}>
+          contentContainerStyle={styles.scrollContent}>
+          <View style={styles.screenWrap}>
             <View style={styles.topSection}>
               <TouchableOpacity
                 activeOpacity={0.8}
                 style={styles.backButton}
-                onPress={() => navigation.goBack()}
-              >
+                onPress={goToLogin}>
                 <ArrowLeft color="#FFFFFF" size={rs(11)} strokeWidth={2.4} />
               </TouchableOpacity>
 
@@ -153,8 +158,7 @@ const ForgotPasswordScreen = () => {
               <TouchableOpacity
                 activeOpacity={0.85}
                 style={styles.primaryButton}
-                onPress={onSendOtp}
-              >
+                onPress={onSendOtp}>
                 <Text style={styles.primaryButtonText}>Send OTP</Text>
               </TouchableOpacity>
 
@@ -170,7 +174,7 @@ const ForgotPasswordScreen = () => {
                     keyboardType="number-pad"
                     style={styles.otpInput}
                     onChangeText={text => handleOtpChange(text, index)}
-                    onKeyPress={({ nativeEvent }) =>
+                    onKeyPress={({nativeEvent}) =>
                       handleOtpKeyPress(nativeEvent.key, index)
                     }
                   />
@@ -187,8 +191,7 @@ const ForgotPasswordScreen = () => {
                     style={[
                       styles.resendText,
                       seconds === 0 && styles.resendActiveText,
-                    ]}
-                  >
+                    ]}>
                     Resend OTP
                   </Text>
                 </TouchableOpacity>
@@ -197,39 +200,42 @@ const ForgotPasswordScreen = () => {
               <TouchableOpacity
                 activeOpacity={0.85}
                 style={styles.verifyButton}
-                onPress={onVerifyOtp}
-              >
+                onPress={onVerifyOtp}>
                 <Text style={styles.verifyButtonText}>Verify OTP</Text>
               </TouchableOpacity>
 
-              <TouchableOpacity
-                activeOpacity={0.8}
-                onPress={() => navigation.navigate('Login')}
-              >
+              <TouchableOpacity activeOpacity={0.8} onPress={goToLogin}>
                 <Text style={styles.backText}>
-                  Remember password? Back to Logi
+                  Remember password? Back to Login
                 </Text>
               </TouchableOpacity>
             </View>
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
-    </>
+    </SafeAreaView>
   );
 };
 
 export default ForgotPasswordScreen;
 
 const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    backgroundColor: '#0D3696',
+  },
+
   container: {
     flex: 1,
     backgroundColor: '#EEF2F3',
   },
+
   scrollContent: {
     flexGrow: 1,
     minHeight: SCREEN_HEIGHT,
     backgroundColor: '#F7F9FA',
   },
+
   screenWrap: {
     width: SCREEN_WIDTH,
     minHeight: SCREEN_HEIGHT,
@@ -237,31 +243,35 @@ const styles = StyleSheet.create({
     shadowColor: '#000000',
     shadowOpacity: 0.12,
     shadowRadius: rs(14),
-    shadowOffset: { width: 0, height: rs(8) },
+    shadowOffset: {width: 0, height: rs(8)},
     elevation: 10,
   },
+
   topSection: {
-    height: rs(88),
+    height: rs(92),
     backgroundColor: '#0D3696',
     borderTopLeftRadius: rs(4),
     borderTopRightRadius: rs(4),
     alignItems: 'center',
     justifyContent: 'flex-start',
-    paddingTop: rs(12),
+    paddingTop: rs(18),
   },
+
   backButton: {
     position: 'absolute',
     left: rs(12),
-    top: rs(13),
+    top: rs(18),
     width: rs(18),
     height: rs(18),
     alignItems: 'center',
     justifyContent: 'center',
   },
+
   logoRow: {
     flexDirection: 'row',
     alignItems: 'center',
   },
+
   logoCircle: {
     width: rs(13),
     height: rs(13),
@@ -271,18 +281,21 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginRight: rs(4),
   },
+
   logoMark: {
     color: '#0D3696',
     fontSize: rs(8),
     fontWeight: '900',
     marginTop: -rs(1),
   },
+
   logoText: {
     color: '#FFFFFF',
     fontSize: rs(11),
     fontWeight: '800',
     letterSpacing: rs(0.2),
   },
+
   card: {
     backgroundColor: '#FFFFFF',
     marginHorizontal: rs(14),
@@ -294,15 +307,17 @@ const styles = StyleSheet.create({
     shadowColor: '#000000',
     shadowOpacity: 0.08,
     shadowRadius: rs(8),
-    shadowOffset: { width: 0, height: rs(4) },
+    shadowOffset: {width: 0, height: rs(4)},
     elevation: 6,
   },
+
   heading: {
     color: '#111827',
     fontSize: rs(14),
     fontWeight: '900',
     textAlign: 'center',
   },
+
   subTitle: {
     color: '#6B7280',
     fontSize: rs(7),
@@ -312,6 +327,7 @@ const styles = StyleSheet.create({
     marginTop: rs(6),
     marginBottom: rs(12),
   },
+
   inputBox: {
     height: rs(22),
     borderWidth: 1,
@@ -322,6 +338,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
   },
+
   input: {
     flex: 1,
     color: '#111827',
@@ -330,6 +347,7 @@ const styles = StyleSheet.create({
     paddingVertical: 0,
     marginLeft: rs(7),
   },
+
   primaryButton: {
     height: rs(23),
     backgroundColor: '#1F5CC1',
@@ -338,16 +356,19 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginTop: rs(10),
   },
+
   primaryButtonText: {
     color: '#FFFFFF',
     fontSize: rs(7),
     fontWeight: '800',
   },
+
   otpContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginTop: rs(42),
   },
+
   otpInput: {
     width: rs(23),
     height: rs(23),
@@ -360,26 +381,31 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     padding: 0,
   },
+
   resendRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     marginTop: rs(12),
   },
+
   timerText: {
     color: '#7A808A',
     fontSize: rs(7),
     fontWeight: '500',
   },
+
   resendText: {
     color: '#9CA3AF',
     fontSize: rs(7),
     fontWeight: '600',
     textDecorationLine: 'underline',
   },
+
   resendActiveText: {
     color: '#1F5CC1',
   },
+
   verifyButton: {
     height: rs(23),
     backgroundColor: '#1F5CC1',
@@ -388,11 +414,13 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginTop: rs(31),
   },
+
   verifyButtonText: {
     color: '#FFFFFF',
     fontSize: rs(7),
     fontWeight: '800',
   },
+
   backText: {
     color: '#111827',
     fontSize: rs(7),

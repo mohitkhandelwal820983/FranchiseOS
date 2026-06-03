@@ -1,4 +1,4 @@
-import React, {useEffect, useMemo, useState} from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import {
   ActivityIndicator,
   Alert,
@@ -29,18 +29,24 @@ import {
   WalletCards,
 } from 'lucide-react-native';
 import { getDealerDashboard } from '../../api/dealer/dealerDashboard.api';
-import { DealerDashboardData, OverviewItem, Payment, PriorityAction, Product, RecentOrder } from '../../api/mock/dealer/dealerDashboard.mock';
+import {
+  DealerDashboardData,
+  OverviewItem,
+  Payment,
+  PriorityAction,
+  Product,
+  RecentOrder,
+} from '../../api/mock/dealer/dealerDashboard.mock';
+import { showErrorToast } from '../../utils/toast';
 
-const {width: SCREEN_WIDTH} = Dimensions.get('window');
+const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
 const DESIGN_WIDTH = 832;
 const scale = SCREEN_WIDTH / DESIGN_WIDTH;
 const rs = (value: number) => Math.round(value * scale);
 const fs = (value: number) => rs(value + 3);
 
-
-
-const Header = ({count}: {count: string}) => {
+const Header = ({ count }: { count: string }) => {
   return (
     <View style={styles.header}>
       <TouchableOpacity activeOpacity={0.8}>
@@ -59,7 +65,7 @@ const Header = ({count}: {count: string}) => {
   );
 };
 
-const WelcomeCard = ({data}: {data: DealerDashboardData['welcome']}) => {
+const WelcomeCard = ({ data }: { data: DealerDashboardData['welcome'] }) => {
   return (
     <View style={styles.welcomeCard}>
       <View style={styles.welcomeLine} />
@@ -81,7 +87,7 @@ const WelcomeCard = ({data}: {data: DealerDashboardData['welcome']}) => {
   );
 };
 
-const OverviewIcon = ({item}: {item: OverviewItem}) => {
+const OverviewIcon = ({ item }: { item: OverviewItem }) => {
   const iconColor =
     item.icon === 'revenue'
       ? '#138A36'
@@ -96,7 +102,7 @@ const OverviewIcon = ({item}: {item: OverviewItem}) => {
       : '#173CFF';
 
   return (
-    <View style={[styles.overviewIcon, {backgroundColor: item.bg}]}>
+    <View style={[styles.overviewIcon, { backgroundColor: item.bg }]}>
       {item.icon === 'orders' && (
         <ClipboardList color={iconColor} size={rs(34)} strokeWidth={2.3} />
       )}
@@ -119,7 +125,7 @@ const OverviewIcon = ({item}: {item: OverviewItem}) => {
   );
 };
 
-const OverviewCard = ({item}: {item: OverviewItem}) => {
+const OverviewCard = ({ item }: { item: OverviewItem }) => {
   return (
     <View style={styles.overviewCard}>
       <OverviewIcon item={item} />
@@ -130,7 +136,9 @@ const OverviewCard = ({item}: {item: OverviewItem}) => {
 
         {item.progress ? (
           <View style={styles.progressTrack}>
-            <View style={[styles.progressFill, {width: `${item.progress}%`}]} />
+            <View
+              style={[styles.progressFill, { width: `${item.progress}%` }]}
+            />
           </View>
         ) : null}
 
@@ -140,7 +148,8 @@ const OverviewCard = ({item}: {item: OverviewItem}) => {
             item.icon === 'dues' && styles.redText,
             item.icon === 'incentive' && styles.purpleText,
             item.icon === 'delivery' && styles.blueText,
-          ]}>
+          ]}
+        >
           {item.subtitle}
         </Text>
       </View>
@@ -148,7 +157,7 @@ const OverviewCard = ({item}: {item: OverviewItem}) => {
   );
 };
 
-const BusinessOverview = ({items}: {items: OverviewItem[]}) => {
+const BusinessOverview = ({ items }: { items: OverviewItem[] }) => {
   return (
     <>
       <Text style={styles.sectionTitle}>Business Overview</Text>
@@ -162,9 +171,11 @@ const BusinessOverview = ({items}: {items: OverviewItem[]}) => {
   );
 };
 
-const PriorityIcon = ({item}: {item: PriorityAction}) => {
+const PriorityIcon = ({ item }: { item: PriorityAction }) => {
   return (
-    <View style={[styles.priorityIconSoft, {backgroundColor: `${item.color}12`}]}>
+    <View
+      style={[styles.priorityIconSoft, { backgroundColor: `${item.color}12` }]}
+    >
       {item.icon === 'order' && (
         <ClipboardList color={item.color} size={rs(22)} strokeWidth={2.2} />
       )}
@@ -181,13 +192,17 @@ const PriorityIcon = ({item}: {item: PriorityAction}) => {
   );
 };
 
-const PriorityActions = ({items}: {items: PriorityAction[]}) => {
+const PriorityActions = ({ items }: { items: PriorityAction[] }) => {
   return (
     <View style={styles.fullCard}>
       <Text style={styles.cardTitle}>Today's Priority Actions</Text>
 
       {items.map(item => (
-        <TouchableOpacity key={item.id} activeOpacity={0.85} style={styles.priorityRow}>
+        <TouchableOpacity
+          key={item.id}
+          activeOpacity={0.85}
+          style={styles.priorityRow}
+        >
           <PriorityIcon item={item} />
 
           <View style={styles.priorityTextBox}>
@@ -197,8 +212,8 @@ const PriorityActions = ({items}: {items: PriorityAction[]}) => {
             )}
           </View>
 
-          <View style={[styles.priorityButton, {borderColor: item.color}]}>
-            <Text style={[styles.priorityButtonText, {color: item.color}]}>
+          <View style={[styles.priorityButton, { borderColor: item.color }]}>
+            <Text style={[styles.priorityButtonText, { color: item.color }]}>
               {item.button}
             </Text>
           </View>
@@ -210,7 +225,7 @@ const PriorityActions = ({items}: {items: PriorityAction[]}) => {
   );
 };
 
-const RecentOrdersCard = ({items}: {items: RecentOrder[]}) => {
+const RecentOrdersCard = ({ items }: { items: RecentOrder[] }) => {
   return (
     <View style={styles.halfCard}>
       <View style={styles.cardTopRow}>
@@ -219,7 +234,11 @@ const RecentOrdersCard = ({items}: {items: RecentOrder[]}) => {
       </View>
 
       {items.map(item => (
-        <TouchableOpacity key={item.id} activeOpacity={0.85} style={styles.orderRow}>
+        <TouchableOpacity
+          key={item.id}
+          activeOpacity={0.85}
+          style={styles.orderRow}
+        >
           <View style={styles.fileIconSoft}>
             <ClipboardList color="#173CFF" size={rs(22)} />
           </View>
@@ -231,8 +250,10 @@ const RecentOrdersCard = ({items}: {items: RecentOrder[]}) => {
 
           <View style={styles.orderRight}>
             <Text style={styles.orderAmount}>{item.amount}</Text>
-            <View style={[styles.statusBadge, {backgroundColor: item.statusBg}]}>
-              <Text style={[styles.statusText, {color: item.statusColor}]}>
+            <View
+              style={[styles.statusBadge, { backgroundColor: item.statusBg }]}
+            >
+              <Text style={[styles.statusText, { color: item.statusColor }]}>
                 {item.status}
               </Text>
             </View>
@@ -243,7 +264,7 @@ const RecentOrdersCard = ({items}: {items: RecentOrder[]}) => {
   );
 };
 
-const TopProductsCard = ({items}: {items: Product[]}) => {
+const TopProductsCard = ({ items }: { items: Product[] }) => {
   return (
     <View style={styles.halfCard}>
       <View style={styles.cardTopRow}>
@@ -252,8 +273,12 @@ const TopProductsCard = ({items}: {items: Product[]}) => {
       </View>
 
       {items.map(item => (
-        <TouchableOpacity key={item.id} activeOpacity={0.85} style={styles.productRow}>
-          <Image source={{uri: item.image}} style={styles.productImage} />
+        <TouchableOpacity
+          key={item.id}
+          activeOpacity={0.85}
+          style={styles.productRow}
+        >
+          <Image source={{ uri: item.image }} style={styles.productImage} />
 
           <View style={styles.productInfo}>
             <Text style={styles.productName}>{item.name}</Text>
@@ -262,7 +287,7 @@ const TopProductsCard = ({items}: {items: Product[]}) => {
 
           <View style={styles.productRight}>
             <Text style={styles.productAmount}>{item.amount}</Text>
-            <Text style={[styles.productGrowth, {color: item.growthColor}]}>
+            <Text style={[styles.productGrowth, { color: item.growthColor }]}>
               {item.growth}
             </Text>
           </View>
@@ -274,7 +299,11 @@ const TopProductsCard = ({items}: {items: Product[]}) => {
   );
 };
 
-const TargetProgressCard = ({target}: {target: DealerDashboardData['target']}) => {
+const TargetProgressCard = ({
+  target,
+}: {
+  target: DealerDashboardData['target'];
+}) => {
   return (
     <View style={styles.halfCard}>
       <Text style={styles.cardTitle}>Target Progress</Text>
@@ -298,14 +327,18 @@ const TargetProgressCard = ({target}: {target: DealerDashboardData['target']}) =
   );
 };
 
-const RecentPaymentsCard = ({items}: {items: Payment[]}) => {
+const RecentPaymentsCard = ({ items }: { items: Payment[] }) => {
   return (
     <View style={styles.halfCard}>
       <Text style={styles.cardTitle}>Recent Payments</Text>
 
       {items.map(item => (
-        <TouchableOpacity key={item.id} activeOpacity={0.85} style={styles.paymentRow}>
-          <View style={[styles.paymentIconSoft, {backgroundColor: item.bg}]}>
+        <TouchableOpacity
+          key={item.id}
+          activeOpacity={0.85}
+          style={styles.paymentRow}
+        >
+          <View style={[styles.paymentIconSoft, { backgroundColor: item.bg }]}>
             {item.icon === 'received' && (
               <CheckCircle2 color={item.color} size={rs(22)} />
             )}
@@ -318,7 +351,7 @@ const RecentPaymentsCard = ({items}: {items: Payment[]}) => {
           </View>
 
           <View style={styles.paymentInfo}>
-            <Text style={[styles.paymentTitle, {color: item.color}]}>
+            <Text style={[styles.paymentTitle, { color: item.color }]}>
               {item.title}
             </Text>
             <Text style={styles.paymentSubtitle}>{item.subtitle}</Text>
@@ -343,7 +376,8 @@ const QuickActions = () => {
       <TouchableOpacity
         activeOpacity={0.85}
         onPress={() => handleAction('Create Order')}
-        style={styles.quickActionButton}>
+        style={styles.quickActionButton}
+      >
         <View style={styles.quickPlus}>
           <Plus color="#173CFF" size={rs(28)} strokeWidth={2.5} />
         </View>
@@ -355,7 +389,8 @@ const QuickActions = () => {
       <TouchableOpacity
         activeOpacity={0.85}
         onPress={() => handleAction('Add Customer')}
-        style={styles.quickActionButton}>
+        style={styles.quickActionButton}
+      >
         <View style={styles.quickPlus}>
           <Plus color="#173CFF" size={rs(28)} strokeWidth={2.5} />
         </View>
@@ -367,7 +402,8 @@ const QuickActions = () => {
       <TouchableOpacity
         activeOpacity={0.85}
         onPress={() => handleAction('Collect Payment')}
-        style={styles.quickActionButton}>
+        style={styles.quickActionButton}
+      >
         <View style={styles.quickPlus}>
           <IndianRupee color="#173CFF" size={rs(26)} strokeWidth={2.5} />
         </View>
@@ -386,9 +422,16 @@ const DealerDashboardScreen = () => {
       setLoading(true);
 
       const response = await getDealerDashboard();
+
       setData(response);
-    } catch (error) {
-      console.log('Dealer Dashboard API Error:', error);
+    } catch (error: any) {
+      const errorMessage =
+        error?.response?.data?.message ||
+        error?.response?.data?.error ||
+        error?.message ||
+        'Unable to load dashboard data. Please try again.';
+
+      showErrorToast(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -436,7 +479,8 @@ const DealerDashboardScreen = () => {
       <ScrollView
         style={styles.scrollView}
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={styles.scrollContent}>
+        contentContainerStyle={styles.scrollContent}
+      >
         <WelcomeCard data={data.welcome} />
 
         <BusinessOverview items={data.overview} />
@@ -523,7 +567,7 @@ const styles = StyleSheet.create({
     shadowColor: '#000000',
     shadowOpacity: 0.04,
     shadowRadius: rs(12),
-    shadowOffset: {width: 0, height: rs(5)},
+    shadowOffset: { width: 0, height: rs(5) },
     elevation: 3,
   },
   welcomeLine: {
@@ -575,7 +619,7 @@ const styles = StyleSheet.create({
     shadowColor: '#000000',
     shadowOpacity: 0.04,
     shadowRadius: rs(12),
-    shadowOffset: {width: 0, height: rs(5)},
+    shadowOffset: { width: 0, height: rs(5) },
     elevation: 3,
   },
   overviewIcon: {
@@ -637,7 +681,7 @@ const styles = StyleSheet.create({
     shadowColor: '#000000',
     shadowOpacity: 0.04,
     shadowRadius: rs(12),
-    shadowOffset: {width: 0, height: rs(5)},
+    shadowOffset: { width: 0, height: rs(5) },
     elevation: 3,
   },
   cardTitle: {
@@ -701,7 +745,7 @@ const styles = StyleSheet.create({
     shadowColor: '#000000',
     shadowOpacity: 0.04,
     shadowRadius: rs(12),
-    shadowOffset: {width: 0, height: rs(5)},
+    shadowOffset: { width: 0, height: rs(5) },
     elevation: 3,
   },
   cardTopRow: {

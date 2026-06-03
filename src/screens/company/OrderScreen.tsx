@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useMemo, useState} from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   ActivityIndicator,
   Dimensions,
@@ -23,19 +23,21 @@ import {
   Search,
 } from 'lucide-react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { CompanyOrdersData, FilterState, OrderItem, OrderStatus } from '../../api/mock/company/companyOrders.mock';
+import {
+  CompanyOrdersData,
+  FilterState,
+  OrderItem,
+  OrderStatus,
+} from '../../api/mock/company/companyOrders.mock';
 import { getCompanyOrders } from '../../api/company/companyOrders.api';
+import { showErrorToast } from '../../utils/toast';
 
-const {width: SCREEN_WIDTH} = Dimensions.get('window');
+const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
 const DESIGN_WIDTH = 832;
 const scale = SCREEN_WIDTH / DESIGN_WIDTH;
 const rs = (value: number) => Math.round(value * scale);
 const fs = (value: number) => rs(value + 3);
-
-
-
-
 
 const Header = () => {
   return (
@@ -74,7 +76,7 @@ const SearchBox = ({
   );
 };
 
-const SummaryCards = ({data}: {data: CompanyOrdersData}) => {
+const SummaryCards = ({ data }: { data: CompanyOrdersData }) => {
   return (
     <View style={styles.summaryRow}>
       <View style={styles.summaryCard}>
@@ -129,8 +131,14 @@ const StatusTabs = ({
             key={tab}
             activeOpacity={0.8}
             onPress={() => onChange(tab)}
-            style={[styles.statusTab, active && styles.activeStatusTab]}>
-            <Text style={[styles.statusTabText, active && styles.activeStatusTabText]}>
+            style={[styles.statusTab, active && styles.activeStatusTab]}
+          >
+            <Text
+              style={[
+                styles.statusTabText,
+                active && styles.activeStatusTabText,
+              ]}
+            >
               {tab}
             </Text>
           </TouchableOpacity>
@@ -153,8 +161,11 @@ const FilterButton = ({
     <TouchableOpacity
       activeOpacity={0.8}
       onPress={onPress}
-      style={[styles.filterChip, active && styles.activeFilterChip]}>
-      <Text style={[styles.filterChipText, active && styles.activeFilterChipText]}>
+      style={[styles.filterChip, active && styles.activeFilterChip]}
+    >
+      <Text
+        style={[styles.filterChipText, active && styles.activeFilterChipText]}
+      >
         {label}
       </Text>
       <ChevronDown
@@ -230,7 +241,7 @@ const FilterSection = ({
   );
 };
 
-const StatusBadge = ({status}: {status: OrderItem['status']}) => {
+const StatusBadge = ({ status }: { status: OrderItem['status'] }) => {
   const isDelivered = status === 'Delivered';
   const isShipped = status === 'Shipped';
   const isApproved = status === 'Approved';
@@ -244,7 +255,8 @@ const StatusBadge = ({status}: {status: OrderItem['status']}) => {
         isShipped && styles.shippedBadge,
         isApproved && styles.approvedBadge,
         isCancelled && styles.cancelledBadge,
-      ]}>
+      ]}
+    >
       <Text
         style={[
           styles.orderStatusText,
@@ -252,14 +264,15 @@ const StatusBadge = ({status}: {status: OrderItem['status']}) => {
           isShipped && styles.shippedText,
           isApproved && styles.approvedText,
           isCancelled && styles.cancelledText,
-        ]}>
+        ]}
+      >
         {status}
       </Text>
     </View>
   );
 };
 
-const OrderRow = ({item}: {item: OrderItem}) => {
+const OrderRow = ({ item }: { item: OrderItem }) => {
   return (
     <TouchableOpacity activeOpacity={0.85} style={styles.orderRow}>
       <View style={styles.orderLeft}>
@@ -294,7 +307,7 @@ const OrderRow = ({item}: {item: OrderItem}) => {
   );
 };
 
-const OrdersList = ({orders}: {orders: OrderItem[]}) => {
+const OrdersList = ({ orders }: { orders: OrderItem[] }) => {
   return (
     <View style={styles.ordersCard}>
       <View style={styles.ordersHeader}>
@@ -311,7 +324,9 @@ const OrdersList = ({orders}: {orders: OrderItem[]}) => {
       ))}
 
       <View style={styles.listFooter}>
-        <Text style={styles.showingText}>Showing {orders.length} of 342 orders</Text>
+        <Text style={styles.showingText}>
+          Showing {orders.length} of 342 orders
+        </Text>
 
         <TouchableOpacity activeOpacity={0.8}>
           <Text style={styles.loadMoreText}>Load more</Text>
@@ -343,9 +358,16 @@ const OrdersScreen = () => {
       const response = await getCompanyOrders();
 
       setData(response);
-    } catch (err) {
-      console.log('Company Orders API Error:', err);
-      setError('Unable to load company orders');
+    } catch (err: any) {
+      const errorMessage =
+        err?.response?.data?.message ||
+        err?.response?.data?.error ||
+        err?.message ||
+        'Unable to load company orders';
+
+      showErrorToast(errorMessage);
+
+      setError(errorMessage);
     } finally {
       setLoading(false);
       setRefreshing(false);
@@ -427,7 +449,8 @@ const OrdersScreen = () => {
             fontWeight: '700',
             marginBottom: rs(18),
             textAlign: 'center',
-          }}>
+          }}
+        >
           {error || 'Something went wrong'}
         </Text>
 
@@ -439,8 +462,13 @@ const OrdersScreen = () => {
             paddingHorizontal: rs(28),
             paddingVertical: rs(14),
             borderRadius: rs(8),
-          }}>
-          <Text style={{color: '#FFFFFF', fontSize: fs(14), fontWeight: '800'}}>Retry</Text>
+          }}
+        >
+          <Text
+            style={{ color: '#FFFFFF', fontSize: fs(14), fontWeight: '800' }}
+          >
+            Retry
+          </Text>
         </TouchableOpacity>
       </SafeAreaView>
     );
@@ -458,7 +486,8 @@ const OrdersScreen = () => {
         contentContainerStyle={styles.scrollContent}
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-        }>
+        }
+      >
         <SearchBox value={search} onChangeText={setSearch} />
 
         <SummaryCards data={data} />
@@ -618,8 +647,7 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
     fontWeight: '800',
   },
- 
- 
+
   activeFilterChip: {
     backgroundColor: '#061B66',
     borderColor: '#061B66',
@@ -634,62 +662,62 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
   },
   filterSection: {
-  minHeight: rs(98),
-  borderWidth: 1,
-  borderColor: '#EEF0F6',
-  backgroundColor: '#FFFFFF',
-  borderRadius: rs(10),
-  paddingHorizontal: rs(20),
-  paddingVertical: rs(16),
-  marginBottom: rs(28),
-  shadowColor: '#000000',
-  shadowOpacity: 0.03,
-  shadowRadius: rs(10),
-  shadowOffset: {width: 0, height: rs(4)},
-  elevation: 2,
-},
-filterLabel: {
-  color: '#111327',
-  fontSize: fs(24),
-  fontWeight: '700',
-  marginBottom: rs(14),
-},
-filterButtonsWrap: {
-  flexDirection: 'row',
-  flexWrap: 'wrap',
-  alignItems: 'center',
-},
-filterChip: {
-  height: rs(54),
-  minWidth: rs(112),
-  borderWidth: 1,
-  borderColor: '#D9DCE8',
-  borderRadius: rs(6),
-  backgroundColor: '#FFFFFF',
-  paddingHorizontal: rs(16),
-  marginRight: rs(12),
-  marginBottom: rs(12),
-  flexDirection: 'row',
-  alignItems: 'center',
-  justifyContent: 'space-between',
-},
-clearFilterButton: {
-  height: rs(54),
-  minWidth: rs(82),
-  borderWidth: 1,
-  borderColor: '#D9DCE8',
-  borderRadius: rs(6),
-  backgroundColor: '#FFFFFF',
-  alignItems: 'center',
-  justifyContent: 'center',
-  paddingHorizontal: rs(16),
-  marginBottom: rs(12),
-},
-clearFilterText: {
-  color: '#061247',
-  fontSize: fs(16),
-  fontWeight: '800',
-},
+    minHeight: rs(98),
+    borderWidth: 1,
+    borderColor: '#EEF0F6',
+    backgroundColor: '#FFFFFF',
+    borderRadius: rs(10),
+    paddingHorizontal: rs(20),
+    paddingVertical: rs(16),
+    marginBottom: rs(28),
+    shadowColor: '#000000',
+    shadowOpacity: 0.03,
+    shadowRadius: rs(10),
+    shadowOffset: { width: 0, height: rs(4) },
+    elevation: 2,
+  },
+  filterLabel: {
+    color: '#111327',
+    fontSize: fs(24),
+    fontWeight: '700',
+    marginBottom: rs(14),
+  },
+  filterButtonsWrap: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    alignItems: 'center',
+  },
+  filterChip: {
+    height: rs(54),
+    minWidth: rs(112),
+    borderWidth: 1,
+    borderColor: '#D9DCE8',
+    borderRadius: rs(6),
+    backgroundColor: '#FFFFFF',
+    paddingHorizontal: rs(16),
+    marginRight: rs(12),
+    marginBottom: rs(12),
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  clearFilterButton: {
+    height: rs(54),
+    minWidth: rs(82),
+    borderWidth: 1,
+    borderColor: '#D9DCE8',
+    borderRadius: rs(6),
+    backgroundColor: '#FFFFFF',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: rs(16),
+    marginBottom: rs(12),
+  },
+  clearFilterText: {
+    color: '#061247',
+    fontSize: fs(16),
+    fontWeight: '800',
+  },
   ordersCard: {
     backgroundColor: '#FFFFFF',
     borderWidth: 1,
@@ -699,7 +727,7 @@ clearFilterText: {
     shadowColor: '#000000',
     shadowOpacity: 0.04,
     shadowRadius: rs(12),
-    shadowOffset: {width: 0, height: rs(5)},
+    shadowOffset: { width: 0, height: rs(5) },
     elevation: 3,
   },
   ordersHeader: {

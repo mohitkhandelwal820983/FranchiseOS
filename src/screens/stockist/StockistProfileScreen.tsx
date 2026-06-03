@@ -1,4 +1,4 @@
-import React, {useEffect, useMemo, useState} from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import {
   ActivityIndicator,
   Alert,
@@ -13,8 +13,6 @@ import {
   View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import {CommonActions, useNavigation} from '@react-navigation/native';
 import {
   Bell,
   Boxes,
@@ -46,19 +44,23 @@ import {
   MessageSquareText,
   IndianRupee,
 } from 'lucide-react-native';
-import { BusinessInfoItem, PerformanceItem, SettingRow, StockistProfileData } from '../../api/mock/stockist/stockistProfile.mock';
+import {
+  BusinessInfoItem,
+  PerformanceItem,
+  SettingRow,
+  StockistProfileData,
+} from '../../api/mock/stockist/stockistProfile.mock';
 import { getStockistProfile } from '../../api/stockist/stockistProfile.api';
+import { clearAuthStorage } from '../../utils/sessionManager';
+import { resetToLogin } from '../../navigation/navigationService';
+import { showErrorToast } from '../../utils/toast';
 
-const {width: SCREEN_WIDTH} = Dimensions.get('window');
+const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
 const DESIGN_WIDTH = 832;
 const scale = SCREEN_WIDTH / DESIGN_WIDTH;
 const rs = (value: number) => Math.round(value * scale);
 const fs = (value: number) => rs(value + 5);
-
-const LOGIN_ROUTE_NAME = 'Auth';
-
-
 
 const Header = () => {
   return (
@@ -74,10 +76,10 @@ const Header = () => {
   );
 };
 
-const ProfileHero = ({data}: {data: StockistProfileData}) => {
+const ProfileHero = ({ data }: { data: StockistProfileData }) => {
   return (
     <View style={styles.heroCard}>
-      <Image source={{uri: data.profile.image}} style={styles.profileImage} />
+      <Image source={{ uri: data.profile.image }} style={styles.profileImage} />
 
       <View style={styles.heroInfo}>
         <Text style={styles.profileName}>{data.profile.name}</Text>
@@ -92,7 +94,7 @@ const ProfileHero = ({data}: {data: StockistProfileData}) => {
   );
 };
 
-const BusinessIcon = ({type}: {type: BusinessInfoItem['icon']}) => {
+const BusinessIcon = ({ type }: { type: BusinessInfoItem['icon'] }) => {
   const size = rs(20);
 
   if (type === 'business') {
@@ -118,7 +120,7 @@ const BusinessIcon = ({type}: {type: BusinessInfoItem['icon']}) => {
   return <CalendarDays color="#173CFF" size={size} strokeWidth={2.2} />;
 };
 
-const SectionIcon = ({type}: {type: string}) => {
+const SectionIcon = ({ type }: { type: string }) => {
   const size = rs(21);
 
   if (type === 'business') {
@@ -152,7 +154,7 @@ const SectionIcon = ({type}: {type: string}) => {
   return <Grid2X2 color="#173CFF" size={size} strokeWidth={2.2} />;
 };
 
-const SmallIcon = ({type}: {type: string}) => {
+const SmallIcon = ({ type }: { type: string }) => {
   const size = rs(20);
 
   if (type === 'warehouse') {
@@ -246,7 +248,7 @@ const SmallIcon = ({type}: {type: string}) => {
   return <Grid2X2 color="#5D607E" size={size} strokeWidth={2.2} />;
 };
 
-const CardTitle = ({icon, title}: {icon: string; title: string}) => {
+const CardTitle = ({ icon, title }: { icon: string; title: string }) => {
   return (
     <View style={styles.cardTitleRow}>
       <View style={styles.sectionIconBox}>
@@ -258,7 +260,7 @@ const CardTitle = ({icon, title}: {icon: string; title: string}) => {
   );
 };
 
-const BusinessInformationCard = ({items}: {items: BusinessInfoItem[]}) => {
+const BusinessInformationCard = ({ items }: { items: BusinessInfoItem[] }) => {
   return (
     <View style={styles.fullCard}>
       <CardTitle icon="business" title="Business Information" />
@@ -267,7 +269,8 @@ const BusinessInformationCard = ({items}: {items: BusinessInfoItem[]}) => {
         <TouchableOpacity
           key={item.id}
           activeOpacity={0.8}
-          style={styles.businessRow}>
+          style={styles.businessRow}
+        >
           <View style={styles.rowIconSoft}>
             <BusinessIcon type={item.icon} />
           </View>
@@ -283,7 +286,7 @@ const BusinessInformationCard = ({items}: {items: BusinessInfoItem[]}) => {
   );
 };
 
-const PerformanceIcon = ({item}: {item: PerformanceItem}) => {
+const PerformanceIcon = ({ item }: { item: PerformanceItem }) => {
   const size = rs(25);
 
   if (item.icon === 'revenue') {
@@ -301,7 +304,7 @@ const PerformanceIcon = ({item}: {item: PerformanceItem}) => {
   return <WalletCards color={item.color} size={size} strokeWidth={2.2} />;
 };
 
-const PerformanceSummaryCard = ({items}: {items: PerformanceItem[]}) => {
+const PerformanceSummaryCard = ({ items }: { items: PerformanceItem[] }) => {
   return (
     <View style={styles.fullCard}>
       <CardTitle icon="performance" title="Performance Summary" />
@@ -310,7 +313,8 @@ const PerformanceSummaryCard = ({items}: {items: PerformanceItem[]}) => {
         {items.map((item, index) => (
           <View key={item.id} style={styles.performanceItem}>
             <View
-              style={[styles.performanceIconBox, {borderColor: item.color}]}>
+              style={[styles.performanceIconBox, { borderColor: item.color }]}
+            >
               <PerformanceIcon item={item} />
             </View>
 
@@ -341,7 +345,7 @@ const SettingsCard = ({
   const toggle = (id: string) => {
     setLocalItems(prev =>
       prev.map(item =>
-        item.id === id ? {...item, enabled: !item.enabled} : item,
+        item.id === id ? { ...item, enabled: !item.enabled } : item,
       ),
     );
   };
@@ -354,7 +358,8 @@ const SettingsCard = ({
         <TouchableOpacity
           key={item.id}
           activeOpacity={0.8}
-          style={styles.settingRow}>
+          style={styles.settingRow}
+        >
           <View style={styles.smallIconSoft}>
             <SmallIcon type={item.icon} />
           </View>
@@ -362,7 +367,9 @@ const SettingsCard = ({
           <Text style={styles.settingLabel}>{item.label}</Text>
 
           {!!item.value && (
-            <Text style={[styles.settingValue, item.green && styles.greenValue]}>
+            <Text
+              style={[styles.settingValue, item.green && styles.greenValue]}
+            >
               {item.value}
             </Text>
           )}
@@ -371,7 +378,7 @@ const SettingsCard = ({
             <Switch
               value={!!item.enabled}
               onValueChange={() => toggle(item.id)}
-              trackColor={{false: '#D0D3DA', true: '#173CFF'}}
+              trackColor={{ false: '#D0D3DA', true: '#173CFF' }}
               thumbColor="#FFFFFF"
             />
           )}
@@ -390,43 +397,7 @@ const SettingsCard = ({
 };
 
 const LogoutButton = () => {
-  const navigation = useNavigation<any>();
   const [isLoggingOut, setIsLoggingOut] = useState(false);
-
-  const clearAuthStorage = async () => {
-    const keysToRemove = [
-      'token',
-      'authToken',
-      'accessToken',
-      'refreshToken',
-      'userToken',
-      'user',
-      'userData',
-      'role',
-      'company',
-      'companyId',
-      'stockistId',
-      'isLoggedIn',
-    ];
-
-    await Promise.all(keysToRemove.map(key => AsyncStorage.removeItem(key)));
-  };
-
-  const resetToLogin = () => {
-    navigation.dispatch(
-      CommonActions.reset({
-        index: 0,
-        routes: [
-          {
-            name: LOGIN_ROUTE_NAME,
-            state: {
-              routes: [{name: 'Login'}],
-            },
-          },
-        ],
-      }),
-    );
-  };
 
   const handleLogout = () => {
     Alert.alert('Logout', 'Are you sure you want to logout?', [
@@ -440,11 +411,14 @@ const LogoutButton = () => {
         onPress: async () => {
           try {
             setIsLoggingOut(true);
+
             await clearAuthStorage();
+
             resetToLogin();
           } catch (error: any) {
             setIsLoggingOut(false);
-            Alert.alert('Logout failed', 'Please try again.', error);
+
+            Alert.alert('Logout failed', error?.message || 'Please try again.');
           }
         },
       },
@@ -456,7 +430,8 @@ const LogoutButton = () => {
       activeOpacity={0.85}
       disabled={isLoggingOut}
       onPress={handleLogout}
-      style={[styles.logoutButton, isLoggingOut && styles.disabledButton]}>
+      style={[styles.logoutButton, isLoggingOut && styles.disabledButton]}
+    >
       <LogOut color="#E00014" size={rs(24)} strokeWidth={2.4} />
       <Text style={styles.logoutText}>
         {isLoggingOut ? 'Logging out...' : 'Logout'}
@@ -474,14 +449,20 @@ const StockistProfileScreen = () => {
       setLoading(true);
 
       const response = await getStockistProfile();
+
       setData(response);
-    } catch (error) {
-      console.log('Stockist Profile API Error:', error);
+    } catch (error: any) {
+      const errorMessage =
+        error?.response?.data?.message ||
+        error?.response?.data?.error ||
+        error?.message ||
+        'Unable to load stockist profile. Please try again.';
+
+      showErrorToast(errorMessage);
     } finally {
       setLoading(false);
     }
   };
-
   useEffect(() => {
     loadProfile();
   }, []);
@@ -543,7 +524,8 @@ const StockistProfileScreen = () => {
       <ScrollView
         style={styles.scrollView}
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={styles.scrollContent}>
+        contentContainerStyle={styles.scrollContent}
+      >
         <ProfileHero data={data} />
 
         <BusinessInformationCard items={data.businessInfo} />
@@ -666,7 +648,7 @@ const styles = StyleSheet.create({
     shadowColor: '#000000',
     shadowOpacity: 0.04,
     shadowRadius: rs(12),
-    shadowOffset: {width: 0, height: rs(5)},
+    shadowOffset: { width: 0, height: rs(5) },
     elevation: 3,
   },
   settingFullCard: {
@@ -679,7 +661,7 @@ const styles = StyleSheet.create({
     shadowColor: '#000000',
     shadowOpacity: 0.04,
     shadowRadius: rs(12),
-    shadowOffset: {width: 0, height: rs(5)},
+    shadowOffset: { width: 0, height: rs(5) },
     elevation: 3,
   },
   cardTitleRow: {

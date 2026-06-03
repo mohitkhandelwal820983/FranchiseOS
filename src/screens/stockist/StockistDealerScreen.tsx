@@ -1,4 +1,4 @@
-import React, {useEffect, useMemo, useState} from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import {
   ActivityIndicator,
   Alert,
@@ -33,19 +33,25 @@ import {
   WalletCards,
   X,
 } from 'lucide-react-native';
-import { Dealer, DealerFilter, DealerStatus, OnboardingRequest, RankingItem, StockistDealerData } from '../../api/mock/stockist/stockistDealer.mock';
+import {
+  Dealer,
+  DealerFilter,
+  DealerStatus,
+  OnboardingRequest,
+  RankingItem,
+  StockistDealerData,
+} from '../../api/mock/stockist/stockistDealer.mock';
 import { getStockistDealer } from '../../api/stockist/stockistDealer.api';
+import { showErrorToast } from '../../utils/toast';
 
-const {width: SCREEN_WIDTH} = Dimensions.get('window');
+const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
 const DESIGN_WIDTH = 832;
 const scale = SCREEN_WIDTH / DESIGN_WIDTH;
 const rs = (value: number) => Math.round(value * scale);
 const fs = (value: number) => rs(value + 3);
 
-
-
-const Header = ({onAddPress}: {onAddPress: () => void}) => {
+const Header = ({ onAddPress }: { onAddPress: () => void }) => {
   return (
     <View style={styles.header}>
       <TouchableOpacity activeOpacity={0.8}>
@@ -107,8 +113,11 @@ const FilterChips = ({
             key={item}
             activeOpacity={0.85}
             onPress={() => onChange(item)}
-            style={[styles.filterChip, active && styles.activeFilterChip]}>
-            <Text style={[styles.filterText, active && styles.activeFilterText]}>
+            style={[styles.filterChip, active && styles.activeFilterChip]}
+          >
+            <Text
+              style={[styles.filterText, active && styles.activeFilterText]}
+            >
               {item}
             </Text>
           </TouchableOpacity>
@@ -118,16 +127,16 @@ const FilterChips = ({
   );
 };
 
-const SummaryCard = ({data}: {data: StockistDealerData['summary']}) => {
+const SummaryCard = ({ data }: { data: StockistDealerData['summary'] }) => {
   return (
     <View style={styles.summaryCard}>
       <View style={styles.summaryItem}>
-        <View style={[styles.summaryIcon, {backgroundColor: '#138A36'}]}>
+        <View style={[styles.summaryIcon, { backgroundColor: '#138A36' }]}>
           <Users color="#FFFFFF" size={rs(30)} strokeWidth={2.3} />
         </View>
 
         <View>
-          <Text style={[styles.summaryValue, {color: '#138A36'}]}>
+          <Text style={[styles.summaryValue, { color: '#138A36' }]}>
             {data.activeDealers}
           </Text>
           <Text style={styles.summaryLabel}>Active Dealers</Text>
@@ -137,12 +146,12 @@ const SummaryCard = ({data}: {data: StockistDealerData['summary']}) => {
       <View style={styles.summaryDivider} />
 
       <View style={styles.summaryItem}>
-        <View style={[styles.summaryIcon, {backgroundColor: '#173CFF'}]}>
+        <View style={[styles.summaryIcon, { backgroundColor: '#173CFF' }]}>
           <IndianRupee color="#FFFFFF" size={rs(30)} strokeWidth={2.3} />
         </View>
 
         <View>
-          <Text style={[styles.summaryValue, {color: '#173CFF'}]}>
+          <Text style={[styles.summaryValue, { color: '#173CFF' }]}>
             {data.monthlyBusiness}
           </Text>
           <Text style={styles.summaryLabel}>Monthly Business</Text>
@@ -152,12 +161,12 @@ const SummaryCard = ({data}: {data: StockistDealerData['summary']}) => {
       <View style={styles.summaryDivider} />
 
       <View style={styles.summaryItem}>
-        <View style={[styles.summaryIcon, {backgroundColor: '#F06419'}]}>
+        <View style={[styles.summaryIcon, { backgroundColor: '#F06419' }]}>
           <WalletCards color="#FFFFFF" size={rs(30)} strokeWidth={2.3} />
         </View>
 
         <View>
-          <Text style={[styles.summaryValue, {color: '#F06419'}]}>
+          <Text style={[styles.summaryValue, { color: '#F06419' }]}>
             {data.paymentOverdue}
           </Text>
           <Text style={styles.summaryLabel}>Payment Overdue</Text>
@@ -167,7 +176,7 @@ const SummaryCard = ({data}: {data: StockistDealerData['summary']}) => {
   );
 };
 
-const DealerStatusBadge = ({status}: {status: DealerStatus}) => {
+const DealerStatusBadge = ({ status }: { status: DealerStatus }) => {
   const isActive = status === 'Active';
   const isPaymentDue = status === 'Payment Due';
   const isTop = status === 'Top Performer';
@@ -179,14 +188,16 @@ const DealerStatusBadge = ({status}: {status: DealerStatus}) => {
         isActive && styles.activeBadge,
         isPaymentDue && styles.paymentDueBadge,
         isTop && styles.topBadge,
-      ]}>
+      ]}
+    >
       <Text
         style={[
           styles.statusText,
           isActive && styles.activeText,
           isPaymentDue && styles.paymentDueText,
           isTop && styles.topText,
-        ]}>
+        ]}
+      >
         {status}
       </Text>
     </View>
@@ -237,7 +248,9 @@ const DealerCard = ({
   return (
     <View style={styles.dealerCard}>
       <View style={styles.dealerTopRow}>
-        <View style={[styles.dealerAvatar, {backgroundColor: item.avatarColor}]}>
+        <View
+          style={[styles.dealerAvatar, { backgroundColor: item.avatarColor }]}
+        >
           <Text style={styles.dealerAvatarText}>{item.initials}</Text>
         </View>
 
@@ -266,9 +279,11 @@ const DealerCard = ({
 
       {paymentDue && (
         <TouchableOpacity activeOpacity={0.85} style={styles.outstandingBox}>
-          <Text style={styles.outstandingLeft}>⚠  Outstanding Amount</Text>
+          <Text style={styles.outstandingLeft}>⚠ Outstanding Amount</Text>
           <View style={styles.outstandingRight}>
-            <Text style={styles.outstandingAmount}>{item.outstandingAmount}</Text>
+            <Text style={styles.outstandingAmount}>
+              {item.outstandingAmount}
+            </Text>
             <ChevronRight color="#F06419" size={rs(22)} />
           </View>
         </TouchableOpacity>
@@ -325,7 +340,8 @@ const DealerCard = ({
           <TouchableOpacity
             activeOpacity={0.85}
             onPress={() => onSendReminder(item)}
-            style={styles.primaryButton}>
+            style={styles.primaryButton}
+          >
             <Bell color="#FFFFFF" size={rs(18)} strokeWidth={2.3} />
             <Text style={styles.primaryButtonText}>Send Reminder</Text>
           </TouchableOpacity>
@@ -386,7 +402,8 @@ const OnboardingRequestsCard = ({
           <TouchableOpacity
             activeOpacity={0.85}
             onPress={() => onApprove(item.id)}
-            style={styles.approveButton}>
+            style={styles.approveButton}
+          >
             <CheckCircle2 color="#138A36" size={rs(18)} strokeWidth={2.3} />
             <Text style={styles.approveText}>Approve</Text>
           </TouchableOpacity>
@@ -394,7 +411,8 @@ const OnboardingRequestsCard = ({
           <TouchableOpacity
             activeOpacity={0.85}
             onPress={() => onReject(item.id)}
-            style={styles.rejectButton}>
+            style={styles.rejectButton}
+          >
             <X color="#E00014" size={rs(18)} strokeWidth={2.3} />
             <Text style={styles.rejectText}>Reject</Text>
           </TouchableOpacity>
@@ -406,7 +424,7 @@ const OnboardingRequestsCard = ({
   );
 };
 
-const RankingCard = ({items}: {items: RankingItem[]}) => {
+const RankingCard = ({ items }: { items: RankingItem[] }) => {
   return (
     <View style={styles.sectionCard}>
       <View style={styles.cardTitleRow}>
@@ -420,18 +438,29 @@ const RankingCard = ({items}: {items: RankingItem[]}) => {
 
       {items.map(item => {
         const medalColor =
-          item.rank === 1 ? '#F6B21A' : item.rank === 2 ? '#AEB5C7' : item.rank === 3 ? '#C7793A' : '#E6E8F2';
+          item.rank === 1
+            ? '#F6B21A'
+            : item.rank === 2
+            ? '#AEB5C7'
+            : item.rank === 3
+            ? '#C7793A'
+            : '#E6E8F2';
 
         return (
           <View key={item.id} style={styles.rankRow}>
-            <View style={[styles.rankCircle, {backgroundColor: medalColor}]}>
+            <View style={[styles.rankCircle, { backgroundColor: medalColor }]}>
               <Text style={styles.rankText}>{item.rank}</Text>
             </View>
 
             <Text style={styles.rankName}>{item.name}</Text>
 
             <View style={styles.rankProgressTrack}>
-              <View style={[styles.rankProgressFill, {width: `${item.progress}%`}]} />
+              <View
+                style={[
+                  styles.rankProgressFill,
+                  { width: `${item.progress}%` },
+                ]}
+              />
             </View>
 
             <Text style={styles.rankAmount}>{item.amount}</Text>
@@ -444,9 +473,13 @@ const RankingCard = ({items}: {items: RankingItem[]}) => {
   );
 };
 
-const FloatingButton = ({onPress}: {onPress: () => void}) => {
+const FloatingButton = ({ onPress }: { onPress: () => void }) => {
   return (
-    <TouchableOpacity activeOpacity={0.85} style={styles.floatingButton} onPress={onPress}>
+    <TouchableOpacity
+      activeOpacity={0.85}
+      style={styles.floatingButton}
+      onPress={onPress}
+    >
       <Plus color="#FFFFFF" size={rs(38)} strokeWidth={2.4} />
     </TouchableOpacity>
   );
@@ -463,9 +496,16 @@ const StockistDealerScreen = () => {
       setLoading(true);
 
       const response = await getStockistDealer();
+
       setData(response);
-    } catch (error) {
-      console.log('Stockist Dealer API Error:', error);
+    } catch (error: any) {
+      const errorMessage =
+        error?.response?.data?.message ||
+        error?.response?.data?.error ||
+        error?.message ||
+        'Unable to load stockist dealer data. Please try again.';
+
+      showErrorToast(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -494,7 +534,8 @@ const StockistDealerScreen = () => {
         activeFilter === 'All' ||
         (activeFilter === 'Active' && item.status === 'Active') ||
         (activeFilter === 'Payment Due' && item.status === 'Payment Due') ||
-        (activeFilter === 'Top Performers' && item.status === 'Top Performer') ||
+        (activeFilter === 'Top Performers' &&
+          item.status === 'Top Performer') ||
         activeFilter === 'Pending';
 
       return matchesSearch && matchesFilter;
@@ -526,7 +567,9 @@ const StockistDealerScreen = () => {
 
     setData({
       ...data,
-      onboardingRequests: data.onboardingRequests.filter(item => item.id !== id),
+      onboardingRequests: data.onboardingRequests.filter(
+        item => item.id !== id,
+      ),
       dealers: request
         ? [
             ...data.dealers,
@@ -557,7 +600,9 @@ const StockistDealerScreen = () => {
 
     setData({
       ...data,
-      onboardingRequests: data.onboardingRequests.filter(item => item.id !== id),
+      onboardingRequests: data.onboardingRequests.filter(
+        item => item.id !== id,
+      ),
     });
 
     Alert.alert('Rejected', 'Dealer request rejected.');
@@ -581,7 +626,8 @@ const StockistDealerScreen = () => {
       <ScrollView
         style={styles.scrollView}
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={styles.scrollContent}>
+        contentContainerStyle={styles.scrollContent}
+      >
         <SearchBox value={search} onChangeText={setSearch} />
 
         <FilterChips activeFilter={activeFilter} onChange={setActiveFilter} />
@@ -707,7 +753,7 @@ const styles = StyleSheet.create({
     shadowColor: '#000000',
     shadowOpacity: 0.04,
     shadowRadius: rs(12),
-    shadowOffset: {width: 0, height: rs(5)},
+    shadowOffset: { width: 0, height: rs(5) },
     elevation: 3,
   },
   summaryItem: {
@@ -748,7 +794,7 @@ const styles = StyleSheet.create({
     shadowColor: '#000000',
     shadowOpacity: 0.04,
     shadowRadius: rs(12),
-    shadowOffset: {width: 0, height: rs(5)},
+    shadowOffset: { width: 0, height: rs(5) },
     elevation: 3,
   },
   dealerTopRow: {
@@ -981,7 +1027,7 @@ const styles = StyleSheet.create({
     shadowColor: '#000000',
     shadowOpacity: 0.04,
     shadowRadius: rs(12),
-    shadowOffset: {width: 0, height: rs(5)},
+    shadowOffset: { width: 0, height: rs(5) },
     elevation: 3,
   },
   cardTitleRow: {
@@ -1157,6 +1203,6 @@ const styles = StyleSheet.create({
     shadowColor: '#000000',
     shadowOpacity: 0.2,
     shadowRadius: rs(12),
-    shadowOffset: {width: 0, height: rs(5)},
+    shadowOffset: { width: 0, height: rs(5) },
   },
 });

@@ -10,7 +10,6 @@ export const requestNotificationPermission = async () => {
       );
 
       if (granted !== PermissionsAndroid.RESULTS.GRANTED) {
-        console.log('Notification permission denied');
         return false;
       }
     }
@@ -18,10 +17,8 @@ export const requestNotificationPermission = async () => {
     await messaging().requestPermission();
     await notifee.requestPermission();
 
-    console.log('Notification permission granted');
     return true;
   } catch (error) {
-    console.log('Notification permission error:', error);
     return false;
   }
 };
@@ -38,18 +35,22 @@ export const createNotificationChannel = async () => {
 export const getFcmToken = async () => {
   try {
     const token = await messaging().getToken();
-    console.log('FCM Token:', token);
     return token;
   } catch (error) {
-    console.log('FCM token error:', error);
     return null;
   }
 };
 
 export const displayLocalNotification = async (remoteMessage: any) => {
   await notifee.displayNotification({
-    title: remoteMessage.notification?.title || remoteMessage.data?.title || 'New Notification',
-    body: remoteMessage.notification?.body || remoteMessage.data?.body || 'You have a new message',
+    title:
+      remoteMessage.notification?.title ||
+      remoteMessage.data?.title ||
+      'New Notification',
+    body:
+      remoteMessage.notification?.body ||
+      remoteMessage.data?.body ||
+      'You have a new message',
     android: {
       channelId: 'default',
       importance: AndroidImportance.HIGH,
@@ -63,29 +64,26 @@ export const displayLocalNotification = async (remoteMessage: any) => {
 
 export const listenForegroundMessages = () => {
   return messaging().onMessage(async remoteMessage => {
-    console.log('Foreground notification:', remoteMessage);
-
-    // This shows notification even when app is open
     await displayLocalNotification(remoteMessage);
   });
 };
 
 export const listenNotificationOpenedApp = () => {
   messaging().onNotificationOpenedApp(remoteMessage => {
-    console.log('Notification opened from background:', remoteMessage);
+    // Handle background notification click here if needed
   });
 
   messaging()
     .getInitialNotification()
     .then(remoteMessage => {
       if (remoteMessage) {
-        console.log('Notification opened from closed state:', remoteMessage);
+        // Handle closed-state notification click here if needed
       }
     });
 };
 
 export const listenFcmTokenRefresh = () => {
   return messaging().onTokenRefresh(token => {
-    console.log('FCM Token refreshed:', token);
+    // Send refreshed token to backend here if needed
   });
 };
