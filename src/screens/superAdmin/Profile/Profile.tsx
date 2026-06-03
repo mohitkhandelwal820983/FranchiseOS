@@ -178,24 +178,7 @@ const AdminDetailsCard = ({ items }: { items: AdminDetail[] }) => {
   );
 };
 
-// const PlatformLogoCard = () => {
-//   return (
-//     <View style={styles.halfCard}>
-//       <Text style={styles.cardTitle}>Platform Logo</Text>
 
-//       <View style={styles.logoBox}>
-//         <Text style={styles.logoMark}>F</Text>
-//         <Text style={styles.logoText}>FranchiseOS</Text>
-//       </View>
-
-//       <Text style={styles.tapLogoText}>Tap to change logo</Text>
-
-//       <TouchableOpacity activeOpacity={0.8} style={styles.uploadButton}>
-//         <Text style={styles.uploadButtonText}>Upload New Logo</Text>
-//       </TouchableOpacity>
-//     </View>
-//   );
-// };
 
 const SecurityIcon = ({ type }: { type: SecurityItem['icon'] }) => {
   const color = '#5D607E';

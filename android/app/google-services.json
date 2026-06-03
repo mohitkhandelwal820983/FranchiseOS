@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "700784948800",
+    "project_id": "franchiseos-fc28e",
+    "storage_bucket": "franchiseos-fc28e.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:700784948800:android:a443771a0bc4fb068d51a5",
+        "android_client_info": {
+          "package_name": "com.franchiseos"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBJZQs1joHnKMRbsM8EQ1BKKWHWMQqQv2c"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
