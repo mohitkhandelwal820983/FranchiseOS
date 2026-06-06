@@ -2,7 +2,6 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   ActivityIndicator,
   Alert,
-  Dimensions,
   RefreshControl,
   ScrollView,
   StatusBar,
@@ -35,13 +34,9 @@ import {
   type CompanyStatus,
 } from '../../../api/mock/superadmin/companies.mock';
 import { showErrorToast } from '../../../utils/toast';
+import { colors, fonts, size as rs, superAdminTextSize as fs } from '../../../theme';
 
-const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
-const DESIGN_WIDTH = 832;
-const scale = SCREEN_WIDTH / DESIGN_WIDTH;
-const rs = (value: number) => Math.round(value * scale);
-const fs = (value: number) => rs(value + 5);
 
 type StatusFilter = 'All' | CompanyStatus;
 type RangeFilter =
@@ -55,13 +50,13 @@ const Header = ({ onAdd }: { onAdd: () => void }) => {
   return (
     <View style={styles.header}>
       <TouchableOpacity activeOpacity={0.8}>
-        <Menu color="#FFFFFF" size={rs(36)} strokeWidth={2.6} />
+        <Menu color={colors.white} size={rs(36)} strokeWidth={2.6} />
       </TouchableOpacity>
 
       <Text style={styles.headerTitle}>Companies</Text>
 
       <TouchableOpacity activeOpacity={0.8} onPress={onAdd}>
-        <Plus color="#FFFFFF" size={rs(42)} strokeWidth={2.2} />
+        <Plus color={colors.white} size={rs(42)} strokeWidth={2.2} />
       </TouchableOpacity>
     </View>
   );
@@ -78,13 +73,13 @@ const SearchBox = ({
 }) => {
   return (
     <View style={styles.searchBox}>
-      <Search color="#44465F" size={rs(31)} strokeWidth={2.1} />
+      <Search color={colors.superAdminCompanyText} size={rs(31)} strokeWidth={2.1} />
 
       <TextInput
         value={value}
         onChangeText={onChangeText}
         placeholder="Search company name or owner"
-        placeholderTextColor="#5D607E"
+        placeholderTextColor={colors.slateText}
         style={styles.searchInput}
       />
 
@@ -93,7 +88,7 @@ const SearchBox = ({
         onPress={onFilterPress}
         style={styles.filterBox}
       >
-        <Filter color="#44465F" size={rs(32)} strokeWidth={2.2} />
+        <Filter color={colors.superAdminCompanyText} size={rs(32)} strokeWidth={2.2} />
       </TouchableOpacity>
     </View>
   );
@@ -198,7 +193,7 @@ const SortBar = ({
           ]}
         >
           <Text style={styles.sortButtonText}>{item}</Text>
-          <ChevronDown color="#061247" size={rs(18)} strokeWidth={2.2} />
+          <ChevronDown color={colors.primaryText} size={rs(18)} strokeWidth={2.2} />
         </TouchableOpacity>
       ))}
     </View>
@@ -253,23 +248,23 @@ const StatusDropdown = ({
 
   const color =
     status === 'Active'
-      ? '#FFFFFF'
+      ? colors.white
       : status === 'Pending'
-      ? '#F06419'
+      ? colors.profileOrange
       : status === 'Suspended'
-      ? '#E00014'
-      : '#061247';
+      ? colors.dangerDark
+      : colors.primaryText;
 
-  const bg = status === 'Active' ? '#061B66' : '#FFFFFF';
+  const bg = status === 'Active' ? colors.primary : colors.white;
 
   const border =
     status === 'Active'
-      ? '#061B66'
+      ? colors.primary
       : status === 'Pending'
-      ? '#F06419'
+      ? colors.profileOrange
       : status === 'Suspended'
-      ? '#FFB6B6'
-      : '#B8BAC8';
+      ? colors.dangerBorder
+      : colors.companyInactiveBorder;
 
   return (
     <TouchableOpacity
@@ -302,14 +297,14 @@ const CompanyCard = ({
   onEdit: (item: Company) => void;
   onDelete: (item: Company) => void;
 }) => {
-  const franchiseColor = item.franchises === 0 ? '#061247' : '#173CFF';
+  const franchiseColor = item.franchises === 0 ? colors.primaryText : colors.financeBlue;
 
   const revenueColor =
     item.revenue === 0
-      ? '#061247'
+      ? colors.primaryText
       : item.status === 'Suspended'
-      ? '#173CFF'
-      : '#138A36';
+      ? colors.financeBlue
+      : colors.success;
 
   return (
     <View style={styles.companyCard}>
@@ -319,19 +314,19 @@ const CompanyCard = ({
         </View>
 
         <View style={styles.companyInfo}>
-          <Text style={styles.companyName}>{item.name}</Text>
-          <Text style={styles.ownerText}>Owner: {item.owner}</Text>
+          <Text numberOfLines={1} style={styles.companyName}>{item.name}</Text>
+          <Text numberOfLines={1} style={styles.ownerText}>Owner: {item.owner}</Text>
         </View>
 
         <View style={styles.rightInfo}>
           <StatusBadge status={item.status} />
-          <Text style={styles.cityText}>{item.city}</Text>
+          <Text numberOfLines={1} style={styles.cityText}>{item.city}</Text>
         </View>
       </View>
 
       <View style={styles.metricsRow}>
         <View style={styles.metricBox}>
-          <Text style={[styles.metricText, { color: franchiseColor }]}>
+          <Text numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.78} style={[styles.metricText, { color: franchiseColor }]}>
             {item.franchises} Franchises
           </Text>
         </View>
@@ -339,7 +334,7 @@ const CompanyCard = ({
         <View style={styles.metricDivider} />
 
         <View style={styles.metricBox}>
-          <Text style={[styles.metricText, { color: revenueColor }]}>
+          <Text numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.78} style={[styles.metricText, { color: revenueColor }]}>
             {item.revenueLabel}
           </Text>
         </View>
@@ -347,7 +342,7 @@ const CompanyCard = ({
         <View style={styles.metricDivider} />
 
         <View style={styles.metricBox}>
-          <Text style={styles.metricText}>Added: {item.addedLabel}</Text>
+          <Text numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.78} style={styles.metricText}>Added: {item.addedLabel}</Text>
         </View>
       </View>
 
@@ -362,15 +357,15 @@ const CompanyCard = ({
         <View style={styles.actionSpacer} />
 
         <TouchableOpacity activeOpacity={0.8} onPress={() => onView(item)}>
-          <Eye color="#45465E" size={rs(30)} strokeWidth={2.2} />
+          <Eye color={colors.superAdminActionIcon} size={rs(30)} strokeWidth={2.2} />
         </TouchableOpacity>
 
         <TouchableOpacity activeOpacity={0.8} onPress={() => onEdit(item)}>
-          <Pencil color="#45465E" size={rs(30)} strokeWidth={2.2} />
+          <Pencil color={colors.superAdminActionIcon} size={rs(30)} strokeWidth={2.2} />
         </TouchableOpacity>
 
         <TouchableOpacity activeOpacity={0.8} onPress={() => onDelete(item)}>
-          <Trash2 color="#FF1A1A" size={rs(30)} strokeWidth={2.2} />
+          <Trash2 color={colors.companyDeleteRed} size={rs(30)} strokeWidth={2.2} />
         </TouchableOpacity>
       </View>
     </View>
@@ -505,8 +500,8 @@ const CompaniesScreen = () => {
   if (loading) {
     return (
       <SafeAreaView style={styles.loaderScreen}>
-        <StatusBar backgroundColor="#061B66" barStyle="light-content" />
-        <ActivityIndicator size="large" color="#173CFF" />
+        <StatusBar backgroundColor={colors.primary} barStyle="light-content" />
+        <ActivityIndicator size="large" color={colors.financeBlue} />
       </SafeAreaView>
     );
   }
@@ -514,13 +509,13 @@ const CompaniesScreen = () => {
   if (error || !data) {
     return (
       <SafeAreaView style={styles.loaderScreen}>
-        <StatusBar backgroundColor="#061B66" barStyle="light-content" />
+        <StatusBar backgroundColor={colors.primary} barStyle="light-content" />
 
         <Text
           style={{
-            color: '#061247',
+            color: colors.primaryText,
             fontSize: rs(18),
-            fontWeight: '700',
+            fontFamily: fonts.bold,
             marginBottom: rs(18),
             textAlign: 'center',
           }}
@@ -532,13 +527,13 @@ const CompaniesScreen = () => {
           activeOpacity={0.85}
           onPress={handleRetry}
           style={{
-            backgroundColor: '#061B66',
+            backgroundColor: colors.primary,
             paddingHorizontal: rs(28),
             paddingVertical: rs(14),
             borderRadius: rs(8),
           }}
         >
-          <Text style={{ color: '#FFFFFF', fontWeight: '800' }}>Retry</Text>
+          <Text style={{ color: colors.white, fontFamily: fonts.extraBold }}>Retry</Text>
         </TouchableOpacity>
       </SafeAreaView>
     );
@@ -546,7 +541,7 @@ const CompaniesScreen = () => {
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <StatusBar backgroundColor="#061B66" barStyle="light-content" />
+      <StatusBar backgroundColor={colors.primary} barStyle="light-content" />
 
       <Header
         onAdd={() => Alert.alert('Add Company', 'Add company screen opened.')}
@@ -579,7 +574,7 @@ const CompaniesScreen = () => {
 
           <TouchableOpacity activeOpacity={0.8} style={styles.filterTextButton}>
             <Text style={styles.filterText}>Filter</Text>
-            <Settings color="#173CFF" size={rs(27)} strokeWidth={2.2} />
+            <Settings color={colors.financeBlue} size={rs(27)} strokeWidth={2.2} />
           </TouchableOpacity>
         </View>
 
@@ -596,7 +591,7 @@ const CompaniesScreen = () => {
 
         {filteredCompanies.length === 0 && (
           <View style={styles.emptyBox}>
-            <Building2 color="#5D607E" size={rs(40)} />
+            <Building2 color={colors.slateText} size={rs(40)} />
             <Text style={styles.emptyText}>No companies found</Text>
           </View>
         )}
@@ -612,17 +607,17 @@ const PAGE_PADDING = rs(28);
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#F8F9FD',
+    backgroundColor: colors.financeBackground,
   },
   loaderScreen: {
     flex: 1,
-    backgroundColor: '#F8F9FD',
+    backgroundColor: colors.financeBackground,
     alignItems: 'center',
     justifyContent: 'center',
   },
   header: {
     height: rs(96),
-    backgroundColor: '#061B66',
+    backgroundColor: colors.primary,
     paddingHorizontal: rs(30),
     paddingTop: rs(8),
     flexDirection: 'row',
@@ -630,9 +625,9 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   headerTitle: {
-    color: '#FFFFFF',
+    color: colors.white,
     fontSize: fs(31),
-    fontWeight: '900',
+    fontFamily: fonts.extraBold,
   },
   scrollView: {
     flex: 1,
@@ -645,9 +640,9 @@ const styles = StyleSheet.create({
   searchBox: {
     height: rs(78),
     borderWidth: 1,
-    borderColor: '#D8DCE8',
+    borderColor: colors.superAdminBorder,
     borderRadius: rs(8),
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.white,
     flexDirection: 'row',
     alignItems: 'center',
     paddingLeft: rs(28),
@@ -656,9 +651,9 @@ const styles = StyleSheet.create({
   },
   searchInput: {
     flex: 1,
-    color: '#111327',
+    color: colors.text,
     fontSize: fs(20),
-    fontWeight: '500',
+    fontFamily: fonts.medium,
     marginLeft: rs(24),
     paddingVertical: 0,
   },
@@ -666,7 +661,7 @@ const styles = StyleSheet.create({
     width: rs(90),
     height: '100%',
     borderLeftWidth: 1,
-    borderLeftColor: '#D8DCE8',
+    borderLeftColor: colors.superAdminBorder,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -679,24 +674,24 @@ const styles = StyleSheet.create({
     height: rs(58),
     minWidth: rs(128),
     borderWidth: 1,
-    borderColor: '#BFC3D3',
+    borderColor: colors.superAdminTabBorder,
     borderRadius: rs(6),
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.white,
     alignItems: 'center',
     justifyContent: 'center',
     paddingHorizontal: rs(18),
   },
   activeChip: {
-    backgroundColor: '#061B66',
-    borderColor: '#061B66',
+    backgroundColor: colors.primary,
+    borderColor: colors.primary,
   },
   statusChipText: {
-    color: '#061247',
+    color: colors.primaryText,
     fontSize: fs(18),
-    fontWeight: '700',
+    fontFamily: fonts.bold,
   },
   activeChipText: {
-    color: '#FFFFFF',
+    color: colors.white,
   },
   rangeRow: {
     flexDirection: 'row',
@@ -707,17 +702,17 @@ const styles = StyleSheet.create({
     height: rs(58),
     minWidth: rs(170),
     borderWidth: 1,
-    borderColor: '#BFC3D3',
+    borderColor: colors.superAdminTabBorder,
     borderRadius: rs(6),
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.white,
     alignItems: 'center',
     justifyContent: 'center',
     paddingHorizontal: rs(20),
   },
   rangeText: {
-    color: '#061247',
+    color: colors.primaryText,
     fontSize: fs(18),
-    fontWeight: '700',
+    fontFamily: fonts.bold,
   },
   sortRow: {
     flexDirection: 'row',
@@ -725,18 +720,18 @@ const styles = StyleSheet.create({
     marginBottom: rs(30),
   },
   sortLabel: {
-    color: '#5D607E',
+    color: colors.slateText,
     fontSize: fs(21),
-    fontWeight: '600',
+    fontFamily: fonts.semiBold,
     marginRight: rs(42),
   },
   sortButton: {
     height: rs(54),
     minWidth: rs(184),
     borderWidth: 1,
-    borderColor: '#D8DCE8',
+    borderColor: colors.superAdminBorder,
     borderRadius: rs(7),
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.white,
     paddingHorizontal: rs(26),
     flexDirection: 'row',
     alignItems: 'center',
@@ -744,12 +739,12 @@ const styles = StyleSheet.create({
     marginRight: rs(20),
   },
   selectedSortButton: {
-    borderColor: '#BFC3D3',
+    borderColor: colors.superAdminTabBorder,
   },
   sortButtonText: {
-    color: '#061247',
+    color: colors.primaryText,
     fontSize: fs(18),
-    fontWeight: '700',
+    fontFamily: fonts.bold,
   },
   showingRow: {
     flexDirection: 'row',
@@ -758,28 +753,28 @@ const styles = StyleSheet.create({
   },
   showingText: {
     flex: 1,
-    color: '#5D607E',
+    color: colors.slateText,
     fontSize: fs(21),
-    fontWeight: '600',
+    fontFamily: fonts.semiBold,
   },
   filterTextButton: {
     flexDirection: 'row',
     alignItems: 'center',
   },
   filterText: {
-    color: '#173CFF',
+    color: colors.financeBlue,
     fontSize: fs(22),
-    fontWeight: '700',
+    fontFamily: fonts.bold,
     marginRight: rs(12),
   },
   companyCard: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.white,
     borderRadius: rs(10),
     paddingHorizontal: rs(22),
     paddingTop: rs(24),
     paddingBottom: rs(18),
     marginBottom: rs(20),
-    shadowColor: '#000000',
+    shadowColor: colors.black,
     shadowOpacity: 0.05,
     shadowRadius: rs(14),
     shadowOffset: {
@@ -801,31 +796,33 @@ const styles = StyleSheet.create({
     marginRight: rs(28),
   },
   avatarText: {
-    color: '#FFFFFF',
+    color: colors.white,
     fontSize: fs(34),
-    fontWeight: '900',
+    fontFamily: fonts.extraBold,
   },
   companyInfo: {
     flex: 1,
+    minWidth: 0,
   },
   companyName: {
-    color: '#111111',
+    color: colors.companyTitleText,
     fontSize: fs(25),
-    fontWeight: '900',
+    fontFamily: fonts.extraBold,
     marginBottom: rs(14),
   },
   ownerText: {
-    color: '#5D607E',
+    color: colors.slateText,
     fontSize: fs(18),
-    fontWeight: '600',
+    fontFamily: fonts.semiBold,
   },
   rightInfo: {
     alignItems: 'flex-end',
+    marginLeft: rs(12),
   },
   cityText: {
-    color: '#44465F',
+    color: colors.superAdminCompanyText,
     fontSize: fs(18),
-    fontWeight: '600',
+    fontFamily: fonts.semiBold,
     marginTop: rs(18),
   },
   badge: {
@@ -838,58 +835,59 @@ const styles = StyleSheet.create({
     borderWidth: 1,
   },
   activeBadge: {
-    backgroundColor: '#EAF8EC',
-    borderColor: '#BEE7C5',
+    backgroundColor: colors.successLight,
+    borderColor: colors.successBorder,
   },
   pendingBadge: {
-    backgroundColor: '#FFF3E9',
-    borderColor: '#F8C9A8',
+    backgroundColor: colors.orangeSoft,
+    borderColor: colors.orangeBorder,
   },
   suspendedBadge: {
-    backgroundColor: '#FFF0F0',
-    borderColor: '#FFB6B6',
+    backgroundColor: colors.dangerLight,
+    borderColor: colors.dangerBorder,
   },
   inactiveBadge: {
-    backgroundColor: '#EEEEEE',
-    borderColor: '#D5D5D5',
+    backgroundColor: colors.companyInactiveBg,
+    borderColor: colors.companyInactiveBorderLight,
   },
   badgeText: {
     fontSize: fs(17),
-    fontWeight: '800',
+    fontFamily: fonts.extraBold,
   },
   activeBadgeText: {
-    color: '#138A36',
+    color: colors.success,
   },
   pendingBadgeText: {
-    color: '#F06419',
+    color: colors.profileOrange,
   },
   suspendedBadgeText: {
-    color: '#E00014',
+    color: colors.dangerDark,
   },
   inactiveBadgeText: {
-    color: '#333333',
+    color: colors.companyInactiveText,
   },
   metricsRow: {
     height: rs(74),
     borderBottomWidth: 1,
-    borderBottomColor: '#E8EAF1',
+    borderBottomColor: colors.companyMetricDivider,
     flexDirection: 'row',
     alignItems: 'center',
     marginTop: rs(10),
   },
   metricBox: {
     flex: 1,
+    minWidth: 0,
     alignItems: 'center',
   },
   metricText: {
-    color: '#5D607E',
+    color: colors.slateText,
     fontSize: fs(18),
-    fontWeight: '700',
+    fontFamily: fonts.bold,
   },
   metricDivider: {
     width: 1,
     height: rs(44),
-    backgroundColor: '#D8DCE8',
+    backgroundColor: colors.superAdminBorder,
   },
   bottomRow: {
     height: rs(58),
@@ -898,9 +896,9 @@ const styles = StyleSheet.create({
     paddingTop: rs(14),
   },
   changeStatusText: {
-    color: '#44465F',
+    color: colors.superAdminCompanyText,
     fontSize: fs(16),
-    fontWeight: '600',
+    fontFamily: fonts.semiBold,
     marginRight: rs(22),
   },
   dropdownButton: {
@@ -915,7 +913,7 @@ const styles = StyleSheet.create({
   },
   dropdownText: {
     fontSize: fs(15),
-    fontWeight: '800',
+    fontFamily: fonts.extraBold,
     marginRight: rs(10),
   },
   actionSpacer: {
@@ -927,9 +925,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   emptyText: {
-    color: '#5D607E',
+    color: colors.slateText,
     fontSize: fs(17),
-    fontWeight: '700',
+    fontFamily: fonts.bold,
     marginTop: rs(12),
   },
 });

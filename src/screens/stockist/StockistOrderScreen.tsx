@@ -1,7 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import {
   ActivityIndicator,
-  Dimensions,
   ScrollView,
   StatusBar,
   StyleSheet,
@@ -49,19 +48,15 @@ import {
 } from '../../api/mock/stockist/stockistOrders.mock';
 import { getStockistOrders } from '../../api/stockist/stockistOrders.api';
 import { showErrorToast } from '../../utils/toast';
+import { colors, fonts, size as rs, textSize as fs } from '../../theme';
 
-const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
-const DESIGN_WIDTH = 832;
-const scale = SCREEN_WIDTH / DESIGN_WIDTH;
-const rs = (value: number) => Math.round(value * scale);
-const fs = (value: number) => rs(value + 3);
 
 const Header = ({ activeTab }: { activeTab: MainTab }) => {
   return (
     <View style={styles.header}>
       <TouchableOpacity activeOpacity={0.8}>
-        <Menu color="#FFFFFF" size={rs(36)} strokeWidth={2.5} />
+        <Menu color={colors.white} size={rs(36)} strokeWidth={2.5} />
       </TouchableOpacity>
 
       <Text style={styles.headerTitle}>
@@ -69,7 +64,7 @@ const Header = ({ activeTab }: { activeTab: MainTab }) => {
       </Text>
 
       <TouchableOpacity activeOpacity={0.8}>
-        <Filter color="#FFFFFF" size={rs(36)} strokeWidth={2.4} />
+        <Filter color={colors.white} size={rs(36)} strokeWidth={2.4} />
       </TouchableOpacity>
     </View>
   );
@@ -134,7 +129,7 @@ const SearchBox = ({
 }) => {
   return (
     <View style={styles.searchBox}>
-      <Search color="#5D607E" size={rs(28)} strokeWidth={2.1} />
+      <Search color={colors.slateText} size={rs(28)} strokeWidth={2.1} />
 
       <TextInput
         value={value}
@@ -144,12 +139,12 @@ const SearchBox = ({
             ? 'Search order ID, dealer, company or product'
             : 'Search PO ID, company, product or SKU'
         }
-        placeholderTextColor="#5D607E"
+        placeholderTextColor={colors.slateText}
         style={styles.searchInput}
       />
 
       {activeTab === 'purchase' && (
-        <Mic color="#5D607E" size={rs(24)} strokeWidth={2.1} />
+        <Mic color={colors.slateText} size={rs(24)} strokeWidth={2.1} />
       )}
     </View>
   );
@@ -242,25 +237,25 @@ const SummaryBar = ({
             label: 'Total Orders',
             value: data.dealerSummary.totalOrders,
             icon: 'orders',
-            color: '#173CFF',
+            color: colors.financeBlue,
           },
           {
             label: 'Order Value',
             value: data.dealerSummary.orderValue,
             icon: 'rupee',
-            color: '#138A36',
+            color: colors.success,
           },
           {
             label: 'Pending Approvals',
             value: data.dealerSummary.pendingApprovals,
             icon: 'user',
-            color: '#F06419',
+            color: colors.profileOrange,
           },
           {
             label: 'Dispatch Today',
             value: data.dealerSummary.dispatchToday,
             icon: 'truck',
-            color: '#7B22EA',
+            color: colors.purple,
           },
         ]
       : [
@@ -268,25 +263,25 @@ const SummaryBar = ({
             label: 'Total POs',
             value: data.purchaseSummary.totalPOs,
             icon: 'orders',
-            color: '#7B22EA',
+            color: colors.purple,
           },
           {
             label: 'PO Value',
             value: data.purchaseSummary.poValue,
             icon: 'rupee',
-            color: '#138A36',
+            color: colors.success,
           },
           {
             label: 'Pending Approval',
             value: data.purchaseSummary.pendingApproval,
             icon: 'clock',
-            color: '#F06419',
+            color: colors.profileOrange,
           },
           {
             label: 'In Transit',
             value: data.purchaseSummary.inTransit,
             icon: 'truck',
-            color: '#173CFF',
+            color: colors.financeBlue,
           },
         ];
 
@@ -296,14 +291,14 @@ const SummaryBar = ({
         <View key={item.label} style={styles.summaryItem}>
           <View style={[styles.summaryIcon, { backgroundColor: item.color }]}>
             {item.icon === 'orders' && (
-              <ClipboardList color="#FFFFFF" size={rs(27)} />
+              <ClipboardList color={colors.white} size={rs(27)} />
             )}
             {item.icon === 'rupee' && (
-              <IndianRupee color="#FFFFFF" size={rs(28)} />
+              <IndianRupee color={colors.white} size={rs(28)} />
             )}
-            {item.icon === 'user' && <User color="#FFFFFF" size={rs(28)} />}
-            {item.icon === 'truck' && <Truck color="#FFFFFF" size={rs(28)} />}
-            {item.icon === 'clock' && <Clock3 color="#FFFFFF" size={rs(28)} />}
+            {item.icon === 'user' && <User color={colors.white} size={rs(28)} />}
+            {item.icon === 'truck' && <Truck color={colors.white} size={rs(28)} />}
+            {item.icon === 'clock' && <Clock3 color={colors.white} size={rs(28)} />}
           </View>
 
           <View>
@@ -342,11 +337,11 @@ const OrderIcon = ({ item }: { item: DealerOrder }) => {
   return (
     <View style={[styles.orderIcon, { backgroundColor: item.iconBg }]}>
       {item.icon === 'approval' && (
-        <ClipboardList color="#FFFFFF" size={rs(30)} />
+        <ClipboardList color={colors.white} size={rs(30)} />
       )}
-      {item.icon === 'dispatch' && <Truck color="#FFFFFF" size={rs(30)} />}
+      {item.icon === 'dispatch' && <Truck color={colors.white} size={rs(30)} />}
       {item.icon === 'delivered' && (
-        <CheckCircle2 color="#FFFFFF" size={rs(32)} />
+        <CheckCircle2 color={colors.white} size={rs(32)} />
       )}
     </View>
   );
@@ -369,7 +364,7 @@ const StepTimeline = ({ steps }: { steps: StepItem[] }) => {
                   active && styles.activeStep,
                 ]}
               >
-                {done && <CheckCircle2 color="#FFFFFF" size={rs(18)} />}
+                {done && <CheckCircle2 color={colors.white} size={rs(18)} />}
                 {active && <Text style={styles.activeStepText}>⌛</Text>}
               </View>
 
@@ -406,9 +401,9 @@ const DealerOrderCard = ({
     <View
       style={[
         styles.orderCard,
-        isPending && { borderLeftColor: '#F06419' },
-        isReady && { borderLeftColor: '#173CFF' },
-        isDelivered && { borderLeftColor: '#138A36' },
+        isPending && { borderLeftColor: colors.profileOrange },
+        isReady && { borderLeftColor: colors.financeBlue },
+        isDelivered && { borderLeftColor: colors.success },
       ]}
     >
       <View style={styles.orderHeader}>
@@ -428,7 +423,7 @@ const DealerOrderCard = ({
           />
         </View>
 
-        <ChevronRight color="#061247" size={rs(26)} strokeWidth={2.4} />
+        <ChevronRight color={colors.primaryText} size={rs(26)} strokeWidth={2.4} />
       </View>
 
       {!isDelivered && (
@@ -436,14 +431,14 @@ const DealerOrderCard = ({
           <View style={styles.orderMetrics}>
             {!!item.products && (
               <View style={styles.metricBox}>
-                <Box color="#5D607E" size={rs(24)} />
+                <Box color={colors.slateText} size={rs(24)} />
                 <Text style={styles.metricText}>{item.products}</Text>
               </View>
             )}
 
             {!!item.units && (
               <View style={styles.metricBox}>
-                <Package color="#5D607E" size={rs(24)} />
+                <Package color={colors.slateText} size={rs(24)} />
                 <Text style={styles.metricText}>{item.units}</Text>
               </View>
             )}
@@ -478,7 +473,7 @@ const DealerOrderCard = ({
             onPress={() => onApprove(item.id)}
             style={styles.primaryAction}
           >
-            <CheckCircle2 color="#FFFFFF" size={rs(20)} />
+            <CheckCircle2 color={colors.white} size={rs(20)} />
             <Text style={styles.primaryActionText}>Approve</Text>
           </TouchableOpacity>
 
@@ -487,12 +482,12 @@ const DealerOrderCard = ({
             onPress={() => onReject(item.id)}
             style={styles.dangerOutlineAction}
           >
-            <X color="#E00014" size={rs(20)} />
+            <X color={colors.dangerDark} size={rs(20)} />
             <Text style={styles.dangerOutlineText}>Reject</Text>
           </TouchableOpacity>
 
           <TouchableOpacity activeOpacity={0.85} style={styles.outlineAction}>
-            <ChevronRight color="#173CFF" size={rs(20)} />
+            <ChevronRight color={colors.financeBlue} size={rs(20)} />
             <Text style={styles.outlineActionText}>View Details</Text>
           </TouchableOpacity>
         </View>
@@ -505,17 +500,17 @@ const DealerOrderCard = ({
             onPress={() => onDispatch(item.id)}
             style={styles.primaryAction}
           >
-            <Truck color="#FFFFFF" size={rs(20)} />
+            <Truck color={colors.white} size={rs(20)} />
             <Text style={styles.primaryActionText}>Dispatch Now</Text>
           </TouchableOpacity>
 
           <TouchableOpacity activeOpacity={0.85} style={styles.outlineAction}>
-            <ClipboardList color="#173CFF" size={rs(20)} />
+            <ClipboardList color={colors.financeBlue} size={rs(20)} />
             <Text style={styles.outlineActionText}>Invoice PDF</Text>
           </TouchableOpacity>
 
           <TouchableOpacity activeOpacity={0.85} style={styles.outlineAction}>
-            <ChevronRight color="#173CFF" size={rs(20)} />
+            <ChevronRight color={colors.financeBlue} size={rs(20)} />
             <Text style={styles.outlineActionText}>Track</Text>
           </TouchableOpacity>
         </View>
@@ -527,7 +522,7 @@ const DealerOrderCard = ({
             activeOpacity={0.85}
             style={styles.outlineActionWide}
           >
-            <RefreshCw color="#173CFF" size={rs(20)} />
+            <RefreshCw color={colors.financeBlue} size={rs(20)} />
             <Text style={styles.outlineActionText}>Repeat Order</Text>
           </TouchableOpacity>
 
@@ -535,7 +530,7 @@ const DealerOrderCard = ({
             activeOpacity={0.85}
             style={styles.outlineActionWide}
           >
-            <Download color="#173CFF" size={rs(20)} />
+            <Download color={colors.financeBlue} size={rs(20)} />
             <Text style={styles.outlineActionText}>Download Invoice</Text>
           </TouchableOpacity>
         </View>
@@ -563,7 +558,7 @@ const SectionTitle = ({
 
       <TouchableOpacity activeOpacity={0.8} style={styles.viewAllButton}>
         <Text style={styles.viewAllText}>View All</Text>
-        <ChevronRight color="#173CFF" size={rs(20)} />
+        <ChevronRight color={colors.financeBlue} size={rs(20)} />
       </TouchableOpacity>
     </View>
   );
@@ -572,10 +567,10 @@ const SectionTitle = ({
 const PurchaseIcon = ({ item }: { item: PurchaseOrder }) => {
   return (
     <View style={[styles.orderIcon, { backgroundColor: item.iconBg }]}>
-      {item.icon === 'supplier' && <Home color="#FFFFFF" size={rs(32)} />}
-      {item.icon === 'truck' && <Truck color="#FFFFFF" size={rs(32)} />}
+      {item.icon === 'supplier' && <Home color={colors.white} size={rs(32)} />}
+      {item.icon === 'truck' && <Truck color={colors.white} size={rs(32)} />}
       {item.icon === 'warning' && (
-        <AlertTriangle color="#E00014" size={rs(34)} strokeWidth={2.4} />
+        <AlertTriangle color={colors.dangerDark} size={rs(34)} strokeWidth={2.4} />
       )}
     </View>
   );
@@ -609,19 +604,19 @@ const PurchaseOrderCard = ({
           bg={item.statusBg}
         />
 
-        <MoreVertical color="#061247" size={rs(26)} />
+        <MoreVertical color={colors.primaryText} size={rs(26)} />
       </View>
 
       {!delayed && (
         <>
           <View style={styles.purchaseMetrics}>
             <View style={styles.purchaseMetric}>
-              <Box color="#5D607E" size={rs(26)} />
+              <Box color={colors.slateText} size={rs(26)} />
               <Text style={styles.metricText}>{item.skus || item.cartons}</Text>
             </View>
 
             <View style={styles.purchaseMetric}>
-              <Package color="#5D607E" size={rs(26)} />
+              <Package color={colors.slateText} size={rs(26)} />
               <Text style={styles.metricText}>{item.units}</Text>
             </View>
 
@@ -632,7 +627,7 @@ const PurchaseOrderCard = ({
 
             {!!item.lowStock && (
               <View style={styles.purchaseMetric}>
-                <AlertTriangle color="#F06419" size={rs(26)} />
+                <AlertTriangle color={colors.profileOrange} size={rs(26)} />
                 <Text style={styles.metricAmount}>{item.lowStock}</Text>
                 <Text style={styles.metricSub}>Low Stock Items</Text>
               </View>
@@ -647,12 +642,12 @@ const PurchaseOrderCard = ({
         <>
           <View style={styles.delayBoxes}>
             <View style={styles.delayBoxRed}>
-              <Clock3 color="#E00014" size={rs(22)} />
+              <Clock3 color={colors.dangerDark} size={rs(22)} />
               <Text style={styles.delayTextRed}>{item.delayed}</Text>
             </View>
 
             <View style={styles.delayBoxOrange}>
-              <AlertTriangle color="#F06419" size={rs(22)} />
+              <AlertTriangle color={colors.profileOrange} size={rs(22)} />
               <Text style={styles.delayTextOrange}>{item.impact}</Text>
             </View>
           </View>
@@ -670,7 +665,7 @@ const PurchaseOrderCard = ({
       {item.status === 'Approval Pending' && (
         <View style={styles.actionRow}>
           <TouchableOpacity activeOpacity={0.85} style={styles.outlineAction}>
-            <Edit3 color="#173CFF" size={rs(20)} />
+            <Edit3 color={colors.financeBlue} size={rs(20)} />
             <Text style={styles.outlineActionText}>Edit PO</Text>
           </TouchableOpacity>
 
@@ -679,12 +674,12 @@ const PurchaseOrderCard = ({
             onPress={() => onCancel(item.id)}
             style={styles.dangerOutlineAction}
           >
-            <X color="#E00014" size={rs(20)} />
+            <X color={colors.dangerDark} size={rs(20)} />
             <Text style={styles.dangerOutlineText}>Cancel</Text>
           </TouchableOpacity>
 
           <TouchableOpacity activeOpacity={0.85} style={styles.primaryAction}>
-            <ChevronRight color="#FFFFFF" size={rs(20)} />
+            <ChevronRight color={colors.white} size={rs(20)} />
             <Text style={styles.primaryActionText}>View Details</Text>
           </TouchableOpacity>
         </View>
@@ -693,17 +688,17 @@ const PurchaseOrderCard = ({
       {item.status === 'In Transit' && (
         <View style={styles.actionRow}>
           <TouchableOpacity activeOpacity={0.85} style={styles.outlineAction}>
-            <MapPin color="#173CFF" size={rs(20)} />
+            <MapPin color={colors.financeBlue} size={rs(20)} />
             <Text style={styles.outlineActionText}>Track Shipment</Text>
           </TouchableOpacity>
 
           <TouchableOpacity activeOpacity={0.85} style={styles.outlineAction}>
-            <Warehouse color="#173CFF" size={rs(20)} />
+            <Warehouse color={colors.financeBlue} size={rs(20)} />
             <Text style={styles.outlineActionText}>Warehouse Prepare</Text>
           </TouchableOpacity>
 
           <TouchableOpacity activeOpacity={0.85} style={styles.outlineAction}>
-            <Download color="#173CFF" size={rs(20)} />
+            <Download color={colors.financeBlue} size={rs(20)} />
             <Text style={styles.outlineActionText}>Download GRN</Text>
           </TouchableOpacity>
         </View>
@@ -715,7 +710,7 @@ const PurchaseOrderCard = ({
             activeOpacity={0.85}
             style={styles.dangerOutlineAction}
           >
-            <Phone color="#E00014" size={rs(20)} />
+            <Phone color={colors.dangerDark} size={rs(20)} />
             <Text style={styles.dangerOutlineText}>Contact Supplier</Text>
           </TouchableOpacity>
 
@@ -723,7 +718,7 @@ const PurchaseOrderCard = ({
             activeOpacity={0.85}
             style={styles.purpleOutlineAction}
           >
-            <RefreshCw color="#7B22EA" size={rs(20)} />
+            <RefreshCw color={colors.purple} size={rs(20)} />
             <Text style={styles.purpleOutlineText}>Alternative Vendor</Text>
           </TouchableOpacity>
 
@@ -731,7 +726,7 @@ const PurchaseOrderCard = ({
             activeOpacity={0.85}
             style={styles.dangerOutlineAction}
           >
-            <AlertTriangle color="#E00014" size={rs(20)} />
+            <AlertTriangle color={colors.dangerDark} size={rs(20)} />
             <Text style={styles.dangerOutlineText}>Escalate</Text>
           </TouchableOpacity>
         </View>
@@ -743,7 +738,7 @@ const PurchaseOrderCard = ({
 const CreatePurchaseButton = () => {
   return (
     <TouchableOpacity activeOpacity={0.85} style={styles.createPOButton}>
-      <Plus color="#FFFFFF" size={rs(28)} />
+      <Plus color={colors.white} size={rs(28)} />
       <Text style={styles.createPOText}>Create Purchase Order</Text>
     </TouchableOpacity>
   );
@@ -758,7 +753,7 @@ const FloatingButton = () => {
       style={styles.floatingButton}
       onPress={() => navigation.navigate('PlaceNewOrder')}
     >
-      <Plus color="#FFFFFF" size={rs(38)} strokeWidth={2.4} />
+      <Plus color={colors.white} size={rs(38)} strokeWidth={2.4} />
     </TouchableOpacity>
   );
 };
@@ -859,16 +854,16 @@ const StockistOrderScreen = () => {
               status: nextStatus,
               statusColor:
                 nextStatus === 'Delivered'
-                  ? '#138A36'
+                  ? colors.success
                   : nextStatus === 'Ready Dispatch'
-                  ? '#173CFF'
-                  : '#F06419',
+                  ? colors.financeBlue
+                  : colors.profileOrange,
               statusBg:
                 nextStatus === 'Delivered'
-                  ? '#EAF8EC'
+                  ? colors.successLight
                   : nextStatus === 'Ready Dispatch'
-                  ? '#F1F5FF'
-                  : '#FFF3E9',
+                  ? colors.blueLight
+                  : colors.orangeSoft,
               icon:
                 nextStatus === 'Delivered'
                   ? 'delivered'
@@ -877,10 +872,10 @@ const StockistOrderScreen = () => {
                   : 'approval',
               iconBg:
                 nextStatus === 'Delivered'
-                  ? '#138A36'
+                  ? colors.success
                   : nextStatus === 'Ready Dispatch'
-                  ? '#173CFF'
-                  : '#F06419',
+                  ? colors.financeBlue
+                  : colors.profileOrange,
             }
           : item,
       ),
@@ -899,8 +894,8 @@ const StockistOrderScreen = () => {
           ? {
               ...item,
               status: 'Cancelled',
-              statusColor: '#E00014',
-              statusBg: '#FFF0F0',
+              statusColor: colors.dangerDark,
+              statusBg: colors.dangerLight,
             }
           : item,
       ),
@@ -910,15 +905,15 @@ const StockistOrderScreen = () => {
   if (loading || !data) {
     return (
       <SafeAreaView style={styles.loaderScreen}>
-        <StatusBar backgroundColor="#061B66" barStyle="light-content" />
-        <ActivityIndicator size="large" color="#173CFF" />
+        <StatusBar backgroundColor={colors.primary} barStyle="light-content" />
+        <ActivityIndicator size="large" color={colors.financeBlue} />
       </SafeAreaView>
     );
   }
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <StatusBar backgroundColor="#061B66" barStyle="light-content" />
+      <StatusBar backgroundColor={colors.primary} barStyle="light-content" />
 
       <Header activeTab={activeTab} />
 
@@ -947,7 +942,7 @@ const StockistOrderScreen = () => {
 
         {activeTab === 'dealer' ? (
           <>
-            <SectionTitle title="Dealer Orders" count="142" color="#173CFF" />
+            <SectionTitle title="Dealer Orders" count="142" color={colors.financeBlue} />
 
             {filteredDealerOrders.map(item => (
               <DealerOrderCard
@@ -959,7 +954,7 @@ const StockistOrderScreen = () => {
               />
             ))}
 
-            <SectionTitle title="Purchase Orders" count="48" color="#7B22EA" />
+            <SectionTitle title="Purchase Orders" count="48" color={colors.purple} />
 
             {data.purchaseOrders.slice(0, 1).map(item => (
               <PurchaseOrderCard
@@ -997,12 +992,12 @@ const styles = StyleSheet.create({
   summaryBar: {
     minHeight: rs(112),
     borderRadius: rs(8),
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.white,
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: rs(24),
     paddingVertical: rs(12),
-    shadowColor: '#000000',
+    shadowColor: colors.black,
     shadowOpacity: 0.04,
     shadowRadius: rs(12),
     shadowOffset: { width: 0, height: rs(5) },
@@ -1028,14 +1023,14 @@ const styles = StyleSheet.create({
 
   summaryValue: {
     fontSize: fs(22),
-    fontWeight: '900',
+    fontFamily: fonts.extraBold,
     textAlign: 'center',
   },
 
   summaryLabel: {
-    color: '#5D607E',
+    color: colors.slateText,
     fontSize: fs(11),
-    fontWeight: '700',
+    fontFamily: fonts.bold,
     marginTop: rs(5),
     textAlign: 'center',
     lineHeight: fs(14),
@@ -1046,21 +1041,21 @@ const styles = StyleSheet.create({
     right: 0,
     width: 1,
     height: rs(70),
-    backgroundColor: '#D9DCE8',
+    backgroundColor: colors.inputBorder,
   },
   safeArea: {
     flex: 1,
-    backgroundColor: '#F8F9FD',
+    backgroundColor: colors.financeBackground,
   },
   loaderScreen: {
     flex: 1,
-    backgroundColor: '#F8F9FD',
+    backgroundColor: colors.financeBackground,
     alignItems: 'center',
     justifyContent: 'center',
   },
   header: {
     height: rs(78),
-    backgroundColor: '#061B66',
+    backgroundColor: colors.primary,
     paddingHorizontal: rs(28),
     paddingTop: rs(8),
     flexDirection: 'row',
@@ -1068,9 +1063,9 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   headerTitle: {
-    color: '#FFFFFF',
+    color: colors.white,
     fontSize: fs(30),
-    fontWeight: '900',
+    fontFamily: fonts.extraBold,
   },
   scrollView: {
     flex: 1,
@@ -1083,12 +1078,12 @@ const styles = StyleSheet.create({
   mainTabs: {
     height: rs(54),
     borderWidth: 1,
-    borderColor: '#D9DCE8',
+    borderColor: colors.inputBorder,
     borderRadius: rs(6),
     flexDirection: 'row',
     marginBottom: rs(18),
     overflow: 'hidden',
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.white,
   },
   mainTabButton: {
     flex: 1,
@@ -1096,21 +1091,21 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   activeMainTab: {
-    backgroundColor: '#061B66',
+    backgroundColor: colors.primary,
   },
   mainTabText: {
-    color: '#5D607E',
+    color: colors.slateText,
     fontSize: fs(18),
-    fontWeight: '800',
+    fontFamily: fonts.extraBold,
   },
   activeMainTabText: {
-    color: '#FFFFFF',
+    color: colors.white,
   },
   searchBox: {
     height: rs(62),
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.white,
     borderWidth: 1,
-    borderColor: '#D9DCE8',
+    borderColor: colors.inputBorder,
     borderRadius: rs(8),
     paddingHorizontal: rs(20),
     flexDirection: 'row',
@@ -1119,9 +1114,9 @@ const styles = StyleSheet.create({
   },
   searchInput: {
     flex: 1,
-    color: '#111327',
+    color: colors.text,
     fontSize: fs(18),
-    fontWeight: '500',
+    fontFamily: fonts.medium,
     paddingVertical: 0,
     marginLeft: rs(16),
   },
@@ -1132,25 +1127,25 @@ const styles = StyleSheet.create({
     minWidth: rs(112),
     height: rs(46),
     borderWidth: 1,
-    borderColor: '#D9DCE8',
+    borderColor: colors.inputBorder,
     borderRadius: rs(7),
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.white,
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: rs(20),
     paddingHorizontal: rs(14),
   },
   activeStatusChip: {
-    backgroundColor: '#061B66',
-    borderColor: '#061B66',
+    backgroundColor: colors.primary,
+    borderColor: colors.primary,
   },
   statusChipText: {
-    color: '#061247',
+    color: colors.primaryText,
     fontSize: fs(15),
-    fontWeight: '800',
+    fontFamily: fonts.extraBold,
   },
   activeStatusChipText: {
-    color: '#FFFFFF',
+    color: colors.white,
   },
 
   sectionTitleRow: {
@@ -1165,9 +1160,9 @@ const styles = StyleSheet.create({
     marginRight: rs(18),
   },
   sectionTitle: {
-    color: '#111327',
+    color: colors.text,
     fontSize: fs(24),
-    fontWeight: '900',
+    fontFamily: fonts.extraBold,
     marginRight: rs(10),
   },
   countBadge: {
@@ -1179,9 +1174,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: rs(8),
   },
   countBadgeText: {
-    color: '#FFFFFF',
+    color: colors.white,
     fontSize: fs(14),
-    fontWeight: '900',
+    fontFamily: fonts.extraBold,
   },
   viewAllButton: {
     marginLeft: 'auto',
@@ -1189,29 +1184,29 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   viewAllText: {
-    color: '#173CFF',
+    color: colors.financeBlue,
     fontSize: fs(16),
-    fontWeight: '800',
+    fontFamily: fonts.extraBold,
     marginRight: rs(8),
   },
   orderCard: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.white,
     borderRadius: rs(9),
     borderLeftWidth: rs(4),
     padding: rs(20),
     marginBottom: rs(16),
-    shadowColor: '#000000',
+    shadowColor: colors.black,
     shadowOpacity: 0.04,
     shadowRadius: rs(12),
     shadowOffset: { width: 0, height: rs(5) },
     elevation: 3,
   },
   purchaseCard: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.white,
     borderRadius: rs(9),
     padding: rs(20),
     marginBottom: rs(18),
-    shadowColor: '#000000',
+    shadowColor: colors.black,
     shadowOpacity: 0.04,
     shadowRadius: rs(12),
     shadowOffset: { width: 0, height: rs(5) },
@@ -1233,20 +1228,20 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   orderId: {
-    color: '#061247',
+    color: colors.primaryText,
     fontSize: fs(25),
-    fontWeight: '900',
+    fontFamily: fonts.extraBold,
   },
   orderDealer: {
-    color: '#111327',
+    color: colors.text,
     fontSize: fs(16),
-    fontWeight: '900',
+    fontFamily: fonts.extraBold,
     marginTop: rs(6),
   },
   orderMeta: {
-    color: '#5D607E',
+    color: colors.slateText,
     fontSize: fs(14),
-    fontWeight: '600',
+    fontFamily: fonts.semiBold,
     marginTop: rs(8),
   },
   orderRight: {
@@ -1263,13 +1258,13 @@ const styles = StyleSheet.create({
   },
   badgePillText: {
     fontSize: fs(14),
-    fontWeight: '800',
+    fontFamily: fonts.extraBold,
   },
   orderMetrics: {
     height: rs(74),
     borderTopWidth: 1,
     borderBottomWidth: 1,
-    borderColor: '#EEF0F6',
+    borderColor: colors.financeDivider,
     flexDirection: 'row',
     alignItems: 'center',
     marginTop: rs(18),
@@ -1277,7 +1272,7 @@ const styles = StyleSheet.create({
   purchaseMetrics: {
     height: rs(72),
     borderWidth: 1,
-    borderColor: '#EEF0F6',
+    borderColor: colors.financeDivider,
     borderRadius: rs(6),
     flexDirection: 'row',
     alignItems: 'center',
@@ -1288,7 +1283,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     borderRightWidth: 1,
-    borderRightColor: '#EEF0F6',
+    borderRightColor: colors.financeDivider,
     flexDirection: 'row',
   },
   purchaseMetric: {
@@ -1296,25 +1291,25 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     borderRightWidth: 1,
-    borderRightColor: '#EEF0F6',
+    borderRightColor: colors.financeDivider,
     flexDirection: 'row',
   },
   metricText: {
-    color: '#111327',
+    color: colors.text,
     fontSize: fs(15),
-    fontWeight: '800',
+    fontFamily: fonts.extraBold,
     marginLeft: rs(10),
   },
   metricAmount: {
-    color: '#111327',
+    color: colors.text,
     fontSize: fs(19),
-    fontWeight: '900',
+    fontFamily: fonts.extraBold,
     textAlign: 'center',
   },
   metricSub: {
-    color: '#5D607E',
+    color: colors.slateText,
     fontSize: fs(12),
-    fontWeight: '700',
+    fontFamily: fonts.bold,
     marginTop: rs(5),
     marginLeft: rs(6),
   },
@@ -1333,29 +1328,29 @@ const styles = StyleSheet.create({
     height: rs(22),
     borderRadius: rs(11),
     borderWidth: 2,
-    borderColor: '#8A8CA0',
+    borderColor: colors.stockistTimelineGrey,
     marginRight: rs(10),
     alignItems: 'center',
     justifyContent: 'center',
   },
   doneStep: {
-    backgroundColor: '#138A36',
-    borderColor: '#138A36',
+    backgroundColor: colors.success,
+    borderColor: colors.success,
   },
   activeStep: {
-    borderColor: '#F06419',
+    borderColor: colors.profileOrange,
   },
   activeStepText: {
-    color: '#F06419',
+    color: colors.profileOrange,
     fontSize: fs(13),
   },
   stepLabel: {
-    color: '#111327',
+    color: colors.text,
     fontSize: fs(12),
-    fontWeight: '800',
+    fontFamily: fonts.extraBold,
   },
   stepSub: {
-    color: '#5D607E',
+    color: colors.slateText,
     fontSize: fs(11),
     marginTop: rs(5),
   },
@@ -1364,7 +1359,7 @@ const styles = StyleSheet.create({
     height: 1,
     borderWidth: 1,
     borderStyle: 'dashed',
-    borderColor: '#8A8CA0',
+    borderColor: colors.stockistTimelineGrey,
     marginHorizontal: rs(12),
   },
   actionRow: {
@@ -1375,23 +1370,23 @@ const styles = StyleSheet.create({
   primaryAction: {
     width: '31%',
     height: rs(42),
-    backgroundColor: '#173CFF',
+    backgroundColor: colors.financeBlue,
     borderRadius: rs(5),
     alignItems: 'center',
     justifyContent: 'center',
     flexDirection: 'row',
   },
   primaryActionText: {
-    color: '#FFFFFF',
+    color: colors.white,
     fontSize: fs(15),
-    fontWeight: '900',
+    fontFamily: fonts.extraBold,
     marginLeft: rs(8),
   },
   outlineAction: {
     width: '31%',
     height: rs(42),
     borderWidth: 1,
-    borderColor: '#B8C8FF',
+    borderColor: colors.blueBorderSoft,
     borderRadius: rs(5),
     alignItems: 'center',
     justifyContent: 'center',
@@ -1401,54 +1396,54 @@ const styles = StyleSheet.create({
     width: '49%',
     height: rs(42),
     borderWidth: 1,
-    borderColor: '#B8C8FF',
+    borderColor: colors.blueBorderSoft,
     borderRadius: rs(5),
     alignItems: 'center',
     justifyContent: 'center',
     flexDirection: 'row',
   },
   outlineActionText: {
-    color: '#173CFF',
+    color: colors.financeBlue,
     fontSize: fs(15),
-    fontWeight: '900',
+    fontFamily: fonts.extraBold,
     marginLeft: rs(8),
   },
   dangerOutlineAction: {
     width: '31%',
     height: rs(42),
     borderWidth: 1,
-    borderColor: '#FFB6B6',
+    borderColor: colors.dangerBorder,
     borderRadius: rs(5),
     alignItems: 'center',
     justifyContent: 'center',
     flexDirection: 'row',
   },
   dangerOutlineText: {
-    color: '#E00014',
+    color: colors.dangerDark,
     fontSize: fs(15),
-    fontWeight: '900',
+    fontFamily: fonts.extraBold,
     marginLeft: rs(8),
   },
   purpleOutlineAction: {
     width: '31%',
     height: rs(42),
     borderWidth: 1,
-    borderColor: '#D8B8FF',
+    borderColor: colors.stockistPurpleBorder,
     borderRadius: rs(5),
     alignItems: 'center',
     justifyContent: 'center',
     flexDirection: 'row',
   },
   purpleOutlineText: {
-    color: '#7B22EA',
+    color: colors.purple,
     fontSize: fs(14),
-    fontWeight: '900',
+    fontFamily: fonts.extraBold,
     marginLeft: rs(8),
   },
   paidBox: {
     height: rs(34),
     minWidth: rs(100),
-    backgroundColor: '#EAF8EC',
+    backgroundColor: colors.successLight,
     borderRadius: rs(5),
     alignSelf: 'flex-start',
     alignItems: 'center',
@@ -1457,12 +1452,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: rs(12),
   },
   paidText: {
-    color: '#138A36',
+    color: colors.success,
     fontSize: fs(13),
-    fontWeight: '900',
+    fontFamily: fonts.extraBold,
   },
   redText: {
-    color: '#E00014',
+    color: colors.dangerDark,
   },
   delayBoxes: {
     flexDirection: 'row',
@@ -1472,7 +1467,7 @@ const styles = StyleSheet.create({
   delayBoxRed: {
     width: '49%',
     height: rs(50),
-    backgroundColor: '#FFF0F0',
+    backgroundColor: colors.dangerLight,
     borderRadius: rs(5),
     flexDirection: 'row',
     alignItems: 'center',
@@ -1481,29 +1476,29 @@ const styles = StyleSheet.create({
   delayBoxOrange: {
     width: '49%',
     height: rs(50),
-    backgroundColor: '#FFF3E9',
+    backgroundColor: colors.orangeSoft,
     borderRadius: rs(5),
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
   },
   delayTextRed: {
-    color: '#E00014',
+    color: colors.dangerDark,
     fontSize: fs(14),
-    fontWeight: '900',
+    fontFamily: fonts.extraBold,
     marginLeft: rs(10),
   },
   delayTextOrange: {
-    color: '#A34900',
+    color: colors.stockistOrangeTextDark,
     fontSize: fs(14),
-    fontWeight: '900',
+    fontFamily: fonts.extraBold,
     marginLeft: rs(10),
   },
   aiBox: {
     minHeight: rs(62),
-    backgroundColor: '#F8F1FF',
+    backgroundColor: colors.stockistPurpleSoft,
     borderWidth: 1,
-    borderColor: '#E3CCFF',
+    borderColor: colors.stockistAiBorder,
     borderRadius: rs(6),
     flexDirection: 'row',
     alignItems: 'center',
@@ -1511,22 +1506,22 @@ const styles = StyleSheet.create({
     marginTop: rs(16),
   },
   aiIcon: {
-    color: '#7B22EA',
+    color: colors.purple,
     fontSize: fs(28),
-    fontWeight: '900',
+    fontFamily: fonts.extraBold,
     marginRight: rs(14),
   },
   aiText: {
-    color: '#111327',
+    color: colors.text,
     fontSize: fs(14),
-    fontWeight: '600',
+    fontFamily: fonts.semiBold,
   },
   aiTitle: {
-    fontWeight: '900',
+    fontFamily: fonts.extraBold,
   },
   createPOButton: {
     height: rs(60),
-    backgroundColor: '#173CFF',
+    backgroundColor: colors.financeBlue,
     borderRadius: rs(7),
     flexDirection: 'row',
     alignItems: 'center',
@@ -1534,9 +1529,9 @@ const styles = StyleSheet.create({
     marginTop: rs(8),
   },
   createPOText: {
-    color: '#FFFFFF',
+    color: colors.white,
     fontSize: fs(22),
-    fontWeight: '900',
+    fontFamily: fonts.extraBold,
     marginLeft: rs(12),
   },
   floatingButton: {
@@ -1546,11 +1541,11 @@ const styles = StyleSheet.create({
     width: rs(72),
     height: rs(72),
     borderRadius: rs(36),
-    backgroundColor: '#173CFF',
+    backgroundColor: colors.financeBlue,
     alignItems: 'center',
     justifyContent: 'center',
     elevation: 12,
-    shadowColor: '#000000',
+    shadowColor: colors.black,
     shadowOpacity: 0.2,
     shadowRadius: rs(12),
     shadowOffset: { width: 0, height: rs(5) },

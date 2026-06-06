@@ -2,7 +2,6 @@ import React, { useEffect, useMemo, useState } from 'react';
 import {
   ActivityIndicator,
   Alert,
-  Dimensions,
   Image,
   ScrollView,
   StatusBar,
@@ -54,13 +53,7 @@ import { getStockistProfile } from '../../api/stockist/stockistProfile.api';
 import { clearAuthStorage } from '../../utils/sessionManager';
 import { resetToLogin } from '../../navigation/navigationService';
 import { showErrorToast } from '../../utils/toast';
-
-const { width: SCREEN_WIDTH } = Dimensions.get('window');
-
-const DESIGN_WIDTH = 832;
-const scale = SCREEN_WIDTH / DESIGN_WIDTH;
-const rs = (value: number) => Math.round(value * scale);
-const fs = (value: number) => rs(value + 5);
+import { colors, fonts, size as rs, stockistProfileTextSize as fs } from '../../theme';
 
 const Header = () => {
   return (
@@ -70,7 +63,7 @@ const Header = () => {
       <Text style={styles.headerTitle}>My Profile</Text>
 
       <TouchableOpacity activeOpacity={0.8}>
-        <Edit3 color="#FFFFFF" size={rs(32)} strokeWidth={2.3} />
+        <Edit3 color={colors.white} size={rs(32)} strokeWidth={2.3} />
       </TouchableOpacity>
     </View>
   );
@@ -86,7 +79,7 @@ const ProfileHero = ({ data }: { data: StockistProfileData }) => {
         <Text style={styles.profileRole}>{data.profile.role}</Text>
 
         <View style={styles.premiumBadge}>
-          <ShieldCheck color="#FFFFFF" size={rs(18)} strokeWidth={2.3} />
+          <ShieldCheck color={colors.white} size={rs(18)} strokeWidth={2.3} />
           <Text style={styles.premiumText}>{data.profile.badge}</Text>
         </View>
       </View>
@@ -98,154 +91,154 @@ const BusinessIcon = ({ type }: { type: BusinessInfoItem['icon'] }) => {
   const size = rs(20);
 
   if (type === 'business') {
-    return <Building2 color="#173CFF" size={size} strokeWidth={2.2} />;
+    return <Building2 color={colors.financeBlue} size={size} strokeWidth={2.2} />;
   }
 
   if (type === 'gst') {
-    return <FileText color="#173CFF" size={size} strokeWidth={2.2} />;
+    return <FileText color={colors.financeBlue} size={size} strokeWidth={2.2} />;
   }
 
   if (type === 'warehouse') {
-    return <MapPin color="#173CFF" size={size} strokeWidth={2.2} />;
+    return <MapPin color={colors.financeBlue} size={size} strokeWidth={2.2} />;
   }
 
   if (type === 'phone') {
-    return <Phone color="#173CFF" size={size} strokeWidth={2.2} />;
+    return <Phone color={colors.financeBlue} size={size} strokeWidth={2.2} />;
   }
 
   if (type === 'email') {
-    return <Mail color="#173CFF" size={size} strokeWidth={2.2} />;
+    return <Mail color={colors.financeBlue} size={size} strokeWidth={2.2} />;
   }
 
-  return <CalendarDays color="#173CFF" size={size} strokeWidth={2.2} />;
+  return <CalendarDays color={colors.financeBlue} size={size} strokeWidth={2.2} />;
 };
 
 const SectionIcon = ({ type }: { type: string }) => {
   const size = rs(21);
 
   if (type === 'business') {
-    return <Building2 color="#173CFF" size={size} strokeWidth={2.2} />;
+    return <Building2 color={colors.financeBlue} size={size} strokeWidth={2.2} />;
   }
 
   if (type === 'performance') {
-    return <TrendingUp color="#173CFF" size={size} strokeWidth={2.2} />;
+    return <TrendingUp color={colors.financeBlue} size={size} strokeWidth={2.2} />;
   }
 
   if (type === 'warehouse') {
-    return <Home color="#173CFF" size={size} strokeWidth={2.2} />;
+    return <Home color={colors.financeBlue} size={size} strokeWidth={2.2} />;
   }
 
   if (type === 'security') {
-    return <ShieldCheck color="#173CFF" size={size} strokeWidth={2.2} />;
+    return <ShieldCheck color={colors.financeBlue} size={size} strokeWidth={2.2} />;
   }
 
   if (type === 'notifications') {
-    return <Bell color="#173CFF" size={size} strokeWidth={2.2} />;
+    return <Bell color={colors.financeBlue} size={size} strokeWidth={2.2} />;
   }
 
   if (type === 'documents') {
-    return <FileText color="#173CFF" size={size} strokeWidth={2.2} />;
+    return <FileText color={colors.financeBlue} size={size} strokeWidth={2.2} />;
   }
 
   if (type === 'support') {
-    return <Headphones color="#173CFF" size={size} strokeWidth={2.2} />;
+    return <Headphones color={colors.financeBlue} size={size} strokeWidth={2.2} />;
   }
 
-  return <Grid2X2 color="#173CFF" size={size} strokeWidth={2.2} />;
+  return <Grid2X2 color={colors.financeBlue} size={size} strokeWidth={2.2} />;
 };
 
 const SmallIcon = ({ type }: { type: string }) => {
   const size = rs(20);
 
   if (type === 'warehouse') {
-    return <Warehouse color="#7B22EA" size={size} strokeWidth={2.2} />;
+    return <Warehouse color={colors.purple} size={size} strokeWidth={2.2} />;
   }
 
   if (type === 'chart') {
-    return <TrendingUp color="#138A36" size={size} strokeWidth={2.2} />;
+    return <TrendingUp color={colors.success} size={size} strokeWidth={2.2} />;
   }
 
   if (type === 'location') {
-    return <MapPin color="#F06419" size={size} strokeWidth={2.2} />;
+    return <MapPin color={colors.profileOrange} size={size} strokeWidth={2.2} />;
   }
 
   if (type === 'clock') {
-    return <Clock3 color="#173CFF" size={size} strokeWidth={2.2} />;
+    return <Clock3 color={colors.financeBlue} size={size} strokeWidth={2.2} />;
   }
 
   if (type === 'lock') {
-    return <Lock color="#173CFF" size={size} strokeWidth={2.2} />;
+    return <Lock color={colors.financeBlue} size={size} strokeWidth={2.2} />;
   }
 
   if (type === 'shield') {
-    return <ShieldCheck color="#138A36" size={size} strokeWidth={2.2} />;
+    return <ShieldCheck color={colors.success} size={size} strokeWidth={2.2} />;
   }
 
   if (type === 'device') {
-    return <Smartphone color="#173CFF" size={size} strokeWidth={2.2} />;
+    return <Smartphone color={colors.financeBlue} size={size} strokeWidth={2.2} />;
   }
 
   if (type === 'history') {
-    return <Clock3 color="#173CFF" size={size} strokeWidth={2.2} />;
+    return <Clock3 color={colors.financeBlue} size={size} strokeWidth={2.2} />;
   }
 
   if (type === 'orders') {
-    return <Boxes color="#173CFF" size={size} strokeWidth={2.2} />;
+    return <Boxes color={colors.financeBlue} size={size} strokeWidth={2.2} />;
   }
 
   if (type === 'payment') {
-    return <WalletCards color="#E00014" size={size} strokeWidth={2.2} />;
+    return <WalletCards color={colors.dangerDark} size={size} strokeWidth={2.2} />;
   }
 
   if (type === 'stock') {
-    return <Boxes color="#A36A2A" size={size} strokeWidth={2.2} />;
+    return <Boxes color={colors.stockistBrown} size={size} strokeWidth={2.2} />;
   }
 
   if (type === 'dealers') {
-    return <Users color="#138A36" size={size} strokeWidth={2.2} />;
+    return <Users color={colors.success} size={size} strokeWidth={2.2} />;
   }
 
   if (type === 'gst') {
-    return <FileText color="#138A36" size={size} strokeWidth={2.2} />;
+    return <FileText color={colors.success} size={size} strokeWidth={2.2} />;
   }
 
   if (type === 'pan') {
-    return <KeyRound color="#173CFF" size={size} strokeWidth={2.2} />;
+    return <KeyRound color={colors.financeBlue} size={size} strokeWidth={2.2} />;
   }
 
   if (type === 'bank') {
-    return <Building2 color="#7B22EA" size={size} strokeWidth={2.2} />;
+    return <Building2 color={colors.purple} size={size} strokeWidth={2.2} />;
   }
 
   if (type === 'license') {
-    return <FileText color="#F06419" size={size} strokeWidth={2.2} />;
+    return <FileText color={colors.profileOrange} size={size} strokeWidth={2.2} />;
   }
 
   if (type === 'help') {
-    return <CircleHelp color="#5D607E" size={size} strokeWidth={2.2} />;
+    return <CircleHelp color={colors.slateText} size={size} strokeWidth={2.2} />;
   }
 
   if (type === 'ticket') {
-    return <Edit3 color="#5D607E" size={size} strokeWidth={2.2} />;
+    return <Edit3 color={colors.slateText} size={size} strokeWidth={2.2} />;
   }
 
   if (type === 'chat') {
-    return <MessageSquareText color="#5D607E" size={size} strokeWidth={2.2} />;
+    return <MessageSquareText color={colors.slateText} size={size} strokeWidth={2.2} />;
   }
 
   if (type === 'privacy') {
-    return <ShieldCheck color="#138A36" size={size} strokeWidth={2.2} />;
+    return <ShieldCheck color={colors.success} size={size} strokeWidth={2.2} />;
   }
 
   if (type === 'dark') {
-    return <Moon color="#5D607E" size={size} strokeWidth={2.2} />;
+    return <Moon color={colors.slateText} size={size} strokeWidth={2.2} />;
   }
 
   if (type === 'language') {
-    return <Globe2 color="#5D607E" size={size} strokeWidth={2.2} />;
+    return <Globe2 color={colors.slateText} size={size} strokeWidth={2.2} />;
   }
 
-  return <Grid2X2 color="#5D607E" size={size} strokeWidth={2.2} />;
+  return <Grid2X2 color={colors.slateText} size={size} strokeWidth={2.2} />;
 };
 
 const CardTitle = ({ icon, title }: { icon: string; title: string }) => {
@@ -279,7 +272,7 @@ const BusinessInformationCard = ({ items }: { items: BusinessInfoItem[] }) => {
 
           <Text style={styles.businessValue}>{item.value}</Text>
 
-          <ChevronRight color="#5D607E" size={rs(19)} strokeWidth={2.2} />
+          <ChevronRight color={colors.slateText} size={rs(19)} strokeWidth={2.2} />
         </TouchableOpacity>
       ))}
     </View>
@@ -378,17 +371,17 @@ const SettingsCard = ({
             <Switch
               value={!!item.enabled}
               onValueChange={() => toggle(item.id)}
-              trackColor={{ false: '#D0D3DA', true: '#173CFF' }}
-              thumbColor="#FFFFFF"
+              trackColor={{ false: colors.switchTrackOff, true: colors.financeBlue }}
+              thumbColor={colors.white}
             />
           )}
 
           {item.type === 'arrow' && (
-            <ChevronRight color="#5D607E" size={rs(18)} strokeWidth={2.2} />
+            <ChevronRight color={colors.slateText} size={rs(18)} strokeWidth={2.2} />
           )}
 
           {item.type === 'download' && (
-            <Download color="#173CFF" size={rs(20)} strokeWidth={2.3} />
+            <Download color={colors.financeBlue} size={rs(20)} strokeWidth={2.3} />
           )}
         </TouchableOpacity>
       ))}
@@ -432,7 +425,7 @@ const LogoutButton = () => {
       onPress={handleLogout}
       style={[styles.logoutButton, isLoggingOut && styles.disabledButton]}
     >
-      <LogOut color="#E00014" size={rs(24)} strokeWidth={2.4} />
+      <LogOut color={colors.dangerDark} size={rs(24)} strokeWidth={2.4} />
       <Text style={styles.logoutText}>
         {isLoggingOut ? 'Logging out...' : 'Logout'}
       </Text>
@@ -509,15 +502,15 @@ const StockistProfileScreen = () => {
   if (loading || !data) {
     return (
       <SafeAreaView style={styles.loaderScreen}>
-        <StatusBar backgroundColor="#061B66" barStyle="light-content" />
-        <ActivityIndicator size="large" color="#173CFF" />
+        <StatusBar backgroundColor={colors.primary} barStyle="light-content" />
+        <ActivityIndicator size="large" color={colors.financeBlue} />
       </SafeAreaView>
     );
   }
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <StatusBar backgroundColor="#061B66" barStyle="light-content" />
+      <StatusBar backgroundColor={colors.primary} barStyle="light-content" />
 
       <Header />
 
@@ -554,17 +547,17 @@ const PAGE_PADDING = rs(28);
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#F8F9FD',
+    backgroundColor: colors.financeBackground,
   },
   loaderScreen: {
     flex: 1,
-    backgroundColor: '#F8F9FD',
+    backgroundColor: colors.financeBackground,
     alignItems: 'center',
     justifyContent: 'center',
   },
   header: {
     height: rs(78),
-    backgroundColor: '#061B66',
+    backgroundColor: colors.primary,
     paddingHorizontal: rs(28),
     paddingTop: rs(8),
     flexDirection: 'row',
@@ -575,9 +568,9 @@ const styles = StyleSheet.create({
     width: rs(32),
   },
   headerTitle: {
-    color: '#FFFFFF',
+    color: colors.white,
     fontSize: fs(30),
-    fontWeight: '900',
+    fontFamily: fonts.extraBold,
   },
   scrollView: {
     flex: 1,
@@ -589,7 +582,7 @@ const styles = StyleSheet.create({
   },
   heroCard: {
     minHeight: rs(224),
-    backgroundColor: '#061B66',
+    backgroundColor: colors.primary,
     borderRadius: rs(8),
     flexDirection: 'row',
     alignItems: 'center',
@@ -602,23 +595,23 @@ const styles = StyleSheet.create({
     height: rs(170),
     borderRadius: rs(85),
     borderWidth: rs(3),
-    borderColor: '#FFFFFF',
+    borderColor: colors.white,
     marginRight: rs(34),
-    backgroundColor: '#D9DCE8',
+    backgroundColor: colors.inputBorder,
   },
   heroInfo: {
     flex: 1,
   },
   profileName: {
-    color: '#FFFFFF',
+    color: colors.white,
     fontSize: fs(30),
-    fontWeight: '900',
+    fontFamily: fonts.extraBold,
     marginBottom: rs(14),
   },
   profileRole: {
-    color: '#FFFFFF',
+    color: colors.white,
     fontSize: fs(18),
-    fontWeight: '700',
+    fontFamily: fonts.bold,
     marginBottom: rs(22),
   },
   premiumBadge: {
@@ -626,26 +619,26 @@ const styles = StyleSheet.create({
     minWidth: rs(210),
     alignSelf: 'flex-start',
     borderRadius: rs(5),
-    backgroundColor: '#1465E8',
+    backgroundColor: colors.stockistProfileBadgeBlue,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     paddingHorizontal: rs(16),
   },
   premiumText: {
-    color: '#FFFFFF',
+    color: colors.white,
     fontSize: fs(15),
-    fontWeight: '900',
+    fontFamily: fonts.extraBold,
     marginLeft: rs(8),
   },
   fullCard: {
     width: '100%',
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.white,
     borderRadius: rs(10),
     paddingHorizontal: rs(22),
     paddingVertical: rs(16),
     marginBottom: rs(16),
-    shadowColor: '#000000',
+    shadowColor: colors.black,
     shadowOpacity: 0.04,
     shadowRadius: rs(12),
     shadowOffset: { width: 0, height: rs(5) },
@@ -653,12 +646,12 @@ const styles = StyleSheet.create({
   },
   settingFullCard: {
     width: '100%',
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.white,
     borderRadius: rs(10),
     paddingHorizontal: rs(18),
     paddingVertical: rs(16),
     marginBottom: rs(16),
-    shadowColor: '#000000',
+    shadowColor: colors.black,
     shadowOpacity: 0.04,
     shadowRadius: rs(12),
     shadowOffset: { width: 0, height: rs(5) },
@@ -674,20 +667,20 @@ const styles = StyleSheet.create({
     width: rs(40),
     height: rs(40),
     borderRadius: rs(10),
-    backgroundColor: '#EEF3FF',
+    backgroundColor: colors.dealerBlueSoft,
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: rs(14),
   },
   cardTitle: {
-    color: '#061247',
+    color: colors.primaryText,
     fontSize: fs(20),
-    fontWeight: '900',
+    fontFamily: fonts.extraBold,
   },
   businessRow: {
     minHeight: rs(45),
     borderTopWidth: 1,
-    borderTopColor: '#EEF0F6',
+    borderTopColor: colors.financeDivider,
     flexDirection: 'row',
     alignItems: 'center',
   },
@@ -695,22 +688,22 @@ const styles = StyleSheet.create({
     width: rs(34),
     height: rs(34),
     borderRadius: rs(17),
-    backgroundColor: '#EEF3FF',
+    backgroundColor: colors.dealerBlueSoft,
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: rs(14),
   },
   businessLabel: {
     width: rs(350),
-    color: '#061247',
+    color: colors.primaryText,
     fontSize: fs(15),
-    fontWeight: '800',
+    fontFamily: fonts.extraBold,
   },
   businessValue: {
     flex: 1,
-    color: '#252943',
+    color: colors.stockistProfileValueText,
     fontSize: fs(14),
-    fontWeight: '600',
+    fontFamily: fonts.semiBold,
     lineHeight: rs(20),
   },
   performanceRow: {
@@ -728,21 +721,21 @@ const styles = StyleSheet.create({
     height: rs(50),
     borderRadius: rs(25),
     borderWidth: 1,
-    backgroundColor: '#F9FBFF',
+    backgroundColor: colors.stockistProfileIconBg,
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: rs(12),
   },
   performanceValue: {
-    color: '#061247',
+    color: colors.primaryText,
     fontSize: fs(20),
-    fontWeight: '900',
+    fontFamily: fonts.extraBold,
     marginBottom: rs(6),
   },
   performanceLabel: {
-    color: '#5D607E',
+    color: colors.slateText,
     fontSize: fs(12),
-    fontWeight: '700',
+    fontFamily: fonts.bold,
     textAlign: 'center',
   },
   performanceDivider: {
@@ -751,12 +744,12 @@ const styles = StyleSheet.create({
     top: rs(5),
     bottom: rs(5),
     width: 1,
-    backgroundColor: '#EEF0F6',
+    backgroundColor: colors.financeDivider,
   },
   settingRow: {
     minHeight: rs(45),
     borderTopWidth: 1,
-    borderTopColor: '#EEF0F6',
+    borderTopColor: colors.financeDivider,
     flexDirection: 'row',
     alignItems: 'center',
   },
@@ -764,33 +757,33 @@ const styles = StyleSheet.create({
     width: rs(34),
     height: rs(34),
     borderRadius: rs(17),
-    backgroundColor: '#EEF3FF',
+    backgroundColor: colors.dealerBlueSoft,
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: rs(12),
   },
   settingLabel: {
     flex: 1,
-    color: '#061247',
+    color: colors.primaryText,
     fontSize: fs(14),
-    fontWeight: '800',
+    fontFamily: fonts.extraBold,
   },
   settingValue: {
-    color: '#5D607E',
+    color: colors.slateText,
     fontSize: fs(13),
-    fontWeight: '700',
+    fontFamily: fonts.bold,
     marginRight: rs(10),
     textAlign: 'right',
   },
   greenValue: {
-    color: '#138A36',
+    color: colors.success,
   },
   logoutButton: {
     height: rs(48),
     borderWidth: 1,
-    borderColor: '#E00014',
+    borderColor: colors.dangerDark,
     borderRadius: rs(6),
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.white,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
@@ -800,9 +793,9 @@ const styles = StyleSheet.create({
     opacity: 0.6,
   },
   logoutText: {
-    color: '#E00014',
+    color: colors.dangerDark,
     fontSize: fs(17),
-    fontWeight: '900',
+    fontFamily: fonts.extraBold,
     marginLeft: rs(12),
   },
 });

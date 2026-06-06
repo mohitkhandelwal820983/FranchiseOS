@@ -11,6 +11,7 @@ import {
   View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import {colors, size, textSize} from '../../theme';
 import {
   AlertTriangle,
   Bell,
@@ -41,10 +42,6 @@ import { showErrorToast } from '../../utils/toast';
 
 const {width: SCREEN_WIDTH} = Dimensions.get('window');
 
-const DESIGN_WIDTH = 832;
-const scale = SCREEN_WIDTH / DESIGN_WIDTH;
-const rs = (value: number) => Math.round(value * scale);
-const fs = (value: number) => rs(value + 3);
 
 
 
@@ -53,13 +50,13 @@ const DashboardHeader = ({data}: {data: CompanyDashboardData}) => {
   return (
     <View style={styles.header}>
       <TouchableOpacity activeOpacity={0.8}>
-        <Menu color="#FFFFFF" size={rs(30)} strokeWidth={2.7} />
+        <Menu color={colors.white} size={size(30)} strokeWidth={2.7} />
       </TouchableOpacity>
 
       <Text style={styles.headerTitle}>Dashboard</Text>
 
       <TouchableOpacity activeOpacity={0.8} style={styles.bellBox}>
-        <Bell color="#FFFFFF" size={rs(28)} strokeWidth={2.2} />
+        <Bell color={colors.white} size={size(28)} strokeWidth={2.2} />
         <View style={styles.badge}>
           <Text style={styles.badgeText}>{data.notificationCount}</Text>
         </View>
@@ -84,7 +81,7 @@ const WelcomeCard = ({data}: {data: CompanyDashboardData}) => {
         </View>
 
         <View style={styles.dateRow}>
-          <CalendarDays color="#5D6078" size={rs(15)} strokeWidth={2} />
+          <CalendarDays color="#5D6078" size={size(15)} strokeWidth={2} />
           <Text style={styles.dateText} numberOfLines={1}>
             {data.date}
           </Text>
@@ -100,16 +97,16 @@ const SnapshotIcon = ({item}: {item: SnapshotItem}) => {
       {item.icon === 'users' && (
         <Users
           color={item.color}
-          size={rs(38)}
+          size={size(38)}
           fill={item.color}
           strokeWidth={0}
         />
       )}
       {item.icon === 'store' && (
-        <Store color={item.color} size={rs(36)} strokeWidth={2.4} />
+        <Store color={item.color} size={size(36)} strokeWidth={2.4} />
       )}
       {item.icon === 'activity' && (
-        <LineChart color={item.color} size={rs(34)} strokeWidth={2.4} />
+        <LineChart color={item.color} size={size(34)} strokeWidth={2.4} />
       )}
     </View>
   );
@@ -162,7 +159,7 @@ const RevenueCard = ({data}: {data: RevenueData}) => {
 
         <TouchableOpacity activeOpacity={0.8} style={styles.monthButton}>
           <Text style={styles.monthText}>{data.filter}</Text>
-          <ChevronDown color="#111327" size={rs(14)} strokeWidth={2.2} />
+          <ChevronDown color="#111327" size={size(14)} strokeWidth={2.2} />
         </TouchableOpacity>
       </View>
 
@@ -171,7 +168,7 @@ const RevenueCard = ({data}: {data: RevenueData}) => {
       </Text>
 
       <View style={styles.growthRow}>
-        <TrendingUp color="#138A36" size={rs(15)} strokeWidth={2.4} />
+        <TrendingUp color="#138A36" size={size(15)} strokeWidth={2.4} />
         <Text style={styles.growthPercent}>{data.growth}</Text>
         <Text style={styles.growthLabel}>{data.growthLabel}</Text>
       </View>
@@ -209,14 +206,14 @@ const RevenueCard = ({data}: {data: RevenueData}) => {
 
 const OrderIcon = ({item}: {item: OrderItem}) => {
   if (item.icon === 'cart') {
-    return <ShoppingCart color={item.color} size={rs(33)} strokeWidth={2.3} />;
+    return <ShoppingCart color={item.color} size={size(33)} strokeWidth={2.3} />;
   }
 
   if (item.icon === 'clock') {
-    return <Clock3 color={item.color} size={rs(33)} strokeWidth={2.3} />;
+    return <Clock3 color={item.color} size={size(33)} strokeWidth={2.3} />;
   }
 
-  return <CheckCircle2 color={item.color} size={rs(33)} strokeWidth={2.3} />;
+  return <CheckCircle2 color={item.color} size={size(33)} strokeWidth={2.3} />;
 };
 
 const OrdersCard = ({data}: {data: CompanyDashboardData}) => {
@@ -257,18 +254,18 @@ const OrdersCard = ({data}: {data: CompanyDashboardData}) => {
 
 const AttentionIcon = ({item}: {item: AttentionItem}) => {
   if (item.icon === 'warning') {
-    return <AlertTriangle color={item.color} size={rs(28)} strokeWidth={2.2} />;
+    return <AlertTriangle color={item.color} size={size(28)} strokeWidth={2.2} />;
   }
 
   if (item.icon === 'clock') {
-    return <Clock3 color={item.color} size={rs(28)} strokeWidth={2.2} />;
+    return <Clock3 color={item.color} size={size(28)} strokeWidth={2.2} />;
   }
 
   if (item.icon === 'user') {
-    return <User color={item.color} size={rs(28)} strokeWidth={2.2} />;
+    return <User color={item.color} size={size(28)} strokeWidth={2.2} />;
   }
 
-  return <Gift color={item.color} size={rs(28)} strokeWidth={2.2} />;
+  return <Gift color={item.color} size={size(28)} strokeWidth={2.2} />;
 };
 
 const NeedsAttentionCard = ({data}: {data: CompanyDashboardData}) => {
@@ -332,7 +329,7 @@ const NetworkLeadersCard = ({data}: {data: CompanyDashboardData}) => {
               <Text
                 style={[
                   styles.rankText,
-                  {color: item.rankColor ? '#FFFFFF' : '#111327'},
+                  {color: item.rankColor ? colors.white : colors.text},
                 ]}>
                 {item.rank}
               </Text>
@@ -390,7 +387,7 @@ const NeedsYourAttentionCard = ({data}: {data: CompanyDashboardData}) => {
       ))}
 
       <View style={styles.supportBox}>
-        <Heart color="#EA1111" size={rs(18)} strokeWidth={2} />
+        <Heart color="#EA1111" size={size(18)} strokeWidth={2} />
         <Text style={styles.supportText} numberOfLines={1}>
           {data.supportMessage}
         </Text>
@@ -415,7 +412,7 @@ const NetworkActivityCard = ({data}: {data: CompanyDashboardData}) => {
       ))}
 
       <View style={styles.activityMessageBox}>
-        <LineChart color="#1557F5" size={rs(20)} strokeWidth={2.2} />
+        <LineChart color={colors.secondary} size={size(20)} strokeWidth={2.2} />
         <Text style={styles.activityMessageText} numberOfLines={1}>
           {data.activityMessage}
         </Text>
@@ -474,8 +471,8 @@ const DashboardScreen = () => {
   if (loading) {
     return (
       <SafeAreaView style={styles.loaderScreen}>
-        <StatusBar backgroundColor="#061B66" barStyle="light-content" />
-        <ActivityIndicator size="large" color="#1557F5" />
+        <StatusBar backgroundColor={colors.primary} barStyle="light-content" />
+        <ActivityIndicator size="large" color={colors.secondary} />
       </SafeAreaView>
     );
   }
@@ -483,14 +480,14 @@ const DashboardScreen = () => {
   if (error || !dashboardData) {
     return (
       <SafeAreaView style={styles.loaderScreen}>
-        <StatusBar backgroundColor="#061B66" barStyle="light-content" />
+        <StatusBar backgroundColor={colors.primary} barStyle="light-content" />
 
         <Text
           style={{
-            color: '#061247',
-            fontSize: fs(18),
+            color: colors.primary,
+            fontSize: textSize(18),
             fontWeight: '700',
-            marginBottom: rs(18),
+            marginBottom: size(18),
             textAlign: 'center',
           }}>
           {error || 'Something went wrong'}
@@ -500,12 +497,12 @@ const DashboardScreen = () => {
           activeOpacity={0.85}
           onPress={handleRetry}
           style={{
-            backgroundColor: '#061B66',
-            paddingHorizontal: rs(28),
-            paddingVertical: rs(14),
-            borderRadius: rs(8),
+            backgroundColor: colors.primary,
+            paddingHorizontal: size(28),
+            paddingVertical: size(14),
+            borderRadius: size(8),
           }}>
-          <Text style={{color: '#FFFFFF', fontSize: fs(14), fontWeight: '800'}}>Retry</Text>
+          <Text style={{color: colors.white, fontSize: textSize(14), fontWeight: '800'}}>Retry</Text>
         </TouchableOpacity>
       </SafeAreaView>
     );
@@ -513,7 +510,7 @@ const DashboardScreen = () => {
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <StatusBar backgroundColor="#061B66" barStyle="light-content" />
+      <StatusBar backgroundColor={colors.primary} barStyle="light-content" />
 
       <DashboardHeader data={dashboardData} />
 
@@ -549,58 +546,58 @@ const DashboardScreen = () => {
 
 export default DashboardScreen;
 
-const PAGE_PADDING = rs(24);
-const CARD_GAP = rs(14);
+const PAGE_PADDING = size(24);
+const CARD_GAP = size(14);
 const COLUMN_WIDTH = (SCREEN_WIDTH - PAGE_PADDING * 2 - CARD_GAP) / 2;
-const SNAPSHOT_CARD_WIDTH = (SCREEN_WIDTH - PAGE_PADDING * 2 - rs(28)) / 3;
+const SNAPSHOT_CARD_WIDTH = (SCREEN_WIDTH - PAGE_PADDING * 2 - size(28)) / 3;
 
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#F7F8FC',
+    backgroundColor: colors.background,
   },
   loaderScreen: {
     flex: 1,
-    backgroundColor: '#F7F8FC',
+    backgroundColor: colors.background,
     alignItems: 'center',
     justifyContent: 'center',
   },
   header: {
-    height: rs(82),
-    backgroundColor: '#061B66',
-    paddingHorizontal: rs(30),
-    paddingTop: rs(18),
+    height: size(82),
+    backgroundColor: colors.primary,
+    paddingHorizontal: size(30),
+    paddingTop: size(18),
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
   },
   headerTitle: {
-    color: '#FFFFFF',
-    fontSize: fs(29),
+    color: colors.white,
+    fontSize: textSize(29),
     fontWeight: '800',
     letterSpacing: 0.2,
   },
   bellBox: {
-    width: rs(36),
-    height: rs(36),
+    width: size(36),
+    height: size(36),
     alignItems: 'center',
     justifyContent: 'center',
     position: 'relative',
   },
   badge: {
     position: 'absolute',
-    right: -rs(8),
-    top: -rs(8),
-    width: rs(24),
-    height: rs(24),
-    borderRadius: rs(12),
-    backgroundColor: '#EA1111',
+    right: -size(8),
+    top: -size(8),
+    width: size(24),
+    height: size(24),
+    borderRadius: size(12),
+    backgroundColor: colors.danger,
     alignItems: 'center',
     justifyContent: 'center',
   },
   badgeText: {
-    color: '#FFFFFF',
-    fontSize: fs(12),
+    color: colors.white,
+    fontSize: textSize(12),
     fontWeight: '800',
   },
   scrollView: {
@@ -608,19 +605,19 @@ const styles = StyleSheet.create({
   },
   scrollContent: {
     paddingHorizontal: PAGE_PADDING,
-    paddingTop: rs(26),
-    paddingBottom: rs(120),
+    paddingTop: size(26),
+    paddingBottom: size(120),
   },
   welcomeCard: {
-    minHeight: rs(132),
-    backgroundColor: '#FFFFFF',
-    borderRadius: rs(12),
-    marginBottom: rs(30),
+    minHeight: size(132),
+    backgroundColor: colors.white,
+    borderRadius: size(12),
+    marginBottom: size(30),
     overflow: 'hidden',
-    shadowColor: '#000000',
+    shadowColor: colors.black,
     shadowOpacity: 0.06,
-    shadowRadius: rs(16),
-    shadowOffset: {width: 0, height: rs(7)},
+    shadowRadius: size(16),
+    shadowOffset: {width: 0, height: size(7)},
     elevation: 4,
   },
   welcomeLeftLine: {
@@ -628,69 +625,69 @@ const styles = StyleSheet.create({
     left: 0,
     top: 0,
     bottom: 0,
-    width: rs(3),
-    backgroundColor: '#138A36',
+    width: size(3),
+    backgroundColor: colors.success,
   },
   welcomeContent: {
     flex: 1,
-    paddingHorizontal: rs(28),
-    paddingVertical: rs(28),
+    paddingHorizontal: size(28),
+    paddingVertical: size(28),
     flexDirection: 'row',
     alignItems: 'flex-start',
     justifyContent: 'space-between',
   },
   welcomeTextArea: {
-    width: rs(520),
-    paddingRight: rs(10),
+    width: size(520),
+    paddingRight: size(10),
   },
   welcomeTitle: {
-    color: '#111327',
-    fontSize: fs(25),
-    lineHeight: rs(32),
+    color: colors.text,
+    fontSize: textSize(25),
+    lineHeight: size(32),
     fontWeight: '800',
   },
   welcomeSubtitle: {
-    marginTop: rs(13),
-    color: '#006D1D',
-    fontSize: fs(16),
-    lineHeight: rs(22),
+    marginTop: size(13),
+    color: colors.successDark,
+    fontSize: textSize(16),
+    lineHeight: size(22),
     fontWeight: '600',
   },
   dateRow: {
-    marginTop: rs(28),
-    width: rs(220),
+    marginTop: size(28),
+    width: size(220),
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'flex-end',
   },
   dateText: {
-    marginLeft: rs(9),
-    color: '#55576F',
-    fontSize: fs(15),
+    marginLeft: size(9),
+    color: colors.mutedText,
+    fontSize: textSize(15),
     fontWeight: '500',
   },
   snapshotSection: {
-    marginBottom: rs(22),
+    marginBottom: size(22),
   },
   sectionHeader: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginBottom: rs(14),
+    marginBottom: size(14),
   },
   sectionTitle: {
-    color: '#121429',
-    fontSize: fs(20),
+    color: colors.text,
+    fontSize: textSize(20),
     fontWeight: '800',
   },
   viewAllBlue: {
-    color: '#001DDE',
-    fontSize: fs(16),
+    color: colors.linkBlue,
+    fontSize: textSize(16),
     fontWeight: '700',
   },
   viewAllRed: {
-    color: '#E00000',
-    fontSize: fs(16),
+    color: colors.danger,
+    fontSize: textSize(16),
     fontWeight: '700',
   },
   snapshotGrid: {
@@ -699,119 +696,119 @@ const styles = StyleSheet.create({
   },
   snapshotCard: {
     width: SNAPSHOT_CARD_WIDTH,
-    minHeight: rs(158),
-    backgroundColor: '#FFFFFF',
-    borderRadius: rs(13),
-    paddingHorizontal: rs(16),
-    paddingVertical: rs(28),
+    minHeight: size(158),
+    backgroundColor: colors.white,
+    borderRadius: size(13),
+    paddingHorizontal: size(16),
+    paddingVertical: size(28),
     flexDirection: 'row',
     alignItems: 'center',
-    shadowColor: '#000000',
+    shadowColor: colors.black,
     shadowOpacity: 0.04,
-    shadowRadius: rs(15),
-    shadowOffset: {width: 0, height: rs(7)},
+    shadowRadius: size(15),
+    shadowOffset: {width: 0, height: size(7)},
     elevation: 3,
   },
   snapshotIconBox: {
-    width: rs(72),
-    height: rs(72),
-    borderRadius: rs(36),
+    width: size(72),
+    height: size(72),
+    borderRadius: size(36),
     alignItems: 'center',
     justifyContent: 'center',
-    marginRight: rs(14),
+    marginRight: size(14),
   },
   snapshotInfo: {
     flex: 1,
   },
   snapshotTitle: {
-    color: '#52546D',
-    fontSize: fs(15),
+    color: colors.mutedText,
+    fontSize: textSize(15),
     fontWeight: '700',
-    marginBottom: rs(13),
+    marginBottom: size(13),
   },
   snapshotValue: {
-    fontSize: fs(35),
-    lineHeight: rs(39),
+    fontSize: textSize(35),
+    lineHeight: size(39),
     fontWeight: '900',
-    letterSpacing: rs(5),
+    letterSpacing: size(5),
   },
   snapshotSubtitle: {
-    marginTop: rs(12),
-    color: '#52546D',
-    fontSize: fs(15),
+    marginTop: size(12),
+    color: colors.mutedText,
+    fontSize: textSize(15),
     fontWeight: '500',
   },
   twoColumnRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: rs(20),
+    marginBottom: size(20),
   },
   revenueCard: {
     width: COLUMN_WIDTH,
-    backgroundColor: '#FFFFFF',
-    borderRadius: rs(14),
-    padding: rs(18),
-    shadowColor: '#000000',
+    backgroundColor: colors.white,
+    borderRadius: size(14),
+    padding: size(18),
+    shadowColor: colors.black,
     shadowOpacity: 0.05,
-    shadowRadius: rs(15),
-    shadowOffset: {width: 0, height: rs(7)},
+    shadowRadius: size(15),
+    shadowOffset: {width: 0, height: size(7)},
     elevation: 3,
   },
   ordersCard: {
     width: COLUMN_WIDTH,
-    backgroundColor: '#FFFFFF',
-    borderRadius: rs(14),
-    padding: rs(18),
-    shadowColor: '#000000',
+    backgroundColor: colors.white,
+    borderRadius: size(14),
+    padding: size(18),
+    shadowColor: colors.black,
     shadowOpacity: 0.05,
-    shadowRadius: rs(15),
-    shadowOffset: {width: 0, height: rs(7)},
+    shadowRadius: size(15),
+    shadowOffset: {width: 0, height: size(7)},
     elevation: 3,
   },
   needsCard: {
     width: COLUMN_WIDTH,
-    backgroundColor: '#FFFFFF',
-    borderRadius: rs(14),
-    paddingTop: rs(18),
-    paddingBottom: rs(6),
+    backgroundColor: colors.white,
+    borderRadius: size(14),
+    paddingTop: size(18),
+    paddingBottom: size(6),
     overflow: 'hidden',
-    shadowColor: '#000000',
+    shadowColor: colors.black,
     shadowOpacity: 0.05,
-    shadowRadius: rs(15),
-    shadowOffset: {width: 0, height: rs(7)},
+    shadowRadius: size(15),
+    shadowOffset: {width: 0, height: size(7)},
     elevation: 3,
   },
   leadersCard: {
     width: COLUMN_WIDTH,
-    backgroundColor: '#FFFFFF',
-    borderRadius: rs(14),
-    padding: rs(18),
-    shadowColor: '#000000',
+    backgroundColor: colors.white,
+    borderRadius: size(14),
+    padding: size(18),
+    shadowColor: colors.black,
     shadowOpacity: 0.05,
-    shadowRadius: rs(15),
-    shadowOffset: {width: 0, height: rs(7)},
+    shadowRadius: size(15),
+    shadowOffset: {width: 0, height: size(7)},
     elevation: 3,
   },
   yourAttentionCard: {
     width: COLUMN_WIDTH,
-    backgroundColor: '#FFFFFF',
-    borderRadius: rs(14),
-    padding: rs(18),
-    shadowColor: '#000000',
+    backgroundColor: colors.white,
+    borderRadius: size(14),
+    padding: size(18),
+    shadowColor: colors.black,
     shadowOpacity: 0.05,
-    shadowRadius: rs(15),
-    shadowOffset: {width: 0, height: rs(7)},
+    shadowRadius: size(15),
+    shadowOffset: {width: 0, height: size(7)},
     elevation: 3,
   },
   activityCard: {
     width: COLUMN_WIDTH,
-    backgroundColor: '#FFFFFF',
-    borderRadius: rs(14),
-    padding: rs(18),
-    shadowColor: '#000000',
+    backgroundColor: colors.white,
+    borderRadius: size(14),
+    padding: size(18),
+    shadowColor: colors.black,
     shadowOpacity: 0.05,
-    shadowRadius: rs(15),
-    shadowOffset: {width: 0, height: rs(7)},
+    shadowRadius: size(15),
+    shadowOffset: {width: 0, height: size(7)},
     elevation: 3,
   },
   cardTopRow: {
@@ -820,91 +817,91 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   cardTitle: {
-    color: '#121429',
-    fontSize: fs(18),
+    color: colors.text,
+    fontSize: textSize(18),
     fontWeight: '800',
   },
   monthButton: {
-    minWidth: rs(92),
-    height: rs(38),
+    minWidth: size(92),
+    height: size(38),
     borderWidth: 1,
-    borderColor: '#D9DCE8',
-    borderRadius: rs(6),
-    paddingHorizontal: rs(13),
+    borderColor: colors.inputBorder,
+    borderRadius: size(6),
+    paddingHorizontal: size(13),
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
   },
   monthText: {
-    color: '#151729',
-    fontSize: fs(15),
+    color: colors.text,
+    fontSize: textSize(15),
     fontWeight: '500',
   },
   revenueAmount: {
-    marginTop: rs(30),
-    color: '#080912',
-    fontSize: fs(38),
+    marginTop: size(30),
+    color: colors.black,
+    fontSize: textSize(38),
     fontWeight: '900',
-    letterSpacing: rs(1),
+    letterSpacing: size(1),
   },
   growthRow: {
-    marginTop: rs(17),
+    marginTop: size(17),
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
   },
   growthPercent: {
-    marginLeft: rs(5),
-    color: '#138A36',
-    fontSize: fs(16),
+    marginLeft: size(5),
+    color: colors.success,
+    fontSize: textSize(16),
     fontWeight: '800',
   },
   growthLabel: {
-    marginLeft: rs(8),
-    color: '#46495F',
-    fontSize: fs(16),
+    marginLeft: size(8),
+    color: colors.mutedText,
+    fontSize: textSize(16),
     fontWeight: '500',
   },
   progressRow: {
-    marginTop: rs(34),
+    marginTop: size(34),
     flexDirection: 'row',
     alignItems: 'center',
   },
   progressTrack: {
     flex: 1,
-    height: rs(8),
-    borderRadius: rs(7),
-    backgroundColor: '#E5E7EF',
+    height: size(8),
+    borderRadius: size(7),
+    backgroundColor: colors.progressTrack,
     overflow: 'hidden',
   },
   progressFill: {
-    height: rs(8),
-    borderRadius: rs(7),
-    backgroundColor: '#173CFF',
+    height: size(8),
+    borderRadius: size(7),
+    backgroundColor: colors.secondary,
   },
   progressPercent: {
-    marginLeft: rs(14),
-    color: '#484A60',
-    fontSize: fs(16),
+    marginLeft: size(14),
+    color: colors.mutedText,
+    fontSize: textSize(16),
     fontWeight: '600',
   },
   achievedText: {
-    marginTop: rs(18),
+    marginTop: size(18),
     textAlign: 'center',
-    color: '#55576F',
-    fontSize: fs(15),
+    color: colors.mutedText,
+    fontSize: textSize(15),
     fontWeight: '600',
   },
   revenueStatsRow: {
-    marginTop: rs(33),
+    marginTop: size(33),
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
   revenueMiniCard: {
     width: '31%',
     borderWidth: 1,
-    borderRadius: rs(8),
-    paddingVertical: rs(12),
+    borderRadius: size(8),
+    paddingVertical: size(12),
     alignItems: 'center',
   },
   collectedCard: {
@@ -920,110 +917,110 @@ const styles = StyleSheet.create({
     borderColor: '#BCC8FF',
   },
   collectedLabel: {
-    color: '#138A36',
-    fontSize: fs(13),
+    color: colors.success,
+    fontSize: textSize(13),
     fontWeight: '600',
   },
   outstandingLabel: {
-    color: '#E75200',
-    fontSize: fs(13),
+    color: colors.warningDark,
+    fontSize: textSize(13),
     fontWeight: '600',
   },
   targetLabel: {
-    color: '#173CFF',
-    fontSize: fs(13),
+    color: colors.secondary,
+    fontSize: textSize(13),
     fontWeight: '600',
   },
   collectedValue: {
-    marginTop: rs(6),
-    color: '#138A36',
-    fontSize: fs(24),
+    marginTop: size(6),
+    color: colors.success,
+    fontSize: textSize(24),
     fontWeight: '900',
   },
   outstandingValue: {
-    marginTop: rs(6),
-    color: '#E75200',
-    fontSize: fs(24),
+    marginTop: size(6),
+    color: colors.warningDark,
+    fontSize: textSize(24),
     fontWeight: '900',
   },
   targetValue: {
-    marginTop: rs(6),
-    color: '#173CFF',
-    fontSize: fs(24),
+    marginTop: size(6),
+    color: colors.secondary,
+    fontSize: textSize(24),
     fontWeight: '900',
   },
   orderStatsRow: {
-    marginTop: rs(28),
+    marginTop: size(28),
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
   orderBox: {
     width: '31%',
-    minHeight: rs(148),
+    minHeight: size(148),
     borderWidth: 1,
-    borderRadius: rs(7),
+    borderRadius: size(7),
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: rs(15),
+    paddingVertical: size(15),
   },
   orderValue: {
-    marginTop: rs(16),
-    fontSize: fs(34),
+    marginTop: size(16),
+    fontSize: textSize(34),
     fontWeight: '900',
   },
   orderLabel: {
-    marginTop: rs(5),
-    color: '#55576F',
-    fontSize: fs(15),
+    marginTop: size(5),
+    color: colors.mutedText,
+    fontSize: textSize(15),
     fontWeight: '600',
   },
   orderMessageBox: {
-    marginTop: rs(32),
+    marginTop: size(32),
     backgroundColor: '#F2FFF2',
-    borderRadius: rs(7),
-    minHeight: rs(74),
-    paddingHorizontal: rs(18),
+    borderRadius: size(7),
+    minHeight: size(74),
+    paddingHorizontal: size(18),
     flexDirection: 'row',
     alignItems: 'center',
   },
   celebrationIcon: {
-    fontSize: fs(34),
-    marginRight: rs(16),
+    fontSize: textSize(34),
+    marginRight: size(16),
   },
   orderMessageTitle: {
     color: '#11802D',
-    fontSize: fs(15),
+    fontSize: textSize(15),
     fontWeight: '800',
   },
   orderMessageText: {
-    color: '#14172A',
-    fontSize: fs(14),
+    color: colors.text,
+    fontSize: textSize(14),
     fontWeight: '500',
-    marginTop: rs(7),
+    marginTop: size(7),
   },
   needsCardHeader: {
-    paddingHorizontal: rs(18),
-    marginBottom: rs(10),
+    paddingHorizontal: size(18),
+    marginBottom: size(10),
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
   },
   needsCountBadge: {
-    width: rs(26),
-    height: rs(26),
-    borderRadius: rs(13),
-    backgroundColor: '#EA1111',
+    width: size(26),
+    height: size(26),
+    borderRadius: size(13),
+    backgroundColor: colors.danger,
     alignItems: 'center',
     justifyContent: 'center',
   },
   needsCountText: {
-    color: '#FFFFFF',
-    fontSize: fs(12),
+    color: colors.white,
+    fontSize: textSize(12),
     fontWeight: '800',
   },
   attentionRow: {
-    minHeight: rs(79),
-    paddingHorizontal: rs(18),
+    minHeight: size(79),
+    paddingHorizontal: size(18),
     flexDirection: 'row',
     alignItems: 'center',
     position: 'relative',
@@ -1031,199 +1028,199 @@ const styles = StyleSheet.create({
   attentionLine: {
     position: 'absolute',
     left: 0,
-    top: rs(8),
-    bottom: rs(8),
-    width: rs(3),
-    borderTopRightRadius: rs(3),
-    borderBottomRightRadius: rs(3),
+    top: size(8),
+    bottom: size(8),
+    width: size(3),
+    borderTopRightRadius: size(3),
+    borderBottomRightRadius: size(3),
   },
   attentionIconWrap: {
-    width: rs(43),
+    width: size(43),
     alignItems: 'center',
   },
   attentionTextWrap: {
     flex: 1,
-    paddingLeft: rs(10),
+    paddingLeft: size(10),
   },
   attentionTitle: {
-    color: '#111327',
-    fontSize: fs(14),
+    color: colors.text,
+    fontSize: textSize(14),
     fontWeight: '800',
   },
   attentionSubtitle: {
-    marginTop: rs(7),
-    fontSize: fs(13),
+    marginTop: size(7),
+    fontSize: textSize(13),
     fontWeight: '700',
   },
   attentionButton: {
-    minWidth: rs(96),
-    height: rs(32),
+    minWidth: size(96),
+    height: size(32),
     borderWidth: 1,
     borderColor: '#8EA3FF',
-    borderRadius: rs(4),
+    borderRadius: size(4),
     alignItems: 'center',
     justifyContent: 'center',
-    paddingHorizontal: rs(8),
+    paddingHorizontal: size(8),
   },
   attentionButtonText: {
     color: '#0026E6',
-    fontSize: fs(12),
+    fontSize: textSize(12),
     fontWeight: '800',
   },
   attentionDivider: {
     position: 'absolute',
-    left: rs(18),
-    right: rs(18),
+    left: size(18),
+    right: size(18),
     bottom: 0,
     height: 1,
-    backgroundColor: '#EEEFF4',
+    backgroundColor: colors.divider,
   },
   leaderRow: {
-    minHeight: rs(57),
+    minHeight: size(57),
     flexDirection: 'row',
     alignItems: 'center',
     borderBottomWidth: 1,
-    borderBottomColor: '#EEEFF4',
+    borderBottomColor: colors.divider,
   },
   rankContainer: {
-    width: rs(28),
+    width: size(28),
     alignItems: 'center',
   },
   rankCircle: {
-    width: rs(26),
-    height: rs(26),
-    borderRadius: rs(13),
+    width: size(26),
+    height: size(26),
+    borderRadius: size(13),
     alignItems: 'center',
     justifyContent: 'center',
   },
   rankText: {
-    fontSize: fs(12),
+    fontSize: textSize(12),
     fontWeight: '800',
   },
   leaderAvatar: {
-    marginLeft: rs(12),
-    width: rs(39),
-    height: rs(39),
-    borderRadius: rs(20),
+    marginLeft: size(12),
+    width: size(39),
+    height: size(39),
+    borderRadius: size(20),
     alignItems: 'center',
     justifyContent: 'center',
   },
   leaderAvatarText: {
-    color: '#FFFFFF',
-    fontSize: fs(15),
+    color: colors.white,
+    fontSize: textSize(15),
     fontWeight: '800',
   },
   leaderInfo: {
     flex: 1,
-    marginLeft: rs(14),
+    marginLeft: size(14),
   },
   leaderName: {
-    color: '#15172A',
-    fontSize: fs(14),
+    color: colors.text,
+    fontSize: textSize(14),
     fontWeight: '800',
   },
   leaderZone: {
-    color: '#5B5E75',
-    fontSize: fs(13),
-    marginTop: rs(5),
+    color: colors.mutedText,
+    fontSize: textSize(13),
+    marginTop: size(5),
     fontWeight: '500',
   },
   leaderAmountBox: {
     alignItems: 'flex-end',
   },
   leaderAmount: {
-    fontSize: fs(14),
+    fontSize: textSize(14),
     fontWeight: '900',
   },
   leaderGrowth: {
-    color: '#138A36',
-    marginTop: rs(7),
-    fontSize: fs(13),
+    color: colors.success,
+    marginTop: size(7),
+    fontSize: textSize(13),
     fontWeight: '700',
   },
   yourAttentionRow: {
-    minHeight: rs(72),
+    minHeight: size(72),
     flexDirection: 'row',
     alignItems: 'center',
     borderBottomWidth: 1,
-    borderBottomColor: '#EEEFF4',
+    borderBottomColor: colors.divider,
   },
   bigDot: {
-    width: rs(12),
-    height: rs(12),
-    borderRadius: rs(6),
-    marginRight: rs(15),
+    width: size(12),
+    height: size(12),
+    borderRadius: size(6),
+    marginRight: size(15),
   },
   yourAttentionInfo: {
     flex: 1,
   },
   yourAttentionTitle: {
-    color: '#15172A',
-    fontSize: fs(16),
+    color: colors.text,
+    fontSize: textSize(16),
     fontWeight: '800',
   },
   yourAttentionSubtitle: {
-    marginTop: rs(7),
-    fontSize: fs(14),
+    marginTop: size(7),
+    fontSize: textSize(14),
     fontWeight: '600',
   },
   viewText: {
     color: '#0026E6',
-    fontSize: fs(16),
+    fontSize: textSize(16),
     fontWeight: '700',
   },
   supportBox: {
-    marginTop: rs(22),
+    marginTop: size(22),
     backgroundColor: '#FFF5EC',
-    borderRadius: rs(6),
-    minHeight: rs(50),
-    paddingHorizontal: rs(16),
+    borderRadius: size(6),
+    minHeight: size(50),
+    paddingHorizontal: size(16),
     flexDirection: 'row',
     alignItems: 'center',
   },
   supportText: {
-    marginLeft: rs(10),
-    color: '#D73900',
-    fontSize: fs(14),
+    marginLeft: size(10),
+    color: colors.warningDark,
+    fontSize: textSize(14),
     fontWeight: '700',
   },
   activityRow: {
-    minHeight: rs(48),
+    minHeight: size(48),
     flexDirection: 'row',
     alignItems: 'center',
     borderBottomWidth: 1,
-    borderBottomColor: '#EEEFF4',
+    borderBottomColor: colors.divider,
   },
   smallDot: {
-    width: rs(8),
-    height: rs(8),
-    borderRadius: rs(4),
-    marginRight: rs(18),
+    width: size(8),
+    height: size(8),
+    borderRadius: size(4),
+    marginRight: size(18),
   },
   activityTitle: {
     flex: 1,
-    color: '#2B2D43',
-    fontSize: fs(14),
+    color: colors.text,
+    fontSize: textSize(14),
     fontWeight: '600',
   },
   activityTime: {
-    color: '#55576F',
-    fontSize: fs(12),
+    color: colors.mutedText,
+    fontSize: textSize(12),
     fontWeight: '500',
   },
   activityMessageBox: {
-    marginTop: rs(16),
+    marginTop: size(16),
     backgroundColor: '#F1F6FF',
-    borderRadius: rs(6),
-    minHeight: rs(46),
-    paddingHorizontal: rs(14),
+    borderRadius: size(6),
+    minHeight: size(46),
+    paddingHorizontal: size(14),
     flexDirection: 'row',
     alignItems: 'center',
   },
   activityMessageText: {
-    marginLeft: rs(10),
-    color: '#1F2B57',
-    fontSize: fs(14),
+    marginLeft: size(10),
+    color: colors.text,
+    fontSize: textSize(14),
     fontWeight: '700',
   },
   bottomNavigation: {
@@ -1231,19 +1228,19 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
-    height: rs(104),
-    backgroundColor: '#FFFFFF',
-    borderTopLeftRadius: rs(22),
-    borderTopRightRadius: rs(22),
+    height: size(104),
+    backgroundColor: colors.white,
+    borderTopLeftRadius: size(22),
+    borderTopRightRadius: size(22),
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-around',
-    paddingBottom: rs(16),
-    paddingTop: rs(13),
-    shadowColor: '#000000',
+    paddingBottom: size(16),
+    paddingTop: size(13),
+    shadowColor: colors.black,
     shadowOpacity: 0.08,
-    shadowRadius: rs(16),
-    shadowOffset: {width: 0, height: -rs(6)},
+    shadowRadius: size(16),
+    shadowOffset: {width: 0, height: -size(6)},
     elevation: 14,
   },
   tabItem: {
@@ -1252,8 +1249,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   tabText: {
-    marginTop: rs(7),
-    fontSize: fs(13),
+    marginTop: size(7),
+    fontSize: textSize(13),
     fontWeight: '700',
   },
 });

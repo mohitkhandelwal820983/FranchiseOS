@@ -2,7 +2,6 @@ import React, { useEffect, useMemo, useState } from 'react';
 import {
   ActivityIndicator,
   Alert,
-  Dimensions,
   ScrollView,
   StatusBar,
   StyleSheet,
@@ -42,25 +41,20 @@ import {
 } from '../../api/mock/dealer/dealerCustomer.mock';
 import { getDealerCustomer } from '../../api/dealer/dealerCustomer.api';
 import { showErrorToast } from '../../utils/toast';
+import {colors, fonts, size as rs, textSize as fs} from '../../theme';
 
-const { width: SCREEN_WIDTH } = Dimensions.get('window');
-
-const DESIGN_WIDTH = 832;
-const scale = SCREEN_WIDTH / DESIGN_WIDTH;
-const rs = (value: number) => Math.round(value * scale);
-const fs = (value: number) => rs(value + 3);
 
 const Header = ({ onAdd }: { onAdd: () => void }) => {
   return (
     <View style={styles.header}>
       <TouchableOpacity activeOpacity={0.8}>
-        <Menu color="#FFFFFF" size={rs(36)} strokeWidth={2.5} />
+        <Menu color={colors.white} size={rs(36)} strokeWidth={2.5} />
       </TouchableOpacity>
 
       <Text style={styles.headerTitle}>Customers</Text>
 
       <TouchableOpacity activeOpacity={0.8} onPress={onAdd}>
-        <Plus color="#FFFFFF" size={rs(39)} strokeWidth={2.3} />
+        <Plus color={colors.white} size={rs(39)} strokeWidth={2.3} />
       </TouchableOpacity>
     </View>
   );
@@ -75,12 +69,12 @@ const SearchBox = ({
 }) => {
   return (
     <View style={styles.searchBox}>
-      <Search color="#5D607E" size={rs(29)} strokeWidth={2.1} />
+      <Search color={colors.slateText} size={rs(29)} strokeWidth={2.1} />
       <TextInput
         value={value}
         onChangeText={onChangeText}
         placeholder="Search customer name or mobile"
-        placeholderTextColor="#5D607E"
+        placeholderTextColor={colors.slateText}
         style={styles.searchInput}
       />
     </View>
@@ -134,8 +128,8 @@ const SummaryCard = ({
   return (
     <View style={styles.summaryCard}>
       <View style={styles.summaryItem}>
-        <View style={[styles.summaryIcon, { backgroundColor: '#EEF3FF' }]}>
-          <Users color="#173CFF" size={rs(32)} strokeWidth={2.3} />
+        <View style={[styles.summaryIcon, { backgroundColor: colors.dealerBlueSoft }]}>
+          <Users color={colors.financeBlue} size={rs(32)} strokeWidth={2.3} />
         </View>
 
         <View>
@@ -147,8 +141,8 @@ const SummaryCard = ({
       <View style={styles.summaryDivider} />
 
       <View style={styles.summaryItem}>
-        <View style={[styles.summaryIcon, { backgroundColor: '#138A36' }]}>
-          <IndianRupee color="#FFFFFF" size={rs(32)} strokeWidth={2.4} />
+        <View style={[styles.summaryIcon, { backgroundColor: colors.success }]}>
+          <IndianRupee color={colors.white} size={rs(32)} strokeWidth={2.4} />
         </View>
 
         <View>
@@ -162,8 +156,8 @@ const SummaryCard = ({
       <View style={styles.summaryDivider} />
 
       <View style={styles.summaryItem}>
-        <View style={[styles.summaryIcon, { backgroundColor: '#F06419' }]}>
-          <WalletCards color="#FFFFFF" size={rs(32)} strokeWidth={2.3} />
+        <View style={[styles.summaryIcon, { backgroundColor: colors.profileOrange }]}>
+          <WalletCards color={colors.white} size={rs(32)} strokeWidth={2.3} />
         </View>
 
         <View>
@@ -265,12 +259,12 @@ const CustomerCard = ({
           <Text style={styles.customerName}>{item.name}</Text>
 
           <View style={styles.metaRow}>
-            <User color="#5D607E" size={rs(17)} strokeWidth={2.1} />
+            <User color={colors.slateText} size={rs(17)} strokeWidth={2.1} />
             <Text style={styles.metaText}>Owner: {item.owner}</Text>
           </View>
 
           <View style={styles.metaRow}>
-            <MapPin color="#5D607E" size={rs(17)} strokeWidth={2.1} />
+            <MapPin color={colors.slateText} size={rs(17)} strokeWidth={2.1} />
             <Text style={styles.metaText}>
               {item.city}, {item.state}
             </Text>
@@ -280,7 +274,7 @@ const CustomerCard = ({
         <StatusBadge status={item.status} />
 
         <TouchableOpacity activeOpacity={0.8} style={styles.moreButton}>
-          <MoreVertical color="#061247" size={rs(25)} strokeWidth={2.5} />
+          <MoreVertical color={colors.primaryText} size={rs(25)} strokeWidth={2.5} />
         </TouchableOpacity>
       </View>
 
@@ -292,14 +286,14 @@ const CustomerCard = ({
             <Text style={styles.outstandingAmount}>
               {item.outstandingAmount}
             </Text>
-            <ChevronRight color="#F06419" size={rs(24)} strokeWidth={2.3} />
+            <ChevronRight color={colors.profileOrange} size={rs(24)} strokeWidth={2.3} />
           </View>
         </TouchableOpacity>
       )}
 
       {isTopBuyer && (
         <View style={styles.achievementBox}>
-          <Trophy color="#173CFF" size={rs(22)} strokeWidth={2.4} />
+          <Trophy color={colors.financeBlue} size={rs(22)} strokeWidth={2.4} />
           <Text style={styles.achievementText}>
             <Text style={styles.achievementStrong}>Achievement:</Text>{' '}
             {item.achievement}
@@ -312,7 +306,7 @@ const CustomerCard = ({
           icon="purchase"
           value={item.monthlyPurchase}
           label="Monthly Purchase"
-          color="#138A36"
+          color={colors.success}
         />
 
         <View style={styles.metricDivider} />
@@ -321,7 +315,7 @@ const CustomerCard = ({
           icon="orders"
           value={item.completedOrders}
           label="Completed Orders"
-          color="#7B22EA"
+          color={colors.purple}
         />
 
         <View style={styles.metricDivider} />
@@ -330,7 +324,7 @@ const CustomerCard = ({
           icon="score"
           value={item.paymentScore}
           label="Payment Score"
-          color={isPaymentDue ? '#F06419' : '#138A36'}
+          color={isPaymentDue ? colors.profileOrange : colors.success}
         />
       </View>
 
@@ -342,7 +336,7 @@ const CustomerCard = ({
               onPress={() => onReward(item)}
               style={styles.outlineButtonHalf}
             >
-              <Trophy color="#173CFF" size={rs(20)} strokeWidth={2.3} />
+              <Trophy color={colors.financeBlue} size={rs(20)} strokeWidth={2.3} />
               <Text style={styles.outlineButtonText}>Reward</Text>
             </TouchableOpacity>
 
@@ -350,14 +344,14 @@ const CustomerCard = ({
               activeOpacity={0.85}
               style={styles.outlineButtonHalf}
             >
-              <List color="#173CFF" size={rs(20)} strokeWidth={2.3} />
+              <List color={colors.financeBlue} size={rs(20)} strokeWidth={2.3} />
               <Text style={styles.outlineButtonText}>Details</Text>
             </TouchableOpacity>
           </>
         ) : (
           <>
             <TouchableOpacity activeOpacity={0.85} style={styles.outlineButton}>
-              <Eye color="#173CFF" size={rs(20)} strokeWidth={2.3} />
+              <Eye color={colors.financeBlue} size={rs(20)} strokeWidth={2.3} />
               <Text style={styles.outlineButtonText}>View</Text>
             </TouchableOpacity>
 
@@ -367,7 +361,7 @@ const CustomerCard = ({
                 onPress={() => onReminder(item)}
                 style={styles.orangeOutlineButton}
               >
-                <Bell color="#F06419" size={rs(20)} strokeWidth={2.3} />
+                <Bell color={colors.profileOrange} size={rs(20)} strokeWidth={2.3} />
                 <Text style={styles.orangeOutlineText}>Reminder</Text>
               </TouchableOpacity>
             ) : (
@@ -376,7 +370,7 @@ const CustomerCard = ({
                 style={styles.outlineButton}
               >
                 <ClipboardList
-                  color="#173CFF"
+                  color={colors.financeBlue}
                   size={rs(20)}
                   strokeWidth={2.3}
                 />
@@ -391,7 +385,7 @@ const CustomerCard = ({
                 isPaymentDue ? styles.orangePrimaryButton : styles.primaryButton
               }
             >
-              <IndianRupee color="#FFFFFF" size={rs(20)} strokeWidth={2.3} />
+              <IndianRupee color={colors.white} size={rs(20)} strokeWidth={2.3} />
               <Text style={styles.primaryButtonText}>Collect</Text>
             </TouchableOpacity>
           </>
@@ -460,7 +454,7 @@ const FloatingAddButton = ({ onPress }: { onPress: () => void }) => {
       style={styles.floatingAddButton}
       onPress={onPress}
     >
-      <Plus color="#FFFFFF" size={rs(34)} strokeWidth={2.5} />
+      <Plus color={colors.white} size={rs(34)} strokeWidth={2.5} />
       <Text style={styles.floatingAddText}>Add Customer</Text>
     </TouchableOpacity>
   );
@@ -542,15 +536,15 @@ const DealerCustomerScreen = () => {
   if (loading || !data) {
     return (
       <SafeAreaView style={styles.loaderScreen}>
-        <StatusBar backgroundColor="#061B66" barStyle="light-content" />
-        <ActivityIndicator size="large" color="#173CFF" />
+        <StatusBar backgroundColor={colors.primary} barStyle="light-content" />
+        <ActivityIndicator size="large" color={colors.financeBlue} />
       </SafeAreaView>
     );
   }
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <StatusBar backgroundColor="#061B66" barStyle="light-content" />
+      <StatusBar backgroundColor={colors.primary} barStyle="light-content" />
 
       <Header onAdd={handleAddCustomer} />
 
@@ -590,17 +584,17 @@ const PAGE_PADDING = rs(28);
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#F8F9FD',
+    backgroundColor: colors.financeBackground,
   },
   loaderScreen: {
     flex: 1,
-    backgroundColor: '#F8F9FD',
+    backgroundColor: colors.financeBackground,
     alignItems: 'center',
     justifyContent: 'center',
   },
   header: {
     height: rs(78),
-    backgroundColor: '#061B66',
+    backgroundColor: colors.primary,
     paddingHorizontal: rs(28),
     paddingTop: rs(8),
     flexDirection: 'row',
@@ -608,9 +602,9 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   headerTitle: {
-    color: '#FFFFFF',
+    color: colors.white,
     fontSize: fs(31),
-    fontWeight: '900',
+    fontFamily: fonts.extraBold,
   },
   scrollView: {
     flex: 1,
@@ -622,9 +616,9 @@ const styles = StyleSheet.create({
   },
   searchBox: {
     height: rs(62),
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.white,
     borderWidth: 1,
-    borderColor: '#D9DCE8',
+    borderColor: colors.inputBorder,
     borderRadius: rs(8),
     paddingHorizontal: rs(20),
     flexDirection: 'row',
@@ -633,9 +627,9 @@ const styles = StyleSheet.create({
   },
   searchInput: {
     flex: 1,
-    color: '#111327',
+    color: colors.text,
     fontSize: fs(17),
-    fontWeight: '500',
+    fontFamily: fonts.medium,
     paddingVertical: 0,
     marginLeft: rs(16),
   },
@@ -648,34 +642,34 @@ const styles = StyleSheet.create({
     minWidth: rs(112),
     height: rs(50),
     borderWidth: 1,
-    borderColor: '#D9DCE8',
+    borderColor: colors.inputBorder,
     borderRadius: rs(7),
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.white,
     alignItems: 'center',
     justifyContent: 'center',
     paddingHorizontal: rs(14),
   },
   activeFilterChip: {
-    backgroundColor: '#061B66',
-    borderColor: '#061B66',
+    backgroundColor: colors.primary,
+    borderColor: colors.primary,
   },
   filterText: {
-    color: '#061247',
+    color: colors.primaryText,
     fontSize: fs(16),
-    fontWeight: '800',
+    fontFamily: fonts.bold,
   },
   activeFilterText: {
-    color: '#FFFFFF',
+    color: colors.white,
   },
   summaryCard: {
     height: rs(124),
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.white,
     borderRadius: rs(10),
     paddingHorizontal: rs(28),
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: rs(18),
-    shadowColor: '#000000',
+    shadowColor: colors.black,
     shadowOpacity: 0.04,
     shadowRadius: rs(12),
     shadowOffset: { width: 0, height: rs(5) },
@@ -695,35 +689,35 @@ const styles = StyleSheet.create({
     marginRight: rs(22),
   },
   summaryValue: {
-    color: '#061247',
+    color: colors.primaryText,
     fontSize: fs(31),
-    fontWeight: '900',
+    fontFamily: fonts.extraBold,
   },
   summaryLabel: {
-    color: '#5D607E',
+    color: colors.slateText,
     fontSize: fs(14),
-    fontWeight: '700',
+    fontFamily: fonts.semiBold,
     marginTop: rs(8),
   },
   greenText: {
-    color: '#138A36',
+    color: colors.success,
   },
   orangeText: {
-    color: '#F06419',
+    color: colors.profileOrange,
   },
   summaryDivider: {
     width: 1,
     height: rs(66),
-    backgroundColor: '#D9DCE8',
+    backgroundColor: colors.inputBorder,
     marginHorizontal: rs(22),
   },
   customerCard: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.white,
     borderRadius: rs(10),
     paddingHorizontal: rs(22),
     paddingVertical: rs(20),
     marginBottom: rs(16),
-    shadowColor: '#000000',
+    shadowColor: colors.black,
     shadowOpacity: 0.04,
     shadowRadius: rs(12),
     shadowOffset: { width: 0, height: rs(5) },
@@ -743,15 +737,15 @@ const styles = StyleSheet.create({
   },
   avatarText: {
     fontSize: fs(29),
-    fontWeight: '900',
+    fontFamily: fonts.extraBold,
   },
   customerInfo: {
     flex: 1,
   },
   customerName: {
-    color: '#061247',
+    color: colors.primaryText,
     fontSize: fs(25),
-    fontWeight: '900',
+    fontFamily: fonts.extraBold,
     marginBottom: rs(8),
   },
   metaRow: {
@@ -760,9 +754,9 @@ const styles = StyleSheet.create({
     marginTop: rs(5),
   },
   metaText: {
-    color: '#5D607E',
+    color: colors.slateText,
     fontSize: fs(14),
-    fontWeight: '700',
+    fontFamily: fonts.semiBold,
     marginLeft: rs(9),
   },
   moreButton: {
@@ -778,35 +772,35 @@ const styles = StyleSheet.create({
     paddingHorizontal: rs(12),
   },
   activeBadge: {
-    backgroundColor: '#EAF8EC',
-    borderColor: '#BEE7C5',
+    backgroundColor: colors.successLight,
+    borderColor: colors.successBorder,
   },
   paymentBadge: {
-    backgroundColor: '#FFF3E9',
-    borderColor: '#F8C9A8',
+    backgroundColor: colors.orangeSoft,
+    borderColor: colors.orangeBorder,
   },
   topBadge: {
-    backgroundColor: '#F1F5FF',
-    borderColor: '#B8C8FF',
+    backgroundColor: colors.blueLight,
+    borderColor: colors.blueBorderSoft,
   },
   statusText: {
     fontSize: fs(14),
-    fontWeight: '900',
+    fontFamily: fonts.extraBold,
   },
   activeText: {
-    color: '#138A36',
+    color: colors.success,
   },
   paymentText: {
-    color: '#F06419',
+    color: colors.profileOrange,
   },
   topText: {
-    color: '#173CFF',
+    color: colors.financeBlue,
   },
   outstandingBox: {
     minHeight: rs(58),
-    backgroundColor: '#FFF3E9',
+    backgroundColor: colors.orangeSoft,
     borderWidth: 1,
-    borderColor: '#F8C9A8',
+    borderColor: colors.orangeBorder,
     borderRadius: rs(6),
     paddingHorizontal: rs(22),
     flexDirection: 'row',
@@ -815,25 +809,25 @@ const styles = StyleSheet.create({
     marginTop: rs(20),
   },
   outstandingLabel: {
-    color: '#F06419',
+    color: colors.profileOrange,
     fontSize: fs(16),
-    fontWeight: '900',
+    fontFamily: fonts.extraBold,
   },
   outstandingRight: {
     flexDirection: 'row',
     alignItems: 'center',
   },
   outstandingAmount: {
-    color: '#F06419',
+    color: colors.profileOrange,
     fontSize: fs(20),
-    fontWeight: '900',
+    fontFamily: fonts.extraBold,
     marginRight: rs(12),
   },
   achievementBox: {
     minHeight: rs(42),
-    backgroundColor: '#F1F5FF',
+    backgroundColor: colors.blueLight,
     borderWidth: 1,
-    borderColor: '#B8C8FF',
+    borderColor: colors.blueBorderSoft,
     borderRadius: rs(5),
     flexDirection: 'row',
     alignItems: 'center',
@@ -841,19 +835,19 @@ const styles = StyleSheet.create({
     marginTop: rs(20),
   },
   achievementText: {
-    color: '#061247',
+    color: colors.primaryText,
     fontSize: fs(14),
-    fontWeight: '700',
+    fontFamily: fonts.semiBold,
     marginLeft: rs(10),
   },
   achievementStrong: {
-    color: '#173CFF',
-    fontWeight: '900',
+    color: colors.financeBlue,
+    fontFamily: fonts.extraBold,
   },
   metricsRow: {
     height: rs(78),
     borderTopWidth: 1,
-    borderTopColor: '#EEF0F6',
+    borderTopColor: colors.financeDivider,
     flexDirection: 'row',
     alignItems: 'center',
     marginTop: rs(18),
@@ -872,20 +866,20 @@ const styles = StyleSheet.create({
     marginRight: rs(14),
   },
   metricValue: {
-    color: '#061247',
+    color: colors.primaryText,
     fontSize: fs(21),
-    fontWeight: '900',
+    fontFamily: fonts.extraBold,
   },
   metricLabel: {
-    color: '#5D607E',
+    color: colors.slateText,
     fontSize: fs(12),
-    fontWeight: '700',
+    fontFamily: fonts.semiBold,
     marginTop: rs(5),
   },
   metricDivider: {
     width: 1,
     height: rs(50),
-    backgroundColor: '#D9DCE8',
+    backgroundColor: colors.inputBorder,
     marginHorizontal: rs(18),
   },
   actionRow: {
@@ -896,7 +890,7 @@ const styles = StyleSheet.create({
     width: '31%',
     height: rs(46),
     borderWidth: 1,
-    borderColor: '#B8C8FF',
+    borderColor: colors.blueBorderSoft,
     borderRadius: rs(5),
     alignItems: 'center',
     justifyContent: 'center',
@@ -906,22 +900,22 @@ const styles = StyleSheet.create({
     width: '49%',
     height: rs(46),
     borderWidth: 1,
-    borderColor: '#B8C8FF',
+    borderColor: colors.blueBorderSoft,
     borderRadius: rs(5),
     alignItems: 'center',
     justifyContent: 'center',
     flexDirection: 'row',
   },
   outlineButtonText: {
-    color: '#173CFF',
+    color: colors.financeBlue,
     fontSize: fs(15),
-    fontWeight: '900',
+    fontFamily: fonts.extraBold,
     marginLeft: rs(9),
   },
   primaryButton: {
     width: '31%',
     height: rs(46),
-    backgroundColor: '#173CFF',
+    backgroundColor: colors.financeBlue,
     borderRadius: rs(5),
     alignItems: 'center',
     justifyContent: 'center',
@@ -930,41 +924,41 @@ const styles = StyleSheet.create({
   orangePrimaryButton: {
     width: '49%',
     height: rs(46),
-    backgroundColor: '#F06419',
+    backgroundColor: colors.profileOrange,
     borderRadius: rs(5),
     alignItems: 'center',
     justifyContent: 'center',
     flexDirection: 'row',
   },
   primaryButtonText: {
-    color: '#FFFFFF',
+    color: colors.white,
     fontSize: fs(15),
-    fontWeight: '900',
+    fontFamily: fonts.extraBold,
     marginLeft: rs(9),
   },
   orangeOutlineButton: {
     width: '49%',
     height: rs(46),
     borderWidth: 1,
-    borderColor: '#F8C9A8',
+    borderColor: colors.orangeBorder,
     borderRadius: rs(5),
     alignItems: 'center',
     justifyContent: 'center',
     flexDirection: 'row',
   },
   orangeOutlineText: {
-    color: '#F06419',
+    color: colors.profileOrange,
     fontSize: fs(15),
-    fontWeight: '900',
+    fontFamily: fonts.extraBold,
     marginLeft: rs(9),
   },
   insightCard: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.white,
     borderRadius: rs(10),
     paddingHorizontal: rs(22),
     paddingVertical: rs(18),
     marginBottom: rs(20),
-    shadowColor: '#000000',
+    shadowColor: colors.black,
     shadowOpacity: 0.04,
     shadowRadius: rs(12),
     shadowOffset: { width: 0, height: rs(5) },
@@ -985,24 +979,24 @@ const styles = StyleSheet.create({
   barOne: {
     width: rs(6),
     height: rs(16),
-    backgroundColor: '#173CFF',
+    backgroundColor: colors.financeBlue,
     marginRight: rs(5),
   },
   barTwo: {
     width: rs(6),
     height: rs(24),
-    backgroundColor: '#173CFF',
+    backgroundColor: colors.financeBlue,
     marginRight: rs(5),
   },
   barThree: {
     width: rs(6),
     height: rs(30),
-    backgroundColor: '#173CFF',
+    backgroundColor: colors.financeBlue,
   },
   insightTitle: {
-    color: '#061247',
+    color: colors.primaryText,
     fontSize: fs(20),
-    fontWeight: '900',
+    fontFamily: fonts.extraBold,
   },
   insightItemsRow: {
     flexDirection: 'row',
@@ -1023,14 +1017,14 @@ const styles = StyleSheet.create({
     marginRight: rs(14),
   },
   insightValue: {
-    color: '#061247',
+    color: colors.primaryText,
     fontSize: fs(19),
-    fontWeight: '900',
+    fontFamily: fonts.extraBold,
   },
   insightLabel: {
-    color: '#5D607E',
+    color: colors.slateText,
     fontSize: fs(12),
-    fontWeight: '700',
+    fontFamily: fonts.semiBold,
     marginTop: rs(5),
   },
   insightDivider: {
@@ -1038,7 +1032,7 @@ const styles = StyleSheet.create({
     right: 0,
     width: 1,
     height: rs(54),
-    backgroundColor: '#D9DCE8',
+    backgroundColor: colors.inputBorder,
   },
   floatingAddButton: {
     position: 'absolute',
@@ -1047,20 +1041,20 @@ const styles = StyleSheet.create({
     width: rs(232),
     height: rs(60),
     borderRadius: rs(30),
-    backgroundColor: '#173CFF',
+    backgroundColor: colors.financeBlue,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    shadowColor: '#000000',
+    shadowColor: colors.black,
     shadowOpacity: 0.18,
     shadowRadius: rs(12),
     shadowOffset: { width: 0, height: rs(5) },
     elevation: 10,
   },
   floatingAddText: {
-    color: '#FFFFFF',
+    color: colors.white,
     fontSize: fs(18),
-    fontWeight: '900',
+    fontFamily: fonts.extraBold,
     marginLeft: rs(12),
   },
 });

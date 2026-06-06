@@ -12,6 +12,7 @@ import {
   View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { colors, fonts, size, textSize } from '../../theme';
 import {
   Award,
   Bell,
@@ -41,22 +42,17 @@ import { showErrorToast } from '../../utils/toast';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
-const DESIGN_WIDTH = 832;
-const scale = SCREEN_WIDTH / DESIGN_WIDTH;
-const rs = (value: number) => Math.round(value * scale);
-const fs = (value: number) => rs(value + 3);
-
 const Header = ({ count }: { count: string }) => {
   return (
     <View style={styles.header}>
       <TouchableOpacity activeOpacity={0.8}>
-        <Menu color="#FFFFFF" size={rs(36)} strokeWidth={2.5} />
+        <Menu color={colors.white} size={size(36)} strokeWidth={2.5} />
       </TouchableOpacity>
 
       <Text style={styles.headerTitle}>Dashboard</Text>
 
       <TouchableOpacity activeOpacity={0.8} style={styles.bellWrap}>
-        <Bell color="#FFFFFF" size={rs(32)} strokeWidth={2.3} />
+        <Bell color={colors.white }size={size(32)} strokeWidth={2.3} />
         <View style={styles.notificationBadge}>
           <Text style={styles.notificationText}>{count}</Text>
         </View>
@@ -74,12 +70,12 @@ const WelcomeCard = ({ data }: { data: DealerDashboardData['welcome'] }) => {
         <Text style={styles.welcomeTitle}>Welcome back, {data.name} 👋</Text>
 
         <View style={styles.welcomeMetaRow}>
-          <Store color="#5D607E" size={rs(18)} strokeWidth={2.2} />
+          <Store color={colors.slateText} size={size(18)} strokeWidth={2.2} />
           <Text style={styles.welcomeMeta}>{data.business}</Text>
         </View>
 
         <View style={styles.welcomeMetaRow}>
-          <CalendarDays color="#5D607E" size={rs(18)} strokeWidth={2.2} />
+          <CalendarDays color={colors.slateText} size={size(18)} strokeWidth={2.2} />
           <Text style={styles.welcomeMeta}>{data.date}</Text>
         </View>
       </View>
@@ -90,36 +86,36 @@ const WelcomeCard = ({ data }: { data: DealerDashboardData['welcome'] }) => {
 const OverviewIcon = ({ item }: { item: OverviewItem }) => {
   const iconColor =
     item.icon === 'revenue'
-      ? '#138A36'
+      ? colors.success
       : item.icon === 'customers'
-      ? '#F06419'
+      ? colors.profileOrange
       : item.icon === 'incentive'
-      ? '#7B22EA'
+      ? colors.purple
       : item.icon === 'dues'
-      ? '#E00014'
+      ? colors.dangerDark
       : item.icon === 'delivery'
-      ? '#173CFF'
-      : '#173CFF';
+      ? colors.financeBlue
+      : colors.financeBlue;
 
   return (
     <View style={[styles.overviewIcon, { backgroundColor: item.bg }]}>
       {item.icon === 'orders' && (
-        <ClipboardList color={iconColor} size={rs(34)} strokeWidth={2.3} />
+        <ClipboardList color={iconColor} size={size(34)} strokeWidth={2.3} />
       )}
       {item.icon === 'revenue' && (
-        <IndianRupee color={iconColor} size={rs(34)} strokeWidth={2.3} />
+        <IndianRupee color={iconColor} size={size(34)} strokeWidth={2.3} />
       )}
       {item.icon === 'customers' && (
-        <Users color={iconColor} size={rs(34)} strokeWidth={2.3} />
+        <Users color={iconColor} size={size(34)} strokeWidth={2.3} />
       )}
       {item.icon === 'incentive' && (
-        <Award color={iconColor} size={rs(34)} strokeWidth={2.3} />
+        <Award color={iconColor} size={size(34)} strokeWidth={2.3} />
       )}
       {item.icon === 'dues' && (
-        <WalletCards color={iconColor} size={rs(34)} strokeWidth={2.3} />
+        <WalletCards color={iconColor} size={size(34)} strokeWidth={2.3} />
       )}
       {item.icon === 'delivery' && (
-        <Truck color={iconColor} size={rs(34)} strokeWidth={2.3} />
+        <Truck color={iconColor} size={size(34)} strokeWidth={2.3} />
       )}
     </View>
   );
@@ -177,16 +173,16 @@ const PriorityIcon = ({ item }: { item: PriorityAction }) => {
       style={[styles.priorityIconSoft, { backgroundColor: `${item.color}12` }]}
     >
       {item.icon === 'order' && (
-        <ClipboardList color={item.color} size={rs(22)} strokeWidth={2.2} />
+        <ClipboardList color={item.color} size={size(22)} strokeWidth={2.2} />
       )}
       {item.icon === 'payment' && (
-        <WalletCards color={item.color} size={rs(22)} strokeWidth={2.2} />
+        <WalletCards color={item.color} size={size(22)} strokeWidth={2.2} />
       )}
       {item.icon === 'stock' && (
-        <Package color={item.color} size={rs(22)} strokeWidth={2.2} />
+        <Package color={item.color} size={size(22)} strokeWidth={2.2} />
       )}
       {item.icon === 'target' && (
-        <CheckCircle2 color={item.color} size={rs(22)} strokeWidth={2.2} />
+        <CheckCircle2 color={item.color} size={size(22)} strokeWidth={2.2} />
       )}
     </View>
   );
@@ -218,7 +214,7 @@ const PriorityActions = ({ items }: { items: PriorityAction[] }) => {
             </Text>
           </View>
 
-          <ChevronRight color="#061247" size={rs(22)} strokeWidth={2.3} />
+          <ChevronRight color={colors.primaryText} size={size(22)} strokeWidth={2.3} />
         </TouchableOpacity>
       ))}
     </View>
@@ -240,7 +236,7 @@ const RecentOrdersCard = ({ items }: { items: RecentOrder[] }) => {
           style={styles.orderRow}
         >
           <View style={styles.fileIconSoft}>
-            <ClipboardList color="#173CFF" size={rs(22)} />
+            <ClipboardList color={colors.financeBlue} size={size(22)} />
           </View>
 
           <View style={styles.orderInfo}>
@@ -292,7 +288,7 @@ const TopProductsCard = ({ items }: { items: Product[] }) => {
             </Text>
           </View>
 
-          <ChevronRight color="#5D607E" size={rs(18)} />
+          <ChevronRight color={colors.slateText} size={size(18)} />
         </TouchableOpacity>
       ))}
     </View>
@@ -320,7 +316,7 @@ const TargetProgressCard = ({
       </View>
 
       <View style={styles.targetBonusBox}>
-        <Award color="#173CFF" size={rs(22)} strokeWidth={2.3} />
+        <Award color={colors.financeBlue} size={size(22)} strokeWidth={2.3} />
         <Text style={styles.targetBonusText}>{target.message}</Text>
       </View>
     </View>
@@ -340,13 +336,13 @@ const RecentPaymentsCard = ({ items }: { items: Payment[] }) => {
         >
           <View style={[styles.paymentIconSoft, { backgroundColor: item.bg }]}>
             {item.icon === 'received' && (
-              <CheckCircle2 color={item.color} size={rs(22)} />
+              <CheckCircle2 color={item.color} size={size(22)} />
             )}
             {item.icon === 'pending' && (
-              <CalendarDays color={item.color} size={rs(22)} />
+              <CalendarDays color={item.color} size={size(22)} />
             )}
             {item.icon === 'overdue' && (
-              <WalletCards color={item.color} size={rs(22)} />
+              <WalletCards color={item.color} size={size(22)} />
             )}
           </View>
 
@@ -359,7 +355,7 @@ const RecentPaymentsCard = ({ items }: { items: Payment[] }) => {
 
           <Text style={styles.paymentAmount}>{item.amount}</Text>
 
-          <ChevronRight color="#5D607E" size={rs(18)} />
+          <ChevronRight color={colors.slateText} size={size(18)} />
         </TouchableOpacity>
       ))}
     </View>
@@ -379,7 +375,7 @@ const QuickActions = () => {
         style={styles.quickActionButton}
       >
         <View style={styles.quickPlus}>
-          <Plus color="#173CFF" size={rs(28)} strokeWidth={2.5} />
+          <Plus color={colors.financeBlue }size={size(28)} strokeWidth={2.5} />
         </View>
         <Text style={styles.quickActionText}>Create Order</Text>
       </TouchableOpacity>
@@ -392,7 +388,7 @@ const QuickActions = () => {
         style={styles.quickActionButton}
       >
         <View style={styles.quickPlus}>
-          <Plus color="#173CFF" size={rs(28)} strokeWidth={2.5} />
+          <Plus color={colors.financeBlue} size={size(28)} strokeWidth={2.5} />
         </View>
         <Text style={styles.quickActionText}>Add Customer</Text>
       </TouchableOpacity>
@@ -405,7 +401,7 @@ const QuickActions = () => {
         style={styles.quickActionButton}
       >
         <View style={styles.quickPlus}>
-          <IndianRupee color="#173CFF" size={rs(26)} strokeWidth={2.5} />
+          <IndianRupee color={colors.financeBlue }size={size(26)} strokeWidth={2.5} />
         </View>
         <Text style={styles.quickActionText}>Collect Payment</Text>
       </TouchableOpacity>
@@ -464,15 +460,15 @@ const DealerDashboardScreen = () => {
   if (loading || !data) {
     return (
       <SafeAreaView style={styles.loaderScreen}>
-        <StatusBar backgroundColor="#061B66" barStyle="light-content" />
-        <ActivityIndicator size="large" color="#173CFF" />
+        <StatusBar backgroundColor={colors.primary} barStyle="light-content" />
+        <ActivityIndicator size="large" color={colors.financeBlue} />
       </SafeAreaView>
     );
   }
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <StatusBar backgroundColor="#061B66" barStyle="light-content" />
+      <StatusBar backgroundColor={colors.primary} barStyle="light-content" />
 
       <Header count={data.welcome.notifications} />
 
@@ -497,77 +493,77 @@ const DealerDashboardScreen = () => {
 
 export default DealerDashboardScreen;
 
-const PAGE_PADDING = rs(28);
-const CARD_GAP = rs(16);
+const PAGE_PADDING = size(28);
+const CARD_GAP = size(16);
 const HALF_WIDTH = (SCREEN_WIDTH - PAGE_PADDING * 2 - CARD_GAP) / 2;
 
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#F8F9FD',
+    backgroundColor: colors.financeBackground,
   },
   loaderScreen: {
     flex: 1,
-    backgroundColor: '#F8F9FD',
+    backgroundColor: colors.financeBackground,
     alignItems: 'center',
     justifyContent: 'center',
   },
   header: {
-    height: rs(78),
-    backgroundColor: '#061B66',
-    paddingHorizontal: rs(28),
-    paddingTop: rs(8),
+    height: size(78),
+    backgroundColor: colors.primary,
+    paddingHorizontal: size(28),
+    paddingTop: size(8),
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
   },
   headerTitle: {
-    color: '#FFFFFF',
-    fontSize: fs(31),
-    fontWeight: '900',
+    color: colors.white,
+    fontSize: textSize(31),
+    fontFamily: fonts.extraBold,
   },
   bellWrap: {
-    width: rs(42),
-    height: rs(42),
+    width: size(42),
+    height: size(42),
     alignItems: 'center',
     justifyContent: 'center',
   },
   notificationBadge: {
     position: 'absolute',
-    top: -rs(4),
-    right: -rs(4),
-    width: rs(24),
-    height: rs(24),
-    borderRadius: rs(12),
-    backgroundColor: '#E00014',
+    top: -size(4),
+    right: -size(4),
+    width: size(24),
+    height: size(24),
+    borderRadius: size(12),
+    backgroundColor: colors.dangerDark,
     alignItems: 'center',
     justifyContent: 'center',
   },
   notificationText: {
-    color: '#FFFFFF',
-    fontSize: fs(12),
-    fontWeight: '900',
+    color: colors.white,
+    fontSize: textSize(12),
+    fontFamily: fonts.extraBold,
   },
   scrollView: {
     flex: 1,
   },
   scrollContent: {
     paddingHorizontal: PAGE_PADDING,
-    paddingTop: rs(28),
-    paddingBottom: rs(118),
+    paddingTop: size(28),
+    paddingBottom: size(118),
   },
   welcomeCard: {
-    minHeight: rs(138),
-    backgroundColor: '#FFFFFF',
-    borderRadius: rs(8),
-    paddingHorizontal: rs(38),
+    minHeight: size(138),
+    backgroundColor: colors.white,
+    borderRadius: size(8),
+    paddingHorizontal: size(38),
     justifyContent: 'center',
-    marginBottom: rs(22),
+    marginBottom: size(22),
     overflow: 'hidden',
-    shadowColor: '#000000',
+    shadowColor: colors.black,
     shadowOpacity: 0.04,
-    shadowRadius: rs(12),
-    shadowOffset: { width: 0, height: rs(5) },
+    shadowRadius: size(12),
+    shadowOffset: { width: 0, height: size(5) },
     elevation: 3,
   },
   welcomeLine: {
@@ -575,375 +571,375 @@ const styles = StyleSheet.create({
     left: 0,
     top: 0,
     bottom: 0,
-    width: rs(4),
-    backgroundColor: '#173CFF',
+    width: size(4),
+    backgroundColor: colors.financeBlue,
   },
   welcomeTitle: {
-    color: '#061247',
-    fontSize: fs(28),
-    fontWeight: '900',
-    marginBottom: rs(14),
+    color: colors.primaryText,
+    fontSize: textSize(28),
+    fontFamily: fonts.extraBold,
+    marginBottom: size(14),
   },
   welcomeMetaRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginTop: rs(7),
+    marginTop: size(7),
   },
   welcomeMeta: {
-    color: '#5D607E',
-    fontSize: fs(15),
-    fontWeight: '700',
-    marginLeft: rs(12),
+    color: colors.slateText,
+    fontSize: textSize(15),
+    fontFamily: fonts.bold,
+    marginLeft: size(12),
   },
   sectionTitle: {
-    color: '#061247',
-    fontSize: fs(25),
-    fontWeight: '900',
-    marginBottom: rs(14),
+    color: colors.primaryText,
+    fontSize: textSize(25),
+    fontFamily: fonts.extraBold,
+    marginBottom: size(14),
   },
   overviewGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'space-between',
-    marginBottom: rs(16),
+    marginBottom: size(16),
   },
   overviewCard: {
     width: HALF_WIDTH,
-    minHeight: rs(118),
-    backgroundColor: '#FFFFFF',
-    borderRadius: rs(10),
-    paddingHorizontal: rs(18),
+    minHeight: size(118),
+    backgroundColor: colors.white,
+    borderRadius: size(10),
+    paddingHorizontal: size(18),
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: rs(12),
-    shadowColor: '#000000',
+    marginBottom: size(12),
+    shadowColor: colors.black,
     shadowOpacity: 0.04,
-    shadowRadius: rs(12),
-    shadowOffset: { width: 0, height: rs(5) },
+    shadowRadius: size(12),
+    shadowOffset: { width: 0, height: size(5) },
     elevation: 3,
   },
   overviewIcon: {
-    width: rs(72),
-    height: rs(72),
-    borderRadius: rs(12),
+    width: size(72),
+    height: size(72),
+    borderRadius: size(12),
     alignItems: 'center',
     justifyContent: 'center',
-    marginRight: rs(22),
+    marginRight: size(22),
   },
   overviewContent: {
     flex: 1,
   },
   overviewTitle: {
-    color: '#061247',
-    fontSize: fs(15),
-    fontWeight: '800',
+    color: colors.primaryText,
+    fontSize: textSize(15),
+    fontFamily: fonts.extraBold,
   },
   overviewValue: {
-    color: '#061247',
-    fontSize: fs(28),
-    fontWeight: '900',
-    marginTop: rs(9),
-    letterSpacing: rs(3),
+    color: colors.primaryText,
+    fontSize: textSize(28),
+    fontFamily: fonts.extraBold,
+    marginTop: size(9),
+    letterSpacing: size(3),
   },
   overviewSubtitle: {
-    color: '#138A36',
-    fontSize: fs(14),
-    fontWeight: '800',
-    marginTop: rs(8),
+    color: colors.success,
+    fontSize: textSize(14),
+    fontFamily: fonts.extraBold,
+    marginTop: size(8),
   },
   progressTrack: {
-    height: rs(7),
-    backgroundColor: '#E4E6EF',
-    borderRadius: rs(8),
-    marginTop: rs(10),
+    height: size(7),
+    backgroundColor: colors.dealerProgressTrack,
+    borderRadius: size(8),
+    marginTop: size(10),
     overflow: 'hidden',
   },
   progressFill: {
-    height: rs(7),
-    borderRadius: rs(8),
-    backgroundColor: '#138A36',
+    height: size(7),
+    borderRadius: size(8),
+    backgroundColor: colors.success,
   },
   redText: {
-    color: '#E00014',
+    color: colors.dangerDark,
   },
   purpleText: {
-    color: '#7B22EA',
+    color: colors.purple,
   },
   blueText: {
-    color: '#173CFF',
+    color: colors.financeBlue,
   },
   fullCard: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: rs(10),
-    paddingHorizontal: rs(20),
-    paddingVertical: rs(16),
-    marginBottom: rs(16),
-    shadowColor: '#000000',
+    backgroundColor: colors.white,
+    borderRadius: size(10),
+    paddingHorizontal: size(20),
+    paddingVertical: size(16),
+    marginBottom: size(16),
+    shadowColor: colors.black,
     shadowOpacity: 0.04,
-    shadowRadius: rs(12),
-    shadowOffset: { width: 0, height: rs(5) },
+    shadowRadius: size(12),
+    shadowOffset: { width: 0, height: size(5) },
     elevation: 3,
   },
   cardTitle: {
-    color: '#061247',
-    fontSize: fs(19),
-    fontWeight: '900',
+    color: colors.primaryText,
+    fontSize: textSize(19),
+    fontFamily: fonts.extraBold,
   },
   priorityRow: {
-    minHeight: rs(58),
+    minHeight: size(58),
     borderTopWidth: 1,
-    borderTopColor: '#EEF0F6',
+    borderTopColor: colors.financeDivider,
     flexDirection: 'row',
     alignItems: 'center',
   },
   priorityIconSoft: {
-    width: rs(36),
-    height: rs(36),
-    borderRadius: rs(18),
+    width: size(36),
+    height: size(36),
+    borderRadius: size(18),
     alignItems: 'center',
     justifyContent: 'center',
-    marginRight: rs(16),
+    marginRight: size(16),
   },
   priorityTextBox: {
     flex: 1,
   },
   priorityTitle: {
-    color: '#061247',
-    fontSize: fs(15),
-    fontWeight: '800',
+    color: colors.primaryText,
+    fontSize: textSize(15),
+    fontFamily: fonts.extraBold,
   },
   prioritySubtitle: {
-    color: '#E00014',
-    fontSize: fs(13),
-    fontWeight: '800',
-    marginTop: rs(4),
+    color: colors.dangerDark,
+    fontSize: textSize(13),
+    fontFamily: fonts.extraBold,
+    marginTop: size(4),
   },
   priorityButton: {
-    minWidth: rs(132),
-    height: rs(36),
+    minWidth: size(132),
+    height: size(36),
     borderWidth: 1,
-    borderRadius: rs(5),
+    borderRadius: size(5),
     alignItems: 'center',
     justifyContent: 'center',
-    marginRight: rs(18),
+    marginRight: size(18),
   },
   priorityButtonText: {
-    fontSize: fs(14),
-    fontWeight: '900',
+    fontSize: textSize(14),
+    fontFamily: fonts.extraBold,
   },
   twoColumnRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: rs(16),
+    marginBottom: size(16),
   },
   halfCard: {
     width: HALF_WIDTH,
-    backgroundColor: '#FFFFFF',
-    borderRadius: rs(10),
-    paddingHorizontal: rs(18),
-    paddingVertical: rs(16),
-    shadowColor: '#000000',
+    backgroundColor: colors.white,
+    borderRadius: size(10),
+    paddingHorizontal: size(18),
+    paddingVertical: size(16),
+    shadowColor: colors.black,
     shadowOpacity: 0.04,
-    shadowRadius: rs(12),
-    shadowOffset: { width: 0, height: rs(5) },
+    shadowRadius: size(12),
+    shadowOffset: { width: 0, height: size(5) },
     elevation: 3,
   },
   cardTopRow: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginBottom: rs(12),
+    marginBottom: size(12),
   },
   viewAllText: {
-    color: '#173CFF',
-    fontSize: fs(14),
-    fontWeight: '900',
+    color: colors.financeBlue,
+    fontSize: textSize(14),
+    fontFamily: fonts.extraBold,
   },
   orderRow: {
-    minHeight: rs(58),
+    minHeight: size(58),
     borderTopWidth: 1,
-    borderTopColor: '#EEF0F6',
+    borderTopColor: colors.financeDivider,
     flexDirection: 'row',
     alignItems: 'center',
   },
   fileIconSoft: {
-    width: rs(34),
-    height: rs(34),
-    borderRadius: rs(17),
-    backgroundColor: '#EEF3FF',
+    width: size(34),
+    height: size(34),
+    borderRadius: size(17),
+    backgroundColor: colors.dealerBlueSoft,
     alignItems: 'center',
     justifyContent: 'center',
-    marginRight: rs(14),
+    marginRight: size(14),
   },
   orderInfo: {
     flex: 1,
   },
   orderId: {
-    color: '#173CFF',
-    fontSize: fs(15),
-    fontWeight: '900',
+    color: colors.financeBlue,
+    fontSize: textSize(15),
+    fontFamily: fonts.extraBold,
   },
   orderCustomer: {
-    color: '#5D607E',
-    fontSize: fs(12),
-    fontWeight: '700',
-    marginTop: rs(4),
+    color: colors.slateText,
+    fontSize: textSize(12),
+    fontFamily: fonts.bold,
+    marginTop: size(4),
   },
   orderRight: {
     alignItems: 'flex-end',
   },
   orderAmount: {
-    color: '#061247',
-    fontSize: fs(14),
-    fontWeight: '900',
-    marginBottom: rs(6),
+    color: colors.primaryText,
+    fontSize: textSize(14),
+    fontFamily: fonts.extraBold,
+    marginBottom: size(6),
   },
   statusBadge: {
-    minWidth: rs(74),
-    height: rs(24),
-    borderRadius: rs(5),
+    minWidth: size(74),
+    height: size(24),
+    borderRadius: size(5),
     alignItems: 'center',
     justifyContent: 'center',
-    paddingHorizontal: rs(8),
+    paddingHorizontal: size(8),
   },
   statusText: {
-    fontSize: fs(11),
-    fontWeight: '800',
+    fontSize: textSize(11),
+    fontFamily: fonts.extraBold,
   },
   productRow: {
-    minHeight: rs(58),
+    minHeight: size(58),
     borderTopWidth: 1,
-    borderTopColor: '#EEF0F6',
+    borderTopColor: colors.financeDivider,
     flexDirection: 'row',
     alignItems: 'center',
   },
   productImage: {
-    width: rs(45),
-    height: rs(36),
-    borderRadius: rs(3),
-    backgroundColor: '#EEF0F6',
-    marginRight: rs(14),
+    width: size(45),
+    height: size(36),
+    borderRadius: size(3),
+    backgroundColor: colors.financeDivider,
+    marginRight: size(14),
   },
   productInfo: {
     flex: 1,
   },
   productName: {
-    color: '#061247',
-    fontSize: fs(15),
-    fontWeight: '900',
+    color: colors.primaryText,
+    fontSize: textSize(15),
+    fontFamily: fonts.extraBold,
   },
   productUnits: {
-    color: '#5D607E',
-    fontSize: fs(12),
-    fontWeight: '700',
-    marginTop: rs(5),
+    color: colors.slateText,
+    fontSize: textSize(12),
+    fontFamily: fonts.bold,
+    marginTop: size(5),
   },
   productRight: {
-    width: rs(70),
+    width: size(70),
     alignItems: 'flex-end',
-    marginRight: rs(8),
+    marginRight: size(8),
   },
   productAmount: {
-    color: '#061247',
-    fontSize: fs(14),
-    fontWeight: '900',
+    color: colors.primaryText,
+    fontSize: textSize(14),
+    fontFamily: fonts.extraBold,
   },
   productGrowth: {
-    fontSize: fs(12),
-    fontWeight: '800',
-    marginTop: rs(5),
+    fontSize: textSize(12),
+    fontFamily: fonts.extraBold,
+    marginTop: size(5),
   },
   targetContent: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginTop: rs(24),
+    marginTop: size(24),
   },
   targetCircle: {
-    width: rs(120),
-    height: rs(120),
-    borderRadius: rs(60),
-    borderWidth: rs(12),
-    borderColor: '#173CFF',
+    width: size(120),
+    height: size(120),
+    borderRadius: size(60),
+    borderWidth: size(12),
+    borderColor: colors.financeBlue,
     alignItems: 'center',
     justifyContent: 'center',
-    marginRight: rs(26),
+    marginRight: size(26),
   },
   targetPercent: {
-    color: '#061247',
-    fontSize: fs(29),
-    fontWeight: '900',
+    color: colors.primaryText,
+    fontSize: textSize(29),
+    fontFamily: fonts.extraBold,
   },
   targetInfo: {
     flex: 1,
   },
   targetRemaining: {
-    color: '#061247',
-    fontSize: fs(25),
-    fontWeight: '900',
+    color: colors.primaryText,
+    fontSize: textSize(25),
+    fontFamily: fonts.extraBold,
   },
   targetLabel: {
-    color: '#5D607E',
-    fontSize: fs(14),
-    fontWeight: '700',
-    marginTop: rs(10),
+    color: colors.slateText,
+    fontSize: textSize(14),
+    fontFamily: fonts.bold,
+    marginTop: size(10),
   },
   targetBonusBox: {
-    height: rs(40),
-    backgroundColor: '#EEF3FF',
-    borderRadius: rs(5),
+    height: size(40),
+    backgroundColor: colors.dealerBlueSoft,
+    borderRadius: size(5),
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    marginTop: rs(18),
+    marginTop: size(18),
   },
   targetBonusText: {
-    color: '#173CFF',
-    fontSize: fs(14),
-    fontWeight: '900',
-    marginLeft: rs(10),
+    color: colors.financeBlue,
+    fontSize: textSize(14),
+    fontFamily: fonts.extraBold,
+    marginLeft: size(10),
   },
   paymentRow: {
-    minHeight: rs(58),
+    minHeight: size(58),
     borderTopWidth: 1,
-    borderTopColor: '#EEF0F6',
+    borderTopColor: colors.financeDivider,
     flexDirection: 'row',
     alignItems: 'center',
   },
   paymentIconSoft: {
-    width: rs(38),
-    height: rs(38),
-    borderRadius: rs(19),
+    width: size(38),
+    height: size(38),
+    borderRadius: size(19),
     alignItems: 'center',
     justifyContent: 'center',
-    marginRight: rs(14),
+    marginRight: size(14),
   },
   paymentInfo: {
     flex: 1,
   },
   paymentTitle: {
-    fontSize: fs(15),
-    fontWeight: '900',
+    fontSize: textSize(15),
+    fontFamily: fonts.extraBold,
   },
   paymentSubtitle: {
-    color: '#5D607E',
-    fontSize: fs(12),
-    fontWeight: '700',
-    marginTop: rs(5),
+    color: colors.slateText,
+    fontSize: textSize(12),
+    fontFamily: fonts.bold,
+    marginTop: size(5),
   },
   paymentAmount: {
-    color: '#061247',
-    fontSize: fs(15),
-    fontWeight: '900',
-    marginRight: rs(10),
+    color: colors.primaryText,
+    fontSize: textSize(15),
+    fontFamily: fonts.extraBold,
+    marginRight: size(10),
   },
   quickActions: {
-    height: rs(76),
-    backgroundColor: '#173CFF',
-    borderRadius: rs(38),
+    height: size(76),
+    backgroundColor: colors.financeBlue,
+    borderRadius: size(38),
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: rs(18),
-    marginTop: rs(2),
+    paddingHorizontal: size(18),
+    marginTop: size(2),
   },
   quickActionButton: {
     flex: 1,
@@ -952,22 +948,22 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   quickPlus: {
-    width: rs(42),
-    height: rs(42),
-    borderRadius: rs(21),
-    backgroundColor: '#FFFFFF',
+    width: size(42),
+    height: size(42),
+    borderRadius: size(21),
+    backgroundColor: colors.white,
     alignItems: 'center',
     justifyContent: 'center',
-    marginRight: rs(12),
+    marginRight: size(12),
   },
   quickActionText: {
-    color: '#FFFFFF',
-    fontSize: fs(15),
-    fontWeight: '900',
+    color: colors.white,
+    fontSize: textSize(15),
+    fontFamily: fonts.extraBold,
   },
   quickDivider: {
     width: 1,
-    height: rs(44),
+    height: size(44),
     backgroundColor: 'rgba(255,255,255,0.35)',
   },
 });

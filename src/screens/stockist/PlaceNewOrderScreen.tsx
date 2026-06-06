@@ -2,7 +2,6 @@ import React, {useEffect, useMemo, useState} from 'react';
 import {
   ActivityIndicator,
   Alert,
-  Dimensions,
   ScrollView,
   StatusBar,
   StyleSheet,
@@ -24,14 +23,7 @@ import {useNavigation} from '@react-navigation/native';
 import { PlaceNewOrderData } from '../../api/mock/stockist/placeNewOrder.mock';
 import { getPlaceNewOrder } from '../../api/stockist/placeNewOrder.api';
 import { showErrorToast } from '../../utils/toast';
-
-const {width: SCREEN_WIDTH} = Dimensions.get('window');
-const DESIGN_WIDTH = 390;
-const scale = SCREEN_WIDTH / DESIGN_WIDTH;
-const rs = (value: number) => Math.round(value * scale);
-const fs = (value: number) => rs(value + 3);
-
-
+import { colors, fonts, mobileSize as rs, mobileTextSize as fs } from '../../theme';
 
 const PlaceNewOrderScreen = () => {
   const navigation = useNavigation<any>();
@@ -134,10 +126,10 @@ const PlaceNewOrderScreen = () => {
   if (loading || !data) {
     return (
       <SafeAreaView style={styles.safeArea}>
-        <StatusBar backgroundColor="#061B66" barStyle="light-content" />
+        <StatusBar backgroundColor={colors.primary} barStyle="light-content" />
 
         <View style={styles.loaderScreen}>
-          <ActivityIndicator size="large" color="#173CFF" />
+          <ActivityIndicator size="large" color={colors.financeBlue} />
         </View>
       </SafeAreaView>
     );
@@ -145,17 +137,17 @@ const PlaceNewOrderScreen = () => {
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <StatusBar backgroundColor="#061B66" barStyle="light-content" />
+      <StatusBar backgroundColor={colors.primary} barStyle="light-content" />
 
       <View style={styles.header}>
         <TouchableOpacity activeOpacity={0.8} onPress={() => navigation.goBack()}>
-          <ArrowLeft color="#FFFFFF" size={rs(22)} strokeWidth={2.5} />
+          <ArrowLeft color={colors.white} size={rs(22)} strokeWidth={2.5} />
         </TouchableOpacity>
 
         <Text style={styles.headerTitle}>Place New Order</Text>
 
         <TouchableOpacity activeOpacity={0.8}>
-          <ShoppingCart color="#FFFFFF" size={rs(22)} strokeWidth={2.4} />
+          <ShoppingCart color={colors.white} size={rs(22)} strokeWidth={2.4} />
         </TouchableOpacity>
       </View>
 
@@ -166,12 +158,12 @@ const PlaceNewOrderScreen = () => {
         <Text style={styles.label}>Customer</Text>
 
         <View style={styles.inputBox}>
-          <Search color="#5D607E" size={rs(16)} />
+          <Search color={colors.slateText} size={rs(16)} />
           <TextInput
             value={customer}
             onChangeText={setCustomer}
             placeholder="Search or select customer"
-            placeholderTextColor="#8A8CA0"
+            placeholderTextColor={colors.stockistTimelineGrey}
             style={styles.input}
           />
         </View>
@@ -191,12 +183,12 @@ const PlaceNewOrderScreen = () => {
         </View>
 
         <View style={styles.productSearchBox}>
-          <Search color="#5D607E" size={rs(15)} />
+          <Search color={colors.slateText} size={rs(15)} />
           <TextInput
             value={search}
             onChangeText={setSearch}
             placeholder="Search product"
-            placeholderTextColor="#8A8CA0"
+            placeholderTextColor={colors.stockistTimelineGrey}
             style={styles.productSearchInput}
           />
         </View>
@@ -217,7 +209,7 @@ const PlaceNewOrderScreen = () => {
                 activeOpacity={0.8}
                 onPress={() => updateQuantity(item.id, 'minus')}
                 style={styles.qtyButton}>
-                <Minus color="#173CFF" size={rs(14)} strokeWidth={2.4} />
+                <Minus color={colors.financeBlue} size={rs(14)} strokeWidth={2.4} />
               </TouchableOpacity>
 
               <Text style={styles.qtyText}>{quantity}</Text>
@@ -226,7 +218,7 @@ const PlaceNewOrderScreen = () => {
                 activeOpacity={0.8}
                 onPress={() => updateQuantity(item.id, 'plus')}
                 style={styles.qtyButton}>
-                <Plus color="#173CFF" size={rs(14)} strokeWidth={2.4} />
+                <Plus color={colors.financeBlue} size={rs(14)} strokeWidth={2.4} />
               </TouchableOpacity>
             </View>
           );
@@ -272,7 +264,7 @@ const PlaceNewOrderScreen = () => {
           activeOpacity={0.85}
           style={styles.orderButton}
           onPress={placeOrder}>
-          <CheckCircle2 color="#FFFFFF" size={rs(18)} />
+          <CheckCircle2 color={colors.white} size={rs(18)} />
           <Text style={styles.orderButtonText}>Submit Order</Text>
         </TouchableOpacity>
       </ScrollView>
@@ -285,20 +277,20 @@ export default PlaceNewOrderScreen;
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#F8F9FD',
+    backgroundColor: colors.financeBackground,
   },
   header: {
     height: rs(52),
-    backgroundColor: '#061B66',
+    backgroundColor: colors.primary,
     paddingHorizontal: rs(14),
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
   },
   headerTitle: {
-    color: '#FFFFFF',
+    color: colors.white,
     fontSize: fs(15),
-    fontWeight: '900',
+    fontFamily: fonts.extraBold,
   },
   scrollView: {
     flex: 1,
@@ -308,16 +300,16 @@ const styles = StyleSheet.create({
     paddingBottom: rs(28),
   },
   label: {
-    color: '#111327',
+    color: colors.text,
     fontSize: fs(12),
-    fontWeight: '800',
+    fontFamily: fonts.extraBold,
     marginBottom: rs(7),
   },
   inputBox: {
     height: rs(42),
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.white,
     borderWidth: 1,
-    borderColor: '#D9DCE8',
+    borderColor: colors.inputBorder,
     borderRadius: rs(5),
     flexDirection: 'row',
     alignItems: 'center',
@@ -325,21 +317,21 @@ const styles = StyleSheet.create({
   },
   loaderScreen: {
   flex: 1,
-  backgroundColor: '#F8F9FD',
+  backgroundColor: colors.financeBackground,
   alignItems: 'center',
   justifyContent: 'center',
 },
   input: {
     flex: 1,
     marginLeft: rs(8),
-    color: '#111327',
+    color: colors.text,
     fontSize: fs(12),
     paddingVertical: 0,
   },
   customerChip: {
     alignSelf: 'flex-start',
     height: rs(25),
-    backgroundColor: '#061B66',
+    backgroundColor: colors.primary,
     borderRadius: rs(4),
     paddingHorizontal: rs(12),
     alignItems: 'center',
@@ -348,9 +340,9 @@ const styles = StyleSheet.create({
     marginBottom: rs(18),
   },
   customerChipText: {
-    color: '#FFFFFF',
+    color: colors.white,
     fontSize: fs(11),
-    fontWeight: '800',
+    fontFamily: fonts.extraBold,
   },
   sectionHeader: {
     flexDirection: 'row',
@@ -358,20 +350,20 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   sectionTitle: {
-    color: '#111327',
+    color: colors.text,
     fontSize: fs(13),
-    fontWeight: '900',
+    fontFamily: fonts.extraBold,
   },
   showAllText: {
-    color: '#173CFF',
+    color: colors.financeBlue,
     fontSize: fs(11),
-    fontWeight: '800',
+    fontFamily: fonts.extraBold,
   },
   productSearchBox: {
     height: rs(38),
     borderWidth: 1,
-    borderColor: '#D9DCE8',
-    backgroundColor: '#FFFFFF',
+    borderColor: colors.inputBorder,
+    backgroundColor: colors.white,
     borderRadius: rs(5),
     flexDirection: 'row',
     alignItems: 'center',
@@ -383,12 +375,12 @@ const styles = StyleSheet.create({
     flex: 1,
     marginLeft: rs(8),
     fontSize: fs(12),
-    color: '#111327',
+    color: colors.text,
     paddingVertical: 0,
   },
   productRow: {
     minHeight: rs(58),
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.white,
     borderRadius: rs(6),
     paddingHorizontal: rs(10),
     marginBottom: rs(8),
@@ -405,21 +397,21 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   productName: {
-    color: '#111327',
+    color: colors.text,
     fontSize: fs(13),
-    fontWeight: '900',
+    fontFamily: fonts.extraBold,
   },
   productStock: {
-    color: '#138A36',
+    color: colors.success,
     fontSize: fs(11),
-    fontWeight: '600',
+    fontFamily: fonts.semiBold,
     marginTop: rs(4),
   },
   qtyButton: {
     width: rs(26),
     height: rs(26),
     borderWidth: 1,
-    borderColor: '#B8C8FF',
+    borderColor: colors.blueBorderSoft,
     borderRadius: rs(13),
     alignItems: 'center',
     justifyContent: 'center',
@@ -427,21 +419,21 @@ const styles = StyleSheet.create({
   qtyText: {
     width: rs(28),
     textAlign: 'center',
-    color: '#111327',
+    color: colors.text,
     fontSize: fs(13),
-    fontWeight: '900',
+    fontFamily: fonts.extraBold,
   },
   summaryCard: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.white,
     borderRadius: rs(7),
     padding: rs(12),
     marginTop: rs(10),
     marginBottom: rs(16),
   },
   summaryTitle: {
-    color: '#111327',
+    color: colors.text,
     fontSize: fs(13),
-    fontWeight: '900',
+    fontFamily: fonts.extraBold,
     marginBottom: rs(10),
   },
   summaryRow: {
@@ -450,60 +442,60 @@ const styles = StyleSheet.create({
     marginBottom: rs(8),
   },
   summaryText: {
-    color: '#5D607E',
+    color: colors.slateText,
     fontSize: fs(12),
-    fontWeight: '600',
+    fontFamily: fonts.semiBold,
   },
   summaryAmount: {
-    color: '#111327',
+    color: colors.text,
     fontSize: fs(12),
-    fontWeight: '800',
+    fontFamily: fonts.extraBold,
   },
   totalRow: {
     borderTopWidth: 1,
-    borderTopColor: '#EEF0F6',
+    borderTopColor: colors.financeDivider,
     paddingTop: rs(10),
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
   totalLabel: {
-    color: '#111327',
+    color: colors.text,
     fontSize: fs(14),
-    fontWeight: '900',
+    fontFamily: fonts.extraBold,
   },
   totalAmount: {
-    color: '#173CFF',
+    color: colors.financeBlue,
     fontSize: fs(15),
-    fontWeight: '900',
+    fontFamily: fonts.extraBold,
   },
   addressBox: {
     minHeight: rs(70),
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.white,
     borderWidth: 1,
-    borderColor: '#D9DCE8',
+    borderColor: colors.inputBorder,
     borderRadius: rs(6),
     padding: rs(10),
     marginBottom: rs(16),
   },
   addressInput: {
-    color: '#111327',
+    color: colors.text,
     fontSize: fs(12),
-    fontWeight: '600',
+    fontFamily: fonts.semiBold,
     padding: 0,
     textAlignVertical: 'top',
   },
   orderButton: {
     height: rs(46),
-    backgroundColor: '#061B66',
+    backgroundColor: colors.primary,
     borderRadius: rs(6),
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
   },
   orderButtonText: {
-    color: '#FFFFFF',
+    color: colors.white,
     fontSize: fs(14),
-    fontWeight: '900',
+    fontFamily: fonts.extraBold,
     marginLeft: rs(8),
   },
 });

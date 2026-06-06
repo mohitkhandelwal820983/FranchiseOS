@@ -12,6 +12,7 @@ import {
   View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { colors, fonts, size, textSize } from '../../theme';
 import {
   ArrowLeft,
   Camera,
@@ -42,10 +43,6 @@ import { useNavigation, useRoute } from '@react-navigation/native';
 import { showErrorToast } from '../../utils/toast';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
-const DESIGN_WIDTH = 832;
-const scale = SCREEN_WIDTH / DESIGN_WIDTH;
-const rs = (value: number) => Math.round(value * scale);
-const fs = (value: number) => rs(value + 3);
 
 const Header = ({ title }: { title: string }) => {
   const navigation = useNavigation<any>();
@@ -53,13 +50,13 @@ const Header = ({ title }: { title: string }) => {
   return (
     <View style={styles.header}>
       <TouchableOpacity activeOpacity={0.8} onPress={() => navigation.goBack()}>
-        <ArrowLeft color="#FFFFFF" size={rs(34)} strokeWidth={2.5} />
+        <ArrowLeft color={colors.white} size={size(34)} strokeWidth={2.5} />
       </TouchableOpacity>
 
       <Text style={styles.headerTitle}>{title}</Text>
 
       <TouchableOpacity activeOpacity={0.8}>
-        <MoreVertical color="#FFFFFF" size={rs(32)} strokeWidth={2.5} />
+        <MoreVertical color={colors.white} size={size(32)} strokeWidth={2.5} />
       </TouchableOpacity>
     </View>
   );
@@ -74,7 +71,7 @@ const ProfileCard = ({ data }: { data: CompanyNetworkDetailData }) => {
         </View>
 
         <View style={styles.cameraButton}>
-          <Camera color="#173CFF" size={rs(24)} strokeWidth={2.4} />
+          <Camera color={colors.financeBlue} size={size(24)} strokeWidth={2.4} />
         </View>
       </View>
 
@@ -82,7 +79,7 @@ const ProfileCard = ({ data }: { data: CompanyNetworkDetailData }) => {
         <Text style={styles.profileName}>{data.headerTitle}</Text>
 
         <View style={styles.profileLocationRow}>
-          <MapPin color="#FFFFFF" size={rs(18)} strokeWidth={2.2} />
+          <MapPin color={colors.white} size={size(18)} strokeWidth={2.2} />
           <Text style={styles.profileLocationText}>{data.location}</Text>
         </View>
 
@@ -136,22 +133,22 @@ const Tabs = ({
 
 const MetricIcon = ({ item }: { item: MetricItem }) => {
   if (item.icon === 'revenue') {
-    return <TrendingUp color={item.color} size={rs(30)} strokeWidth={2.4} />;
+    return <TrendingUp color={item.color} size={size(30)} strokeWidth={2.4} />;
   }
 
   if (item.icon === 'orders') {
-    return <ShoppingCart color={item.color} size={rs(30)} strokeWidth={2.4} />;
+    return <ShoppingCart color={item.color} size={size(30)} strokeWidth={2.4} />;
   }
 
   if (item.icon === 'avg') {
-    return <IndianRupee color="#5D4B8B" size={rs(30)} strokeWidth={2.4} />;
+    return <IndianRupee color={colors.purple} size={size(30)} strokeWidth={2.4} />;
   }
 
   if (item.icon === 'target') {
-    return <Target color={item.color} size={rs(30)} strokeWidth={2.4} />;
+    return <Target color={item.color} size={size(30)} strokeWidth={2.4} />;
   }
 
-  return <Wallet color={item.color} size={rs(30)} strokeWidth={2.4} />;
+  return <Wallet color={item.color} size={size(30)} strokeWidth={2.4} />;
 };
 
 const MetricCard = ({ item }: { item: MetricItem }) => {
@@ -272,8 +269,8 @@ const DealerRevenueTrendCard = () => {
               style={[
                 styles.bar,
                 {
-                  height: rs(60 + value * 20),
-                  backgroundColor: index === 5 ? '#173CFF' : '#AFC4FF',
+                  height: size(60 + value * 20),
+                  backgroundColor: index === 5 ? colors.financeBlue : colors.lightBlue,
                 },
               ]}
             />
@@ -567,16 +564,16 @@ const AdminActions = ({ type }: { type: DetailType }) => {
   const actions =
     type === 'stockist'
       ? [
-          { label: 'Nudge', icon: 'send', color: '#173CFF' },
-          { label: 'Flag', icon: 'flag', color: '#F06419' },
-          { label: 'Reward', icon: 'gift', color: '#138A36' },
-          { label: 'Suspend', icon: 'lock', color: '#E00014' },
+          { label: 'Nudge', icon: 'send', color: colors.financeBlue },
+          { label: 'Flag', icon: 'flag', color: colors.warningOrange },
+          { label: 'Reward', icon: 'gift', color: colors.success },
+          { label: 'Suspend', icon: 'lock', color: colors.dangerDark },
         ]
       : [
-          { label: 'Send Nudge', icon: 'send', color: '#173CFF' },
-          { label: 'Flag for Review', icon: 'flag', color: '#F06419' },
-          { label: 'Give Reward', icon: 'gift', color: '#138A36' },
-          { label: 'Suspend', icon: 'lock', color: '#E00014' },
+          { label: 'Send Nudge', icon: 'send', color: colors.financeBlue },
+          { label: 'Flag for Review', icon: 'flag', color: colors.warningOrange },
+          { label: 'Give Reward', icon: 'gift', color: colors.success },
+          { label: 'Suspend', icon: 'lock', color: colors.dangerDark },
         ];
 
   return (
@@ -593,16 +590,16 @@ const AdminActions = ({ type }: { type: DetailType }) => {
             style={[styles.actionButton, { borderColor: item.color }]}
           >
             {item.icon === 'send' && (
-              <Send color={item.color} size={rs(26)} strokeWidth={2.3} />
+              <Send color={item.color} size={size(26)} strokeWidth={2.3} />
             )}
             {item.icon === 'flag' && (
-              <Flag color={item.color} size={rs(26)} strokeWidth={2.3} />
+              <Flag color={item.color} size={size(26)} strokeWidth={2.3} />
             )}
             {item.icon === 'gift' && (
-              <Gift color={item.color} size={rs(26)} strokeWidth={2.3} />
+              <Gift color={item.color} size={size(26)} strokeWidth={2.3} />
             )}
             {item.icon === 'lock' && (
-              <Lock color={item.color} size={rs(26)} strokeWidth={2.3} />
+              <Lock color={item.color} size={size(26)} strokeWidth={2.3} />
             )}
 
             <Text style={[styles.actionText, { color: item.color }]}>
@@ -701,12 +698,12 @@ const DealersUnderStockist = ({
 
         <View style={styles.dealerTools}>
           <View style={styles.dealerSearchBox}>
-            <Search color="#5D607E" size={rs(18)} />
+            <Search color={colors.slateText} size={size(18)} />
             <TextInput
               value={dealerSearch}
               onChangeText={setDealerSearch}
               placeholder="Search dealers..."
-              placeholderTextColor="#5D607E"
+              placeholderTextColor={colors.slateText}
               style={styles.dealerSearchInput}
             />
           </View>
@@ -716,7 +713,7 @@ const DealersUnderStockist = ({
             style={styles.dealerFilterButton}
             onPress={() => setSortByRevenueHigh(prev => !prev)}
           >
-            <ChevronDown color="#061B66" size={rs(20)} />
+            <ChevronDown color={colors.primary} size={size(20)} />
           </TouchableOpacity>
         </View>
       </View>
@@ -736,8 +733,8 @@ const DealersUnderStockist = ({
                 style={[
                   styles.dealerChipText,
                   active && styles.activeDealerChipText,
-                  item.value === 'risk' && !active && { color: '#F06419' },
-                  item.value === 'overdue' && !active && { color: '#E00014' },
+                  item.value === 'risk' && !active && { color: colors.warningOrange },
+                  item.value === 'overdue' && !active && { color: colors.dangerDark },
                 ]}
               >
                 {item.label}
@@ -759,7 +756,7 @@ const DealersUnderStockist = ({
               ? 'Revenue (High to Low)'
               : 'Revenue (Low to High)'}
           </Text>
-          <ChevronDown color="#061B66" size={rs(18)} />
+          <ChevronDown color={colors.primary} size={size(18)} />
         </TouchableOpacity>
       </View>
 
@@ -797,7 +794,7 @@ const DealersUnderStockist = ({
                 <Text
                   style={[
                     styles.tableRevenue,
-                    (isRisk || isOverdue) && { color: '#E00014' },
+                    (isRisk || isOverdue) && { color: colors.dangerDark },
                   ]}
                 >
                   {item.revenue}
@@ -812,19 +809,19 @@ const DealersUnderStockist = ({
                   style={[
                     styles.smallScoreBadge,
                     isRisk && {
-                      borderColor: '#F2BBA2',
-                      backgroundColor: '#FFF5EE',
+                      borderColor: colors.riskBorder,
+                      backgroundColor: colors.riskBg,
                     },
                     isOverdue && {
-                      borderColor: '#FFB6B6',
-                      backgroundColor: '#FFF0F0',
+                      borderColor: colors.overdueBorder,
+                      backgroundColor: colors.overdueBg,
                     },
                   ]}
                 >
                   <Text
                     style={[
                       styles.smallScoreText,
-                      (isRisk || isOverdue) && { color: '#E00014' },
+                      (isRisk || isOverdue) && { color: colors.dangerDark },
                     ]}
                   >
                     {item.score}
@@ -845,15 +842,15 @@ const DealersUnderStockist = ({
                 <Text
                   style={[
                     styles.tableStatusText,
-                    isRisk && { color: '#F06419' },
-                    isOverdue && { color: '#E00014' },
+                    isRisk && { color: colors.warningOrange },
+                    isOverdue && { color: colors.dangerDark },
                   ]}
                 >
                   {item.status}
                 </Text>
               </View>
 
-              <ChevronRight color="#061B66" size={rs(22)} />
+              <ChevronRight color={colors.primary} size={size(22)} />
             </TouchableOpacity>
           );
         })}
@@ -861,7 +858,7 @@ const DealersUnderStockist = ({
 
       <TouchableOpacity activeOpacity={0.8} style={styles.loadMoreButton}>
         <Text style={styles.loadMoreText}>Load 5 more dealers</Text>
-        <ChevronDown color="#173CFF" size={rs(20)} />
+        <ChevronDown color={colors.financeBlue} size={size(20)} />
       </TouchableOpacity>
     </View>
   );
@@ -936,8 +933,8 @@ const NetworkDetailScreen = () => {
   if (loading) {
     return (
       <SafeAreaView style={styles.loaderScreen}>
-        <StatusBar backgroundColor="#061B66" barStyle="light-content" />
-        <ActivityIndicator size="large" color="#173CFF" />
+        <StatusBar backgroundColor={colors.primary} barStyle="light-content" />
+        <ActivityIndicator size="large" color={colors.financeBlue} />
       </SafeAreaView>
     );
   }
@@ -945,14 +942,14 @@ const NetworkDetailScreen = () => {
   if (error || !data) {
     return (
       <SafeAreaView style={styles.loaderScreen}>
-        <StatusBar backgroundColor="#061B66" barStyle="light-content" />
+        <StatusBar backgroundColor={colors.primary} barStyle="light-content" />
 
         <Text
           style={{
-            color: '#061247',
-            fontSize: fs(18),
-            fontWeight: '700',
-            marginBottom: rs(18),
+            color: colors.primaryDark,
+            fontSize: textSize(18),
+            fontFamily: fonts.bold,
+            marginBottom: size(18),
             textAlign: 'center',
           }}
         >
@@ -963,14 +960,14 @@ const NetworkDetailScreen = () => {
           activeOpacity={0.85}
           onPress={handleRetry}
           style={{
-            backgroundColor: '#061B66',
-            paddingHorizontal: rs(28),
-            paddingVertical: rs(14),
-            borderRadius: rs(8),
+            backgroundColor: colors.primary,
+            paddingHorizontal: size(28),
+            paddingVertical: size(14),
+            borderRadius: size(8),
           }}
         >
           <Text
-            style={{ color: '#FFFFFF', fontSize: fs(14), fontWeight: '800' }}
+            style={{ color: colors.white, fontSize: textSize(14), fontFamily: fonts.extraBold }}
           >
             Retry
           </Text>
@@ -981,7 +978,7 @@ const NetworkDetailScreen = () => {
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <StatusBar backgroundColor="#061B66" barStyle="light-content" />
+      <StatusBar backgroundColor={colors.primary} barStyle="light-content" />
 
       <Header title={screenTitle} />
 
@@ -1104,81 +1101,81 @@ const NetworkDetailScreen = () => {
 
 export default NetworkDetailScreen;
 
-const PAGE_PADDING = rs(22);
-const CARD_GAP = rs(14);
+const PAGE_PADDING = size(22);
+const CARD_GAP = size(14);
 const HALF_WIDTH = (SCREEN_WIDTH - PAGE_PADDING * 2 - CARD_GAP) / 2;
-const METRIC_WIDTH = (SCREEN_WIDTH - PAGE_PADDING * 2 - rs(16) * 4) / 5;
+const METRIC_WIDTH = (SCREEN_WIDTH - PAGE_PADDING * 2 - size(16) * 4) / 5;
 
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#F8F9FD',
+    backgroundColor: colors.financeBackground,
   },
   loaderScreen: {
     flex: 1,
-    backgroundColor: '#F8F9FD',
+    backgroundColor: colors.financeBackground,
     alignItems: 'center',
     justifyContent: 'center',
   },
   header: {
-    height: rs(78),
-    backgroundColor: '#061B66',
-    paddingHorizontal: rs(32),
-    paddingTop: rs(8),
+    height: size(78),
+    backgroundColor: colors.primary,
+    paddingHorizontal: size(32),
+    paddingTop: size(8),
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
   },
   headerTitle: {
-    color: '#FFFFFF',
-    fontSize: fs(28),
-    fontWeight: '800',
+    color: colors.white,
+    fontSize: textSize(28),
+    fontFamily: fonts.extraBold,
   },
   scrollView: {
     flex: 1,
   },
   scrollContent: {
     paddingHorizontal: PAGE_PADDING,
-    paddingTop: rs(24),
-    paddingBottom: rs(30),
+    paddingTop: size(24),
+    paddingBottom: size(30),
   },
   profileCard: {
-    minHeight: rs(228),
-    borderRadius: rs(8),
-    paddingHorizontal: rs(42),
-    paddingVertical: rs(26),
+    minHeight: size(228),
+    borderRadius: size(8),
+    paddingHorizontal: size(42),
+    paddingVertical: size(26),
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: rs(16),
+    marginBottom: size(16),
   },
   profileAvatarWrap: {
-    width: rs(172),
-    height: rs(172),
-    marginRight: rs(40),
+    width: size(172),
+    height: size(172),
+    marginRight: size(40),
     position: 'relative',
   },
   profileAvatar: {
-    width: rs(162),
-    height: rs(162),
-    borderRadius: rs(81),
-    borderWidth: rs(3),
-    borderColor: '#FFFFFF',
+    width: size(162),
+    height: size(162),
+    borderRadius: size(81),
+    borderWidth: size(3),
+    borderColor: colors.white,
     alignItems: 'center',
     justifyContent: 'center',
   },
   profileAvatarText: {
-    color: '#FFFFFF',
-    fontSize: fs(56),
-    fontWeight: '800',
+    color: colors.white,
+    fontSize: textSize(56),
+    fontFamily: fonts.extraBold,
   },
   cameraButton: {
     position: 'absolute',
-    right: rs(10),
+    right: size(10),
     bottom: 0,
-    width: rs(50),
-    height: rs(50),
-    borderRadius: rs(25),
-    backgroundColor: '#FFFFFF',
+    width: size(50),
+    height: size(50),
+    borderRadius: size(25),
+    backgroundColor: colors.white,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -1186,79 +1183,79 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   profileName: {
-    color: '#FFFFFF',
-    fontSize: fs(34),
-    fontWeight: '800',
-    marginBottom: rs(12),
+    color: colors.white,
+    fontSize: textSize(34),
+    fontFamily: fonts.extraBold,
+    marginBottom: size(12),
   },
   profileLocationRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: rs(14),
+    marginBottom: size(14),
   },
   profileLocationText: {
-    color: '#FFFFFF',
-    fontSize: fs(18),
-    fontWeight: '500',
-    marginLeft: rs(10),
+    color: colors.white,
+    fontSize: textSize(18),
+    fontFamily: fonts.medium,
+    marginLeft: size(10),
   },
   profileStatusBadge: {
-    width: rs(92),
-    height: rs(30),
-    borderRadius: rs(15),
+    width: size(92),
+    height: size(30),
+    borderRadius: size(15),
     borderWidth: 1,
-    borderColor: '#75DA9B',
+    borderColor: colors.successBorder,
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: rs(18),
+    marginBottom: size(18),
   },
   profileStatusText: {
-    color: '#91F0A9',
-    fontSize: fs(14),
-    fontWeight: '700',
+    color: colors.successLightText,
+    fontSize: textSize(14),
+    fontFamily: fonts.bold,
   },
   memberSince: {
-    color: '#FFFFFF',
-    fontSize: fs(16),
-    fontWeight: '500',
+    color: colors.white,
+    fontSize: textSize(16),
+    fontFamily: fonts.medium,
   },
   scoreCircle: {
-    width: rs(176),
-    height: rs(176),
-    borderRadius: rs(88),
-    backgroundColor: '#FFFFFF',
-    borderWidth: rs(12),
-    borderColor: '#10A322',
+    width: size(176),
+    height: size(176),
+    borderRadius: size(88),
+    backgroundColor: colors.white,
+    borderWidth: size(12),
+    borderColor: colors.successBright,
     alignItems: 'center',
     justifyContent: 'center',
   },
   scoreNumber: {
-    color: '#061247',
-    fontSize: fs(56),
-    lineHeight: rs(62),
-    fontWeight: '900',
+    color: colors.primaryDark,
+    fontSize: textSize(56),
+    lineHeight: size(62),
+    fontFamily: fonts.extraBold,
   },
   scoreHundred: {
-    color: '#061247',
-    fontSize: fs(18),
-    fontWeight: '500',
+    color: colors.primaryDark,
+    fontSize: textSize(18),
+    fontFamily: fonts.medium,
   },
   scoreLabel: {
-    color: '#061247',
-    fontSize: fs(16),
-    fontWeight: '700',
-    marginTop: rs(4),
+    color: colors.primaryDark,
+    fontSize: textSize(16),
+    fontFamily: fonts.bold,
+    marginTop: size(4),
   },
   tabsCard: {
-    height: rs(58),
-    backgroundColor: '#FFFFFF',
-    borderRadius: rs(8),
+    height: size(58),
+    backgroundColor: colors.white,
+    borderRadius: size(8),
     flexDirection: 'row',
-    marginBottom: rs(18),
-    shadowColor: '#000000',
+    marginBottom: size(18),
+    shadowColor: colors.black,
     shadowOpacity: 0.05,
-    shadowRadius: rs(12),
-    shadowOffset: { width: 0, height: rs(5) },
+    shadowRadius: size(12),
+    shadowOffset: { width: 0, height: size(5) },
     elevation: 3,
   },
   tabItem: {
@@ -1268,111 +1265,111 @@ const styles = StyleSheet.create({
     position: 'relative',
   },
   tabText: {
-    color: '#4D506E',
-    fontSize: fs(16),
-    fontWeight: '600',
+    color: colors.mutedTextDark,
+    fontSize: textSize(16),
+    fontFamily: fonts.semiBold,
   },
   activeTabText: {
-    color: '#173CFF',
-    fontWeight: '800',
+    color: colors.financeBlue,
+    fontFamily: fonts.extraBold,
   },
   activeTabLine: {
     position: 'absolute',
     bottom: 0,
-    height: rs(4),
+    height: size(4),
     width: '70%',
-    backgroundColor: '#173CFF',
+    backgroundColor: colors.financeBlue,
   },
   metricsContent: {
-    paddingBottom: rs(28),
+    paddingBottom: size(28),
   },
   metricCard: {
     width: METRIC_WIDTH,
-    minHeight: rs(126),
-    backgroundColor: '#FFFFFF',
-    borderRadius: rs(8),
-    marginRight: rs(8),
+    minHeight: size(126),
+    backgroundColor: colors.white,
+    borderRadius: size(8),
+    marginRight: size(8),
     alignItems: 'center',
     justifyContent: 'center',
-    padding: rs(10),
-    shadowColor: '#000000',
+    padding: size(10),
+    shadowColor: colors.black,
     shadowOpacity: 0.04,
-    shadowRadius: rs(12),
-    shadowOffset: { width: 0, height: rs(5) },
+    shadowRadius: size(12),
+    shadowOffset: { width: 0, height: size(5) },
     elevation: 3,
   },
   metricTitle: {
-    color: '#4D506E',
-    fontSize: fs(13),
-    fontWeight: '600',
-    marginTop: rs(10),
-    marginBottom: rs(8),
+    color: colors.mutedTextDark,
+    fontSize: textSize(13),
+    fontFamily: fonts.semiBold,
+    marginTop: size(10),
+    marginBottom: size(8),
     textAlign: 'center',
   },
   metricValue: {
-    fontSize: fs(22),
-    fontWeight: '900',
+    fontSize: textSize(22),
+    fontFamily: fonts.extraBold,
     textAlign: 'center',
   },
   twoColumnRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: rs(16),
+    marginBottom: size(16),
   },
   chartCard: {
     width: HALF_WIDTH,
-    minHeight: rs(294),
-    backgroundColor: '#FFFFFF',
-    borderRadius: rs(10),
-    padding: rs(18),
-    shadowColor: '#000000',
+    minHeight: size(294),
+    backgroundColor: colors.white,
+    borderRadius: size(10),
+    padding: size(18),
+    shadowColor: colors.black,
     shadowOpacity: 0.04,
-    shadowRadius: rs(12),
-    shadowOffset: { width: 0, height: rs(5) },
+    shadowRadius: size(12),
+    shadowOffset: { width: 0, height: size(5) },
     elevation: 3,
   },
   paymentCard: {
     width: HALF_WIDTH,
-    minHeight: rs(294),
-    backgroundColor: '#FFFFFF',
-    borderRadius: rs(10),
-    padding: rs(18),
-    shadowColor: '#000000',
+    minHeight: size(294),
+    backgroundColor: colors.white,
+    borderRadius: size(10),
+    padding: size(18),
+    shadowColor: colors.black,
     shadowOpacity: 0.04,
-    shadowRadius: rs(12),
-    shadowOffset: { width: 0, height: rs(5) },
+    shadowRadius: size(12),
+    shadowOffset: { width: 0, height: size(5) },
     elevation: 3,
   },
   halfCard: {
     width: HALF_WIDTH,
-    minHeight: rs(214),
-    backgroundColor: '#FFFFFF',
-    borderRadius: rs(10),
-    padding: rs(18),
-    shadowColor: '#000000',
+    minHeight: size(214),
+    backgroundColor: colors.white,
+    borderRadius: size(10),
+    padding: size(18),
+    shadowColor: colors.black,
     shadowOpacity: 0.04,
-    shadowRadius: rs(12),
-    shadowOffset: { width: 0, height: rs(5) },
+    shadowRadius: size(12),
+    shadowOffset: { width: 0, height: size(5) },
     elevation: 3,
   },
   fullCard: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: rs(10),
-    padding: rs(18),
-    marginBottom: rs(16),
-    shadowColor: '#000000',
+    backgroundColor: colors.white,
+    borderRadius: size(10),
+    padding: size(18),
+    marginBottom: size(16),
+    shadowColor: colors.black,
     shadowOpacity: 0.04,
-    shadowRadius: rs(12),
-    shadowOffset: { width: 0, height: rs(5) },
+    shadowRadius: size(12),
+    shadowOffset: { width: 0, height: size(5) },
     elevation: 3,
   },
   simpleCardBody: {
-    marginTop: rs(18),
+    marginTop: size(18),
   },
   cardTitle: {
-    color: '#111327',
-    fontSize: fs(18),
-    fontWeight: '900',
+    color: colors.text,
+    fontSize: textSize(18),
+    fontFamily: fonts.extraBold,
   },
   chartHeader: {
     flexDirection: 'row',
@@ -1381,51 +1378,51 @@ const styles = StyleSheet.create({
   legendRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: rs(4),
+    marginBottom: size(4),
   },
   legendBlue: {
-    width: rs(22),
-    height: rs(3),
-    backgroundColor: '#173CFF',
-    marginRight: rs(8),
+    width: size(22),
+    height: size(3),
+    backgroundColor: colors.financeBlue,
+    marginRight: size(8),
   },
   legendDash: {
-    width: rs(22),
+    width: size(22),
     height: 1,
     borderWidth: 1,
     borderStyle: 'dashed',
-    borderColor: '#5D607E',
-    marginRight: rs(8),
+    borderColor: colors.slateText,
+    marginRight: size(8),
   },
   legendText: {
-    color: '#4D506E',
-    fontSize: fs(12),
-    fontWeight: '500',
+    color: colors.mutedTextDark,
+    fontSize: textSize(12),
+    fontFamily: fonts.medium,
   },
   lineChartArea: {
     flex: 1,
     flexDirection: 'row',
-    marginTop: rs(22),
+    marginTop: size(22),
   },
   yAxis: {
-    width: rs(36),
+    width: size(36),
     justifyContent: 'space-between',
-    paddingBottom: rs(20),
+    paddingBottom: size(20),
   },
   axisText: {
-    color: '#4D506E',
-    fontSize: fs(11),
+    color: colors.mutedTextDark,
+    fontSize: textSize(11),
   },
   fakeLineChart: {
     flex: 1,
     position: 'relative',
     borderLeftWidth: 1,
     borderBottomWidth: 1,
-    borderColor: '#EEF0F6',
+    borderColor: colors.financeDivider,
     flexDirection: 'row',
     alignItems: 'flex-end',
     justifyContent: 'space-around',
-    paddingBottom: rs(4),
+    paddingBottom: size(4),
   },
   chartGridLine: {
     position: 'absolute',
@@ -1433,101 +1430,101 @@ const styles = StyleSheet.create({
     right: 0,
     top: '12%',
     height: 1,
-    backgroundColor: '#EEF0F6',
+    backgroundColor: colors.financeDivider,
   },
   monthText: {
-    color: '#4D506E',
-    fontSize: fs(11),
+    color: colors.mutedTextDark,
+    fontSize: textSize(11),
   },
   fakeLineOne: {
     position: 'absolute',
-    left: rs(8),
-    right: rs(16),
-    bottom: rs(38),
-    height: rs(80),
-    borderTopWidth: rs(4),
-    borderColor: '#173CFF',
+    left: size(8),
+    right: size(16),
+    bottom: size(38),
+    height: size(80),
+    borderTopWidth: size(4),
+    borderColor: colors.financeBlue,
     transform: [{ rotate: '-8deg' }],
   },
   fakeLineTwo: {
     position: 'absolute',
-    left: rs(120),
-    right: rs(40),
-    bottom: rs(94),
-    height: rs(72),
-    borderTopWidth: rs(4),
-    borderColor: '#173CFF',
+    left: size(120),
+    right: size(40),
+    bottom: size(94),
+    height: size(72),
+    borderTopWidth: size(4),
+    borderColor: colors.financeBlue,
     transform: [{ rotate: '5deg' }],
   },
   fakeLineThree: {
     position: 'absolute',
-    right: rs(10),
-    bottom: rs(130),
-    width: rs(8),
-    height: rs(8),
-    borderRadius: rs(4),
-    backgroundColor: '#173CFF',
+    right: size(10),
+    bottom: size(130),
+    width: size(8),
+    height: size(8),
+    borderRadius: size(4),
+    backgroundColor: colors.financeBlue,
   },
   paymentLine: {
-    marginTop: rs(26),
+    marginTop: size(26),
   },
   paymentText: {
-    color: '#111327',
-    fontSize: fs(15),
-    fontWeight: '600',
+    color: colors.text,
+    fontSize: textSize(15),
+    fontFamily: fonts.semiBold,
   },
   paymentProgressRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginTop: rs(14),
-    marginBottom: rs(18),
+    marginTop: size(14),
+    marginBottom: size(18),
   },
   paymentProgressTrack: {
     flex: 1,
-    height: rs(7),
-    backgroundColor: '#E3E5EC',
-    borderRadius: rs(6),
+    height: size(7),
+    backgroundColor: colors.chartTrack,
+    borderRadius: size(6),
     overflow: 'hidden',
   },
   paymentProgressFill: {
     width: '95%',
-    height: rs(7),
-    backgroundColor: '#138A36',
-    borderRadius: rs(6),
+    height: size(7),
+    backgroundColor: colors.success,
+    borderRadius: size(6),
   },
   paymentPercent: {
-    color: '#111327',
-    fontSize: fs(16),
-    fontWeight: '800',
-    marginLeft: rs(16),
+    color: colors.text,
+    fontSize: textSize(16),
+    fontFamily: fonts.extraBold,
+    marginLeft: size(16),
   },
   paymentInfoRow: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginBottom: rs(20),
+    marginBottom: size(20),
   },
   greenValue: {
-    color: '#138A36',
-    fontSize: fs(18),
-    fontWeight: '900',
+    color: colors.success,
+    fontSize: textSize(18),
+    fontFamily: fonts.extraBold,
   },
   grayValue: {
-    color: '#4D506E',
-    fontSize: fs(15),
-    fontWeight: '700',
+    color: colors.mutedTextDark,
+    fontSize: textSize(15),
+    fontFamily: fonts.bold,
   },
   blueValue: {
-    color: '#173CFF',
-    fontSize: fs(18),
-    fontWeight: '900',
+    color: colors.financeBlue,
+    fontSize: textSize(18),
+    fontFamily: fonts.extraBold,
   },
   incentiveTitle: {
-    color: '#111327',
-    fontSize: fs(15),
-    fontWeight: '800',
-    marginTop: rs(18),
-    marginBottom: rs(12),
+    color: colors.text,
+    fontSize: textSize(15),
+    fontFamily: fonts.extraBold,
+    marginTop: size(18),
+    marginBottom: size(12),
   },
   incentiveRow: {
     flexDirection: 'row',
@@ -1535,120 +1532,120 @@ const styles = StyleSheet.create({
   },
   incentiveTrack: {
     flex: 1,
-    height: rs(6),
-    backgroundColor: '#E3E5EC',
-    borderRadius: rs(5),
+    height: size(6),
+    backgroundColor: colors.chartTrack,
+    borderRadius: size(5),
     overflow: 'hidden',
   },
   incentiveFillBlue: {
-    height: rs(6),
-    backgroundColor: '#173CFF',
+    height: size(6),
+    backgroundColor: colors.financeBlue,
   },
   incentiveFillGreen: {
-    height: rs(6),
-    backgroundColor: '#138A36',
+    height: size(6),
+    backgroundColor: colors.success,
   },
   incentivePercent: {
-    color: '#111327',
-    fontSize: fs(15),
-    fontWeight: '800',
-    marginLeft: rs(16),
+    color: colors.text,
+    fontSize: textSize(15),
+    fontFamily: fonts.extraBold,
+    marginLeft: size(16),
   },
   incentiveMetaRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginTop: rs(12),
+    marginTop: size(12),
   },
   incentiveMeta: {
-    color: '#4D506E',
-    fontSize: fs(14),
-    fontWeight: '600',
+    color: colors.mutedTextDark,
+    fontSize: textSize(14),
+    fontFamily: fonts.semiBold,
   },
   rewardText: {
-    color: '#173CFF',
-    fontSize: fs(14),
-    fontWeight: '700',
+    color: colors.financeBlue,
+    fontSize: textSize(14),
+    fontFamily: fonts.bold,
   },
   cardDivider: {
     height: 1,
-    backgroundColor: '#EEF0F6',
-    marginTop: rs(18),
+    backgroundColor: colors.financeDivider,
+    marginTop: size(18),
   },
   qualifiedText: {
-    color: '#138A36',
-    fontSize: fs(14),
-    fontWeight: '800',
-    marginTop: rs(14),
+    color: colors.success,
+    fontSize: textSize(14),
+    fontFamily: fonts.extraBold,
+    marginTop: size(14),
   },
   timelineRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginTop: rs(16),
+    marginTop: size(16),
   },
   timelineCheck: {
-    width: rs(18),
-    height: rs(18),
-    borderRadius: rs(9),
-    backgroundColor: '#138A36',
+    width: size(18),
+    height: size(18),
+    borderRadius: size(9),
+    backgroundColor: colors.success,
     alignItems: 'center',
     justifyContent: 'center',
-    marginRight: rs(14),
+    marginRight: size(14),
   },
   timelineCheckText: {
-    color: '#FFFFFF',
-    fontSize: fs(10),
-    fontWeight: '900',
+    color: colors.white,
+    fontSize: textSize(10),
+    fontFamily: fonts.extraBold,
   },
   timelineTitle: {
     flex: 1,
-    color: '#111327',
-    fontSize: fs(15),
-    fontWeight: '600',
+    color: colors.text,
+    fontSize: textSize(15),
+    fontFamily: fonts.semiBold,
   },
   timelineTime: {
-    color: '#4D506E',
-    fontSize: fs(14),
-    fontWeight: '500',
+    color: colors.mutedTextDark,
+    fontSize: textSize(14),
+    fontFamily: fonts.medium,
   },
   adminCard: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: rs(10),
-    padding: rs(18),
-    marginBottom: rs(16),
-    shadowColor: '#000000',
+    backgroundColor: colors.white,
+    borderRadius: size(10),
+    padding: size(18),
+    marginBottom: size(16),
+    shadowColor: colors.black,
     shadowOpacity: 0.04,
-    shadowRadius: rs(12),
-    shadowOffset: { width: 0, height: rs(5) },
+    shadowRadius: size(12),
+    shadowOffset: { width: 0, height: size(5) },
     elevation: 3,
   },
   actionsRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginTop: rs(16),
+    marginTop: size(16),
   },
   actionButton: {
     width: '23%',
-    height: rs(54),
+    height: size(54),
     borderWidth: 1,
-    borderRadius: rs(6),
+    borderRadius: size(6),
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
   },
   actionText: {
-    fontSize: fs(15),
-    fontWeight: '800',
-    marginLeft: rs(10),
+    fontSize: textSize(15),
+    fontFamily: fonts.extraBold,
+    marginLeft: size(10),
   },
   dealersSection: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: rs(10),
-    padding: rs(18),
-    marginBottom: rs(16),
-    shadowColor: '#000000',
+    backgroundColor: colors.white,
+    borderRadius: size(10),
+    padding: size(18),
+    marginBottom: size(16),
+    shadowColor: colors.black,
     shadowOpacity: 0.04,
-    shadowRadius: rs(12),
-    shadowOffset: { width: 0, height: rs(5) },
+    shadowRadius: size(12),
+    shadowOffset: { width: 0, height: size(5) },
     elevation: 3,
   },
   dealersHeader: {
@@ -1659,296 +1656,296 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   dealerSearchBox: {
-    width: rs(266),
-    height: rs(40),
+    width: size(266),
+    height: size(40),
     borderWidth: 1,
-    borderColor: '#D9DCE8',
-    borderRadius: rs(5),
+    borderColor: colors.inputBorder,
+    borderRadius: size(5),
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: rs(12),
+    paddingHorizontal: size(12),
   },
   dealerSearchInput: {
     flex: 1,
-    fontSize: fs(13),
-    color: '#111327',
-    marginLeft: rs(8),
+    fontSize: textSize(13),
+    color: colors.text,
+    marginLeft: size(8),
     paddingVertical: 0,
   },
   dealerFilterButton: {
-    width: rs(44),
-    height: rs(40),
+    width: size(44),
+    height: size(40),
     borderWidth: 1,
-    borderColor: '#D9DCE8',
-    borderRadius: rs(5),
+    borderColor: colors.inputBorder,
+    borderRadius: size(5),
     alignItems: 'center',
     justifyContent: 'center',
-    marginLeft: rs(12),
+    marginLeft: size(12),
   },
   dealerChipRow: {
     flexDirection: 'row',
-    marginTop: rs(22),
+    marginTop: size(22),
   },
   dealerChip: {
-    height: rs(32),
-    minWidth: rs(86),
-    borderRadius: rs(16),
+    height: size(32),
+    minWidth: size(86),
+    borderRadius: size(16),
     borderWidth: 1,
-    borderColor: '#D9DCE8',
+    borderColor: colors.inputBorder,
     alignItems: 'center',
     justifyContent: 'center',
-    marginRight: rs(12),
-    paddingHorizontal: rs(14),
+    marginRight: size(12),
+    paddingHorizontal: size(14),
   },
   activeDealerChip: {
-    backgroundColor: '#061B66',
-    borderColor: '#061B66',
+    backgroundColor: colors.primary,
+    borderColor: colors.primary,
   },
   dealerChipText: {
-    color: '#138A36',
-    fontSize: fs(13),
-    fontWeight: '800',
+    color: colors.success,
+    fontSize: textSize(13),
+    fontFamily: fonts.extraBold,
   },
   activeDealerChipText: {
-    color: '#FFFFFF',
+    color: colors.white,
   },
   sortDealerRow: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'flex-end',
-    marginTop: rs(10),
-    marginBottom: rs(10),
+    marginTop: size(10),
+    marginBottom: size(10),
   },
   sortDealerText: {
-    color: '#4D506E',
-    fontSize: fs(13),
-    marginRight: rs(14),
+    color: colors.mutedTextDark,
+    fontSize: textSize(13),
+    marginRight: size(14),
   },
   sortDealerButton: {
-    height: rs(36),
-    minWidth: rs(190),
+    height: size(36),
+    minWidth: size(190),
     borderWidth: 1,
-    borderColor: '#D9DCE8',
-    borderRadius: rs(5),
-    paddingHorizontal: rs(12),
+    borderColor: colors.inputBorder,
+    borderRadius: size(5),
+    paddingHorizontal: size(12),
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
   },
   sortDealerButtonText: {
-    color: '#061247',
-    fontSize: fs(13),
-    fontWeight: '600',
+    color: colors.primaryDark,
+    fontSize: textSize(13),
+    fontFamily: fonts.semiBold,
   },
   dealerTable: {
-    borderRadius: rs(8),
+    borderRadius: size(8),
     overflow: 'hidden',
   },
   dealerTableRow: {
-    minHeight: rs(58),
+    minHeight: size(58),
     flexDirection: 'row',
     alignItems: 'center',
     borderBottomWidth: 1,
-    borderBottomColor: '#EEF0F6',
+    borderBottomColor: colors.financeDivider,
   },
   smallDealerAvatar: {
-    width: rs(42),
-    height: rs(42),
-    borderRadius: rs(21),
+    width: size(42),
+    height: size(42),
+    borderRadius: size(21),
     alignItems: 'center',
     justifyContent: 'center',
-    marginRight: rs(18),
+    marginRight: size(18),
   },
   smallDealerAvatarText: {
-    color: '#FFFFFF',
-    fontSize: fs(16),
-    fontWeight: '900',
+    color: colors.white,
+    fontSize: textSize(16),
+    fontFamily: fonts.extraBold,
   },
   dealerNameBlock: {
-    width: rs(165),
+    width: size(165),
   },
   dealerName: {
-    color: '#111327',
-    fontSize: fs(14),
-    fontWeight: '900',
+    color: colors.text,
+    fontSize: textSize(14),
+    fontFamily: fonts.extraBold,
   },
   dealerCity: {
-    color: '#4D506E',
-    fontSize: fs(12),
-    marginTop: rs(5),
+    color: colors.mutedTextDark,
+    fontSize: textSize(12),
+    marginTop: size(5),
   },
   tableDivider: {
-    height: rs(42),
+    height: size(42),
     width: 1,
-    backgroundColor: '#EEF0F6',
-    marginHorizontal: rs(16),
+    backgroundColor: colors.financeDivider,
+    marginHorizontal: size(16),
   },
   revenueBlock: {
-    width: rs(130),
+    width: size(130),
   },
   tableRevenue: {
-    color: '#138A36',
-    fontSize: fs(15),
-    fontWeight: '900',
+    color: colors.success,
+    fontSize: textSize(15),
+    fontFamily: fonts.extraBold,
   },
   tableSubText: {
-    color: '#4D506E',
-    fontSize: fs(11),
-    marginTop: rs(4),
+    color: colors.mutedTextDark,
+    fontSize: textSize(11),
+    marginTop: size(4),
   },
   scoreBlock: {
-    width: rs(84),
+    width: size(84),
     alignItems: 'center',
   },
   smallScoreBadge: {
-    minWidth: rs(70),
-    height: rs(24),
-    borderRadius: rs(4),
+    minWidth: size(70),
+    height: size(24),
+    borderRadius: size(4),
     borderWidth: 1,
-    borderColor: '#B8C8FF',
-    backgroundColor: '#F6F8FF',
+    borderColor: colors.blueBorder,
+    backgroundColor: colors.blueBg,
     alignItems: 'center',
     justifyContent: 'center',
   },
   smallScoreText: {
-    color: '#173CFF',
-    fontSize: fs(12),
-    fontWeight: '900',
+    color: colors.financeBlue,
+    fontSize: textSize(12),
+    fontFamily: fonts.extraBold,
   },
   tableStatusBadge: {
-    width: rs(76),
-    height: rs(28),
-    borderRadius: rs(5),
+    width: size(76),
+    height: size(28),
+    borderRadius: size(5),
     borderWidth: 1,
-    borderColor: '#BEE7C5',
-    backgroundColor: '#EAF8EC',
+    borderColor: colors.successBorderSoft,
+    backgroundColor: colors.paidBg,
     alignItems: 'center',
     justifyContent: 'center',
-    marginRight: rs(20),
+    marginRight: size(20),
   },
   tableRiskBadge: {
-    borderColor: '#F9C6A8',
-    backgroundColor: '#FFF5EE',
+    borderColor: colors.riskBorderStrong,
+    backgroundColor: colors.riskBg,
   },
   tableOverdueBadge: {
-    borderColor: '#FFB6B6',
-    backgroundColor: '#FFF0F0',
+    borderColor: colors.overdueBorder,
+    backgroundColor: colors.overdueBg,
   },
   tableStatusText: {
-    color: '#138A36',
-    fontSize: fs(12),
-    fontWeight: '800',
+    color: colors.success,
+    fontSize: textSize(12),
+    fontFamily: fonts.extraBold,
   },
   loadMoreButton: {
-    height: rs(42),
+    height: size(42),
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
   },
   loadMoreText: {
-    color: '#173CFF',
-    fontSize: fs(15),
-    fontWeight: '800',
-    marginRight: rs(8),
+    color: colors.financeBlue,
+    fontSize: textSize(15),
+    fontFamily: fonts.extraBold,
+    marginRight: size(8),
   },
   bigCircle: {
-    width: rs(180),
-    height: rs(180),
-    borderRadius: rs(90),
-    borderWidth: rs(12),
-    borderColor: '#138A36',
+    width: size(180),
+    height: size(180),
+    borderRadius: size(90),
+    borderWidth: size(12),
+    borderColor: colors.success,
     alignSelf: 'center',
-    marginTop: rs(22),
+    marginTop: size(22),
     alignItems: 'center',
     justifyContent: 'center',
   },
   bigCircleValue: {
-    color: '#173CFF',
-    fontSize: fs(36),
-    fontWeight: '900',
+    color: colors.financeBlue,
+    fontSize: textSize(36),
+    fontFamily: fonts.extraBold,
   },
   bigCircleSub: {
-    color: '#4D506E',
-    fontSize: fs(12),
-    marginTop: rs(6),
+    color: colors.mutedTextDark,
+    fontSize: textSize(12),
+    marginTop: size(6),
   },
   onTrackBadge: {
     alignSelf: 'center',
-    marginTop: rs(12),
-    minWidth: rs(145),
-    height: rs(30),
-    borderRadius: rs(5),
+    marginTop: size(12),
+    minWidth: size(145),
+    height: size(30),
+    borderRadius: size(5),
     borderWidth: 1,
-    borderColor: '#BEE7C5',
-    backgroundColor: '#F3FFF5',
+    borderColor: colors.successBorderSoft,
+    backgroundColor: colors.successBg,
     alignItems: 'center',
     justifyContent: 'center',
   },
   onTrackText: {
-    color: '#138A36',
-    fontSize: fs(15),
-    fontWeight: '800',
+    color: colors.success,
+    fontSize: textSize(15),
+    fontFamily: fonts.extraBold,
   },
   greenSmall: {
-    color: '#138A36',
-    fontSize: fs(14),
-    fontWeight: '800',
+    color: colors.success,
+    fontSize: textSize(14),
+    fontFamily: fonts.extraBold,
   },
   barChart: {
     flex: 1,
     flexDirection: 'row',
     alignItems: 'flex-end',
     justifyContent: 'space-around',
-    marginTop: rs(20),
+    marginTop: size(20),
   },
   barItem: {
     alignItems: 'center',
   },
   barValue: {
-    color: '#111327',
-    fontSize: fs(11),
-    fontWeight: '800',
-    marginBottom: rs(8),
+    color: colors.text,
+    fontSize: textSize(11),
+    fontFamily: fonts.extraBold,
+    marginBottom: size(8),
   },
   bar: {
-    width: rs(32),
-    borderTopLeftRadius: rs(4),
-    borderTopRightRadius: rs(4),
+    width: size(32),
+    borderTopLeftRadius: size(4),
+    borderTopRightRadius: size(4),
   },
   barMonth: {
-    color: '#4D506E',
-    fontSize: fs(12),
-    marginTop: rs(8),
+    color: colors.mutedTextDark,
+    fontSize: textSize(12),
+    marginTop: size(8),
   },
   smallProgressTrack: {
-    width: rs(120),
-    height: rs(7),
-    backgroundColor: '#E3E5EC',
-    borderRadius: rs(6),
+    width: size(120),
+    height: size(7),
+    backgroundColor: colors.chartTrack,
+    borderRadius: size(6),
     overflow: 'hidden',
     marginLeft: 'auto',
-    marginRight: rs(10),
+    marginRight: size(10),
   },
   smallProgressFill: {
     width: '85%',
-    height: rs(7),
-    backgroundColor: '#138A36',
+    height: size(7),
+    backgroundColor: colors.success,
   },
   smallGray: {
-    color: '#4D506E',
-    fontSize: fs(12),
-    marginTop: -rs(8),
-    marginBottom: rs(18),
+    color: colors.mutedTextDark,
+    fontSize: textSize(12),
+    marginTop: -size(8),
+    marginBottom: size(18),
   },
   peerHeader: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: rs(20),
+    marginBottom: size(20),
   },
   peerSub: {
-    color: '#4D506E',
-    fontSize: fs(15),
-    marginLeft: rs(20),
+    color: colors.mutedTextDark,
+    fontSize: textSize(15),
+    marginLeft: size(20),
     flex: 1,
   },
   peerLegendRow: {
@@ -1956,68 +1953,68 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   blueDot: {
-    width: rs(12),
-    height: rs(12),
-    borderRadius: rs(6),
-    backgroundColor: '#173CFF',
-    marginRight: rs(8),
+    width: size(12),
+    height: size(12),
+    borderRadius: size(6),
+    backgroundColor: colors.financeBlue,
+    marginRight: size(8),
   },
   grayDot: {
-    width: rs(12),
-    height: rs(12),
-    borderRadius: rs(6),
-    backgroundColor: '#C5C8D2',
-    marginLeft: rs(24),
-    marginRight: rs(8),
+    width: size(12),
+    height: size(12),
+    borderRadius: size(6),
+    backgroundColor: colors.grayDot,
+    marginLeft: size(24),
+    marginRight: size(8),
   },
   peerRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: rs(14),
+    marginBottom: size(14),
   },
   peerLabel: {
-    width: rs(90),
-    color: '#111327',
-    fontSize: fs(13),
-    fontWeight: '800',
+    width: size(90),
+    color: colors.text,
+    fontSize: textSize(13),
+    fontFamily: fonts.extraBold,
   },
   peerTrack: {
     flex: 1,
-    height: rs(7),
-    backgroundColor: '#E3E5EC',
-    borderRadius: rs(6),
+    height: size(7),
+    backgroundColor: colors.chartTrack,
+    borderRadius: size(6),
     overflow: 'hidden',
-    marginRight: rs(14),
+    marginRight: size(14),
   },
   peerFillBlue: {
     width: '92%',
-    height: rs(7),
-    backgroundColor: '#173CFF',
+    height: size(7),
+    backgroundColor: colors.financeBlue,
   },
   peerValue: {
-    width: rs(45),
-    color: '#111327',
-    fontSize: fs(13),
-    fontWeight: '800',
+    width: size(45),
+    color: colors.text,
+    fontSize: textSize(13),
+    fontFamily: fonts.extraBold,
   },
   peerTrackSmall: {
     flex: 0.45,
-    height: rs(7),
-    backgroundColor: '#E3E5EC',
-    borderRadius: rs(6),
+    height: size(7),
+    backgroundColor: colors.chartTrack,
+    borderRadius: size(6),
     overflow: 'hidden',
-    marginRight: rs(14),
+    marginRight: size(14),
   },
   peerFillGray: {
     width: '74%',
-    height: rs(7),
-    backgroundColor: '#C5C8D2',
+    height: size(7),
+    backgroundColor: colors.grayDot,
   },
   aboveAverage: {
-    color: '#138A36',
-    fontSize: fs(14),
-    fontWeight: '800',
+    color: colors.success,
+    fontSize: textSize(14),
+    fontFamily: fonts.extraBold,
     textAlign: 'center',
-    marginTop: rs(4),
+    marginTop: size(4),
   },
 });

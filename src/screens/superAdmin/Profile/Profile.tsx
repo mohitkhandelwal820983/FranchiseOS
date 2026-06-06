@@ -59,25 +59,21 @@ import {
 import { clearAuthStorage } from '../../../utils/sessionManager';
 import { resetToLogin } from '../../../navigation/navigationService';
 import { showErrorToast } from '../../../utils/toast';
+import { colors, fonts, size as rs, superAdminProfileTextSize as fs } from '../../../theme';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
-
-const DESIGN_WIDTH = 832;
-const scale = SCREEN_WIDTH / DESIGN_WIDTH;
-const rs = (value: number) => Math.round(value * scale);
-const fs = (value: number) => Math.round((value + 6) * scale);
 
 const Header = () => {
   return (
     <View style={styles.header}>
       <TouchableOpacity activeOpacity={0.8}>
-        <Menu color="#FFFFFF" size={rs(35)} strokeWidth={2.6} />
+        <Menu color={colors.white} size={rs(35)} strokeWidth={2.6} />
       </TouchableOpacity>
 
       <Text style={styles.headerTitle}>My Profile</Text>
 
       <TouchableOpacity activeOpacity={0.8}>
-        <Edit3 color="#FFFFFF" size={rs(32)} strokeWidth={2.3} />
+        <Edit3 color={colors.white} size={rs(32)} strokeWidth={2.3} />
       </TouchableOpacity>
     </View>
   );
@@ -92,7 +88,7 @@ const ProfileHero = ({ data }: { data: ProfileData }) => {
         </View>
 
         <View style={styles.cameraButton}>
-          <Camera color="#173CFF" size={rs(22)} strokeWidth={2.4} />
+          <Camera color={colors.financeBlue} size={rs(22)} strokeWidth={2.4} />
         </View>
       </View>
 
@@ -111,7 +107,7 @@ const ProfileHero = ({ data }: { data: ProfileData }) => {
 };
 
 const AdminDetailIcon = ({ type }: { type: AdminDetail['icon'] }) => {
-  const color = '#5D607E';
+  const color = colors.slateText;
   const size = rs(20);
 
   if (type === 'user') {
@@ -144,7 +140,7 @@ const CardHeader = ({ title, edit }: { title: string; edit?: boolean }) => {
 
       {edit ? (
         <TouchableOpacity activeOpacity={0.8}>
-          <Edit3 color="#061247" size={rs(20)} strokeWidth={2.2} />
+          <Edit3 color={colors.primaryText} size={rs(20)} strokeWidth={2.2} />
         </TouchableOpacity>
       ) : null}
     </View>
@@ -162,9 +158,9 @@ const AdminDetailsCard = ({ items }: { items: AdminDetail[] }) => {
             <AdminDetailIcon type={item.icon} />
           </View>
 
-          <Text style={styles.detailLabel}>{item.label}</Text>
+          <Text numberOfLines={1} style={styles.detailLabel}>{item.label}</Text>
 
-          <Text style={[styles.detailValue, item.blue && styles.blueText]}>
+          <Text numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.78} style={[styles.detailValue, item.blue && styles.blueText]}>
             {item.value}
           </Text>
 
@@ -172,9 +168,9 @@ const AdminDetailsCard = ({ items }: { items: AdminDetail[] }) => {
             <View style={styles.verifiedBox}>
               <Text style={styles.verifiedText}>Verified</Text>
               <CheckCircle2
-                color="#138A36"
+                color={colors.success}
                 size={rs(15)}
-                fill="#138A36"
+                fill={colors.success}
                 strokeWidth={2}
               />
             </View>
@@ -186,7 +182,7 @@ const AdminDetailsCard = ({ items }: { items: AdminDetail[] }) => {
 };
 
 const SecurityIcon = ({ type }: { type: SecurityItem['icon'] }) => {
-  const color = '#5D607E';
+  const color = colors.slateText;
   const size = rs(24);
 
   if (type === 'password') {
@@ -232,7 +228,7 @@ const AccountSecurityCard = ({ items }: { items: SecurityItem[] }) => {
           <SecurityIcon type={item.icon} />
 
           <View style={styles.securityTextBox}>
-            <Text style={styles.securityTitle}>{item.title}</Text>
+            <Text numberOfLines={1} style={styles.securityTitle}>{item.title}</Text>
             {!!item.subtitle && (
               <Text
                 style={[
@@ -246,18 +242,18 @@ const AccountSecurityCard = ({ items }: { items: SecurityItem[] }) => {
           </View>
 
           {!!item.value && (
-            <Text style={styles.securityValue}>{item.value}</Text>
+            <Text numberOfLines={1} style={styles.securityValue}>{item.value}</Text>
           )}
 
           {item.type === 'switch' ? (
             <Switch
               value={!!item.enabled}
               onValueChange={() => toggle(item.id)}
-              trackColor={{ false: '#D9DCE8', true: '#173CFF' }}
-              thumbColor="#FFFFFF"
+              trackColor={{ false: colors.inputBorder, true: colors.financeBlue }}
+              thumbColor={colors.white}
             />
           ) : (
-            <ChevronRight color="#061247" size={rs(20)} strokeWidth={2.2} />
+            <ChevronRight color={colors.primaryText} size={rs(20)} strokeWidth={2.2} />
           )}
         </View>
       ))}
@@ -278,12 +274,12 @@ const RecentLoginsCard = ({ items }: { items: LoginItem[] }) => {
             <View
               style={[
                 styles.loginDot,
-                { backgroundColor: blocked ? '#E00014' : '#138A36' },
+                { backgroundColor: blocked ? colors.dangerDark : colors.success },
               ]}
             />
 
             <View style={styles.loginInfo}>
-              <Text style={styles.loginDevice}>{item.device}</Text>
+              <Text numberOfLines={1} style={styles.loginDevice}>{item.device}</Text>
               <Text style={[styles.loginLocation, blocked && styles.redText]}>
                 {item.location}
               </Text>
@@ -316,7 +312,7 @@ const SecurityAlertCard = () => {
       <Text style={styles.cardTitle}>Security Alerts</Text>
 
       <View style={styles.alertBox}>
-        <ShieldAlert color="#F06419" size={rs(30)} fill="#F06419" />
+        <ShieldAlert color={colors.profileOrange} size={rs(30)} fill={colors.profileOrange} />
 
         <View style={styles.alertTextBox}>
           <Text style={styles.alertTitle}>
@@ -393,7 +389,7 @@ const OtherAdminsCard = ({ admins }: { admins: AdminUser[] }) => {
           </View>
 
           <View style={styles.adminInfo}>
-            <Text style={styles.adminName}>{item.name}</Text>
+            <Text numberOfLines={1} style={styles.adminName}>{item.name}</Text>
             <Text style={styles.blueSmallText}>{item.role}</Text>
           </View>
 
@@ -409,7 +405,7 @@ const OtherAdminsCard = ({ admins }: { admins: AdminUser[] }) => {
 
       <View style={styles.adminRow}>
         <View style={styles.addAdminCircle}>
-          <Plus color="#111327" size={rs(28)} strokeWidth={2} />
+          <Plus color={colors.text} size={rs(28)} strokeWidth={2} />
         </View>
 
         <View style={styles.adminInfo}>
@@ -422,7 +418,7 @@ const OtherAdminsCard = ({ admins }: { admins: AdminUser[] }) => {
 };
 
 const DeveloperIcon = ({ type }: { type: DeveloperSetting['icon'] }) => {
-  const color = '#5D607E';
+  const color = colors.slateText;
   const size = rs(20);
 
   if (type === 'api') {
@@ -445,21 +441,21 @@ const DeveloperSettingsCard = ({ items }: { items: DeveloperSetting[] }) => {
         <View key={item.id} style={styles.simpleRow}>
           <DeveloperIcon type={item.icon} />
 
-          <Text style={styles.simpleTitle}>{item.title}</Text>
+          <Text numberOfLines={1} style={styles.simpleTitle}>{item.title}</Text>
 
-          <Text style={[styles.simpleValue, item.green && styles.greenText]}>
+          <Text numberOfLines={1} style={[styles.simpleValue, item.green && styles.greenText]}>
             {item.value}
           </Text>
 
           {item.green ? (
             <CheckCircle2
-              color="#138A36"
+              color={colors.success}
               size={rs(15)}
-              fill="#138A36"
+              fill={colors.success}
               strokeWidth={2}
             />
           ) : (
-            <ChevronRight color="#061247" size={rs(18)} strokeWidth={2.2} />
+            <ChevronRight color={colors.primaryText} size={rs(18)} strokeWidth={2.2} />
           )}
         </View>
       ))}
@@ -473,7 +469,7 @@ const AnnouncementsCard = () => {
       <Text style={styles.cardTitle}>Platform Announcements</Text>
 
       <TouchableOpacity activeOpacity={0.8} style={styles.broadcastButton}>
-        <Megaphone color="#173CFF" size={rs(23)} strokeWidth={2.3} />
+        <Megaphone color={colors.financeBlue} size={rs(23)} strokeWidth={2.3} />
         <Text style={styles.broadcastText}>Send Broadcast</Text>
       </TouchableOpacity>
 
@@ -485,14 +481,14 @@ const AnnouncementsCard = () => {
           </Text>
         </View>
 
-        <ChevronRight color="#061247" size={rs(20)} strokeWidth={2.2} />
+        <ChevronRight color={colors.primaryText} size={rs(20)} strokeWidth={2.2} />
       </View>
     </View>
   );
 };
 
 const SettingIcon = ({ type }: { type: SettingItem['icon'] }) => {
-  const color = '#5D607E';
+  const color = colors.slateText;
   const size = rs(20);
 
   if (type === 'push') {
@@ -529,19 +525,19 @@ const SettingsCard = ({ items }: { items: SettingItem[] }) => {
         <View key={item.id} style={styles.simpleRow}>
           <SettingIcon type={item.icon} />
 
-          <Text style={styles.simpleTitle}>{item.title}</Text>
+          <Text numberOfLines={1} style={styles.simpleTitle}>{item.title}</Text>
 
           {item.type === 'switch' ? (
             <Switch
               value={!!item.enabled}
               onValueChange={() => toggle(item.id)}
-              trackColor={{ false: '#D9DCE8', true: '#173CFF' }}
-              thumbColor="#FFFFFF"
+              trackColor={{ false: colors.inputBorder, true: colors.financeBlue }}
+              thumbColor={colors.white}
             />
           ) : (
             <>
-              <Text style={styles.grayValue}>{item.value}</Text>
-              <ChevronRight color="#061247" size={rs(18)} strokeWidth={2.2} />
+              <Text numberOfLines={1} style={styles.grayValue}>{item.value}</Text>
+              <ChevronRight color={colors.primaryText} size={rs(18)} strokeWidth={2.2} />
             </>
           )}
         </View>
@@ -551,7 +547,7 @@ const SettingsCard = ({ items }: { items: SettingItem[] }) => {
 };
 
 const HelpIcon = ({ type }: { type: HelpInfo['icon'] }) => {
-  const color = '#5D607E';
+  const color = colors.slateText;
   const size = rs(18);
 
   if (type === 'help') {
@@ -582,15 +578,15 @@ const HelpInfoCard = ({ items }: { items: HelpInfo[] }) => {
         <View key={item.id} style={styles.simpleRow}>
           <HelpIcon type={item.icon} />
 
-          <Text style={styles.simpleTitle}>{item.title}</Text>
+          <Text numberOfLines={1} style={styles.simpleTitle}>{item.title}</Text>
 
           {!!item.value && (
-            <Text style={[styles.grayValue, item.orange && styles.orangeText]}>
+            <Text numberOfLines={1} style={[styles.grayValue, item.orange && styles.orangeText]}>
               {item.value}
             </Text>
           )}
 
-          <ChevronRight color="#061247" size={rs(18)} strokeWidth={2.2} />
+          <ChevronRight color={colors.primaryText} size={rs(18)} strokeWidth={2.2} />
         </View>
       ))}
     </View>
@@ -633,7 +629,7 @@ const LogoutButton = () => {
       onPress={handleLogout}
       style={[styles.logoutButton, isLoggingOut && styles.disabledButton]}
     >
-      <LogOut color="#E00014" size={rs(24)} strokeWidth={2.3} />
+      <LogOut color={colors.dangerDark} size={rs(24)} strokeWidth={2.3} />
       <Text style={styles.logoutText}>
         {isLoggingOut ? 'Logging out...' : 'Logout'}
       </Text>
@@ -680,8 +676,8 @@ const ProfileScreen = () => {
   if (loading) {
     return (
       <SafeAreaView style={styles.loaderScreen}>
-        <StatusBar backgroundColor="#061B66" barStyle="light-content" />
-        <ActivityIndicator size="large" color="#173CFF" />
+        <StatusBar backgroundColor={colors.primary} barStyle="light-content" />
+        <ActivityIndicator size="large" color={colors.financeBlue} />
       </SafeAreaView>
     );
   }
@@ -689,13 +685,13 @@ const ProfileScreen = () => {
   if (error || !data) {
     return (
       <SafeAreaView style={styles.loaderScreen}>
-        <StatusBar backgroundColor="#061B66" barStyle="light-content" />
+        <StatusBar backgroundColor={colors.primary} barStyle="light-content" />
 
         <Text
           style={{
-            color: '#061247',
+            color: colors.primaryText,
             fontSize: fs(16),
-            fontWeight: '800',
+            fontFamily: fonts.extraBold,
             marginBottom: rs(18),
             textAlign: 'center',
           }}
@@ -707,7 +703,7 @@ const ProfileScreen = () => {
           activeOpacity={0.85}
           onPress={handleRetry}
           style={{
-            backgroundColor: '#061B66',
+            backgroundColor: colors.primary,
             paddingHorizontal: rs(28),
             paddingVertical: rs(14),
             borderRadius: rs(8),
@@ -715,9 +711,9 @@ const ProfileScreen = () => {
         >
           <Text
             style={{
-              color: '#FFFFFF',
+              color: colors.white,
               fontSize: fs(14),
-              fontWeight: '800',
+              fontFamily: fonts.extraBold,
             }}
           >
             Retry
@@ -729,7 +725,7 @@ const ProfileScreen = () => {
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <StatusBar backgroundColor="#061B66" barStyle="light-content" />
+      <StatusBar backgroundColor={colors.primary} barStyle="light-content" />
 
       <Header />
 
@@ -771,17 +767,17 @@ const FULL_WIDTH = SCREEN_WIDTH - PAGE_PADDING * 2;
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#F8F9FD',
+    backgroundColor: colors.financeBackground,
   },
   loaderScreen: {
     flex: 1,
-    backgroundColor: '#F8F9FD',
+    backgroundColor: colors.financeBackground,
     alignItems: 'center',
     justifyContent: 'center',
   },
   header: {
     height: rs(70),
-    backgroundColor: '#061B66',
+    backgroundColor: colors.primary,
     paddingHorizontal: rs(28),
     paddingTop: rs(6),
     flexDirection: 'row',
@@ -789,9 +785,9 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   headerTitle: {
-    color: '#FFFFFF',
+    color: colors.white,
     fontSize: fs(28),
-    fontWeight: '800',
+    fontFamily: fonts.extraBold,
   },
   scrollView: {
     flex: 1,
@@ -803,7 +799,7 @@ const styles = StyleSheet.create({
   },
   heroCard: {
     minHeight: rs(318),
-    backgroundColor: '#061B66',
+    backgroundColor: colors.primary,
     borderRadius: rs(8),
     alignItems: 'center',
     paddingTop: rs(16),
@@ -821,14 +817,14 @@ const styles = StyleSheet.create({
     height: rs(124),
     borderRadius: rs(62),
     borderWidth: rs(3),
-    borderColor: '#FFFFFF',
+    borderColor: colors.white,
     alignItems: 'center',
     justifyContent: 'center',
   },
   avatarText: {
-    color: '#FFFFFF',
+    color: colors.white,
     fontSize: fs(54),
-    fontWeight: '900',
+    fontFamily: fonts.extraBold,
     letterSpacing: rs(6),
   },
   cameraButton: {
@@ -838,20 +834,20 @@ const styles = StyleSheet.create({
     width: rs(42),
     height: rs(42),
     borderRadius: rs(21),
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.white,
     alignItems: 'center',
     justifyContent: 'center',
   },
   profileName: {
-    color: '#FFFFFF',
+    color: colors.white,
     fontSize: fs(30),
-    fontWeight: '800',
+    fontFamily: fonts.extraBold,
     marginTop: rs(14),
   },
   profileRole: {
-    color: '#FFFFFF',
+    color: colors.white,
     fontSize: fs(15),
-    fontWeight: '600',
+    fontFamily: fonts.semiBold,
     marginTop: rs(6),
   },
   platformPill: {
@@ -859,20 +855,20 @@ const styles = StyleSheet.create({
     minHeight: rs(36),
     borderRadius: rs(15),
     borderWidth: 1,
-    borderColor: '#FFFFFF',
+    borderColor: colors.white,
     alignItems: 'center',
     justifyContent: 'center',
     marginTop: rs(8),
   },
   platformText: {
-    color: '#FFFFFF',
+    color: colors.white,
     fontSize: fs(14),
-    fontWeight: '700',
+    fontFamily: fonts.bold,
   },
   memberSince: {
-    color: '#FFFFFF',
+    color: colors.white,
     fontSize: fs(15),
-    fontWeight: '500',
+    fontFamily: fonts.medium,
     marginTop: rs(10),
   },
   twoColumnRow: {
@@ -880,12 +876,12 @@ const styles = StyleSheet.create({
   },
   halfCard: {
     width: FULL_WIDTH,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.white,
     borderRadius: rs(10),
     paddingHorizontal: rs(18),
     paddingVertical: rs(16),
     marginBottom: rs(14),
-    shadowColor: '#000000',
+    shadowColor: colors.black,
     shadowOpacity: 0.04,
     shadowRadius: rs(10),
     shadowOffset: { width: 0, height: rs(4) },
@@ -902,14 +898,14 @@ const styles = StyleSheet.create({
     marginBottom: rs(8),
   },
   cardTitle: {
-    color: '#111327',
+    color: colors.text,
     fontSize: fs(18),
-    fontWeight: '900',
+    fontFamily: fonts.extraBold,
   },
   detailRow: {
     minHeight: rs(56),
     borderBottomWidth: 1,
-    borderBottomColor: '#EEF0F6',
+    borderBottomColor: colors.financeDivider,
     flexDirection: 'row',
     alignItems: 'center',
   },
@@ -918,35 +914,36 @@ const styles = StyleSheet.create({
   },
   detailLabel: {
     width: rs(125),
-    color: '#5D607E',
+    color: colors.slateText,
     fontSize: fs(12),
-    fontWeight: '600',
+    fontFamily: fonts.semiBold,
   },
   detailValue: {
     flex: 1,
+    minWidth: 0,
     flexShrink: 1,
-    color: '#111327',
+    color: colors.text,
     fontSize: fs(13),
-    fontWeight: '900',
+    fontFamily: fonts.extraBold,
   },
   blueText: {
-    color: '#173CFF',
+    color: colors.financeBlue,
   },
   verifiedBox: {
     flexDirection: 'row',
     alignItems: 'center',
   },
   verifiedText: {
-    color: '#138A36',
+    color: colors.success,
     fontSize: fs(12),
-    fontWeight: '800',
+    fontFamily: fonts.extraBold,
     marginRight: rs(6),
   },
   logoBox: {
     width: rs(202),
     height: rs(132),
     borderWidth: 1,
-    borderColor: '#D9DCE8',
+    borderColor: colors.inputBorder,
     borderRadius: rs(12),
     alignSelf: 'center',
     alignItems: 'center',
@@ -954,19 +951,19 @@ const styles = StyleSheet.create({
     marginTop: rs(18),
   },
   logoMark: {
-    color: '#173CFF',
+    color: colors.financeBlue,
     fontSize: fs(58),
-    fontWeight: '900',
+    fontFamily: fonts.extraBold,
     lineHeight: fs(58),
   },
   logoText: {
-    color: '#061247',
+    color: colors.primaryText,
     fontSize: fs(28),
-    fontWeight: '800',
+    fontFamily: fonts.extraBold,
     marginTop: rs(4),
   },
   tapLogoText: {
-    color: '#5D607E',
+    color: colors.slateText,
     fontSize: fs(13),
     textAlign: 'center',
     marginTop: rs(12),
@@ -975,7 +972,7 @@ const styles = StyleSheet.create({
     width: rs(220),
     minHeight: rs(42),
     borderWidth: 1,
-    borderColor: '#173CFF',
+    borderColor: colors.financeBlue,
     borderRadius: rs(4),
     alignSelf: 'center',
     alignItems: 'center',
@@ -983,45 +980,46 @@ const styles = StyleSheet.create({
     marginTop: rs(12),
   },
   uploadButtonText: {
-    color: '#173CFF',
+    color: colors.financeBlue,
     fontSize: fs(14),
-    fontWeight: '800',
+    fontFamily: fonts.extraBold,
   },
   securityRow: {
     minHeight: rs(66),
     borderBottomWidth: 1,
-    borderBottomColor: '#EEF0F6',
+    borderBottomColor: colors.financeDivider,
     flexDirection: 'row',
     alignItems: 'center',
   },
   securityTextBox: {
     flex: 1,
+    minWidth: 0,
     marginLeft: rs(14),
   },
   securityTitle: {
-    color: '#111327',
+    color: colors.text,
     fontSize: fs(14),
-    fontWeight: '900',
+    fontFamily: fonts.extraBold,
   },
   securitySubtitle: {
-    color: '#5D607E',
+    color: colors.slateText,
     fontSize: fs(12),
-    fontWeight: '600',
+    fontFamily: fonts.semiBold,
     marginTop: rs(4),
   },
   securityValue: {
-    color: '#173CFF',
+    color: colors.financeBlue,
     fontSize: fs(12),
-    fontWeight: '800',
+    fontFamily: fonts.extraBold,
     marginRight: rs(10),
   },
   greenText: {
-    color: '#138A36',
+    color: colors.success,
   },
   loginRow: {
     minHeight: rs(72),
     borderBottomWidth: 1,
-    borderBottomColor: '#EEF0F6',
+    borderBottomColor: colors.financeDivider,
     flexDirection: 'row',
     alignItems: 'center',
   },
@@ -1033,52 +1031,53 @@ const styles = StyleSheet.create({
   },
   loginInfo: {
     flex: 1,
+    minWidth: 0,
   },
   loginDevice: {
-    color: '#111327',
+    color: colors.text,
     fontSize: fs(14),
-    fontWeight: '900',
+    fontFamily: fonts.extraBold,
   },
   loginLocation: {
-    color: '#5D607E',
+    color: colors.slateText,
     fontSize: fs(12),
-    fontWeight: '600',
+    fontFamily: fonts.semiBold,
     marginTop: rs(4),
   },
   loginRight: {
     alignItems: 'flex-end',
   },
   loginTime: {
-    color: '#5D607E',
+    color: colors.slateText,
     fontSize: fs(12),
-    fontWeight: '600',
+    fontFamily: fonts.semiBold,
   },
   redText: {
-    color: '#E00014',
+    color: colors.dangerDark,
   },
   reviewButton: {
     width: rs(78),
     height: rs(30),
     borderWidth: 1,
-    borderColor: '#173CFF',
+    borderColor: colors.financeBlue,
     borderRadius: rs(4),
     alignItems: 'center',
     justifyContent: 'center',
     marginTop: rs(12),
   },
   reviewText: {
-    color: '#173CFF',
+    color: colors.financeBlue,
     fontSize: fs(12),
-    fontWeight: '800',
+    fontFamily: fonts.extraBold,
   },
   alertCard: {
     width: FULL_WIDTH,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.white,
     borderRadius: rs(10),
     paddingHorizontal: rs(18),
     paddingVertical: rs(16),
     marginBottom: rs(14),
-    shadowColor: '#000000',
+    shadowColor: colors.black,
     shadowOpacity: 0.04,
     shadowRadius: rs(10),
     shadowOffset: { width: 0, height: rs(4) },
@@ -1087,8 +1086,8 @@ const styles = StyleSheet.create({
   alertBox: {
     minHeight: rs(78),
     borderWidth: 1,
-    borderColor: '#F8C9A8',
-    backgroundColor: '#FFF4EA',
+    borderColor: colors.orangeBorder,
+    backgroundColor: colors.superAdminAlertBg,
     borderRadius: rs(6),
     marginTop: rs(12),
     paddingHorizontal: rs(12),
@@ -1097,33 +1096,35 @@ const styles = StyleSheet.create({
   },
   alertTextBox: {
     flex: 1,
+    minWidth: 0,
     marginLeft: rs(14),
+    paddingRight: rs(8),
   },
   alertTitle: {
-    color: '#F06419',
+    color: colors.profileOrange,
     fontSize: fs(13),
-    fontWeight: '900',
+    fontFamily: fonts.extraBold,
   },
   alertSubtitle: {
-    color: '#5D607E',
+    color: colors.slateText,
     fontSize: fs(11),
-    fontWeight: '600',
+    fontFamily: fonts.semiBold,
     marginTop: rs(4),
   },
   blockButton: {
     width: rs(118),
     minHeight: rs(40),
     borderWidth: 1,
-    borderColor: '#E00014',
+    borderColor: colors.dangerDark,
     borderRadius: rs(4),
     alignItems: 'center',
     justifyContent: 'center',
     paddingHorizontal: rs(8),
   },
   blockButtonText: {
-    color: '#E00014',
+    color: colors.dangerDark,
     fontSize: fs(12),
-    fontWeight: '800',
+    fontFamily: fonts.extraBold,
   },
   emergencyLine: {
     position: 'absolute',
@@ -1131,14 +1132,14 @@ const styles = StyleSheet.create({
     top: rs(0),
     bottom: rs(0),
     width: rs(4),
-    backgroundColor: '#E00014',
+    backgroundColor: colors.dangerDark,
     borderTopLeftRadius: rs(8),
     borderBottomLeftRadius: rs(8),
   },
   emergencyNote: {
-    color: '#E00014',
+    color: colors.dangerDark,
     fontSize: fs(12),
-    fontWeight: '700',
+    fontFamily: fonts.bold,
     marginTop: rs(8),
     marginBottom: rs(8),
   },
@@ -1157,15 +1158,16 @@ const styles = StyleSheet.create({
   },
   controlInfo: {
     flex: 1,
+    minWidth: 0,
   },
   controlTitle: {
     fontSize: fs(13),
-    fontWeight: '900',
+    fontFamily: fonts.extraBold,
   },
   controlSubtitle: {
-    color: '#5D607E',
+    color: colors.slateText,
     fontSize: fs(11),
-    fontWeight: '600',
+    fontFamily: fonts.semiBold,
     marginTop: rs(3),
   },
   controlButton: {
@@ -1179,12 +1181,12 @@ const styles = StyleSheet.create({
   },
   controlButtonText: {
     fontSize: fs(12),
-    fontWeight: '800',
+    fontFamily: fonts.extraBold,
   },
   adminRow: {
     minHeight: rs(78),
     borderBottomWidth: 1,
-    borderBottomColor: '#EEF0F6',
+    borderBottomColor: colors.financeDivider,
     flexDirection: 'row',
     alignItems: 'center',
   },
@@ -1192,115 +1194,117 @@ const styles = StyleSheet.create({
     width: rs(45),
     height: rs(45),
     borderRadius: rs(23),
-    backgroundColor: '#061B66',
+    backgroundColor: colors.primary,
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: rs(14),
   },
   adminAvatarText: {
-    color: '#FFFFFF',
+    color: colors.white,
     fontSize: fs(18),
-    fontWeight: '900',
+    fontFamily: fonts.extraBold,
   },
   adminInfo: {
     flex: 1,
+    minWidth: 0,
   },
   adminName: {
-    color: '#111327',
+    color: colors.text,
     fontSize: fs(14),
-    fontWeight: '900',
+    fontFamily: fonts.extraBold,
   },
   blueSmallText: {
-    color: '#173CFF',
+    color: colors.financeBlue,
     fontSize: fs(12),
-    fontWeight: '700',
+    fontFamily: fonts.bold,
     marginTop: rs(4),
   },
   activeBadge: {
     width: rs(78),
     minHeight: rs(34),
     borderRadius: rs(7),
-    backgroundColor: '#EAF8EC',
+    backgroundColor: colors.successLight,
     borderWidth: 1,
-    borderColor: '#BEE7C5',
+    borderColor: colors.successBorder,
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: rs(12),
     paddingHorizontal: rs(6),
   },
   activeBadgeText: {
-    color: '#138A36',
+    color: colors.success,
     fontSize: fs(12),
-    fontWeight: '800',
+    fontFamily: fonts.extraBold,
   },
   manageButton: {
     width: rs(90),
     minHeight: rs(38),
     borderWidth: 1,
-    borderColor: '#173CFF',
+    borderColor: colors.financeBlue,
     borderRadius: rs(4),
     alignItems: 'center',
     justifyContent: 'center',
     paddingHorizontal: rs(6),
   },
   manageText: {
-    color: '#173CFF',
+    color: colors.financeBlue,
     fontSize: fs(12),
-    fontWeight: '800',
+    fontFamily: fonts.extraBold,
   },
   addAdminCircle: {
     width: rs(45),
     height: rs(45),
     borderRadius: rs(23),
-    backgroundColor: '#E5E7EF',
+    backgroundColor: colors.superAdminAddAdminBg,
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: rs(14),
   },
   addAdminText: {
-    color: '#173CFF',
+    color: colors.financeBlue,
     fontSize: fs(16),
-    fontWeight: '900',
+    fontFamily: fonts.extraBold,
   },
   adminSubtitle: {
-    color: '#5D607E',
+    color: colors.slateText,
     fontSize: fs(12),
-    fontWeight: '600',
+    fontFamily: fonts.semiBold,
     marginTop: rs(4),
   },
   simpleRow: {
     minHeight: rs(56),
     borderBottomWidth: 1,
-    borderBottomColor: '#EEF0F6',
+    borderBottomColor: colors.financeDivider,
     flexDirection: 'row',
     alignItems: 'center',
   },
   simpleTitle: {
     flex: 1,
-    color: '#111327',
+    minWidth: 0,
+    color: colors.text,
     fontSize: fs(13),
-    fontWeight: '800',
+    fontFamily: fonts.extraBold,
     marginLeft: rs(12),
   },
   simpleValue: {
-    color: '#173CFF',
+    color: colors.financeBlue,
     fontSize: fs(12),
-    fontWeight: '800',
+    fontFamily: fonts.extraBold,
     marginRight: rs(10),
   },
   grayValue: {
-    color: '#5D607E',
+    color: colors.slateText,
     fontSize: fs(12),
-    fontWeight: '700',
+    fontFamily: fonts.bold,
     marginRight: rs(10),
   },
   orangeText: {
-    color: '#F06419',
+    color: colors.profileOrange,
   },
   broadcastButton: {
     minHeight: rs(46),
     borderWidth: 1,
-    borderColor: '#173CFF',
+    borderColor: colors.financeBlue,
     borderRadius: rs(4),
     flexDirection: 'row',
     alignItems: 'center',
@@ -1308,9 +1312,9 @@ const styles = StyleSheet.create({
     marginTop: rs(16),
   },
   broadcastText: {
-    color: '#173CFF',
+    color: colors.financeBlue,
     fontSize: fs(14),
-    fontWeight: '900',
+    fontFamily: fonts.extraBold,
     marginLeft: rs(10),
   },
   announcementRow: {
@@ -1321,21 +1325,21 @@ const styles = StyleSheet.create({
     marginTop: rs(10),
   },
   announcementTitle: {
-    color: '#111327',
+    color: colors.text,
     fontSize: fs(13),
-    fontWeight: '800',
+    fontFamily: fonts.extraBold,
   },
   announcementSubtitle: {
-    color: '#5D607E',
+    color: colors.slateText,
     fontSize: fs(12),
     marginTop: rs(6),
   },
   logoutButton: {
     minHeight: rs(52),
     borderWidth: 1,
-    borderColor: '#E00014',
+    borderColor: colors.dangerDark,
     borderRadius: rs(5),
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.white,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
@@ -1345,16 +1349,16 @@ const styles = StyleSheet.create({
     opacity: 0.6,
   },
   logoutText: {
-    color: '#E00014',
+    color: colors.dangerDark,
     fontSize: fs(17),
-    fontWeight: '800',
+    fontFamily: fonts.extraBold,
     marginLeft: rs(12),
   },
   footerText: {
-    color: '#5D607E',
+    color: colors.slateText,
     textAlign: 'center',
     fontSize: fs(13),
-    fontWeight: '600',
+    fontFamily: fonts.semiBold,
     marginTop: rs(10),
   },
 });

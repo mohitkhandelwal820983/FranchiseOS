@@ -2,7 +2,6 @@ import React, { useEffect, useMemo, useState } from 'react';
 import {
   ActivityIndicator,
   Alert,
-  Dimensions,
   ScrollView,
   StatusBar,
   StyleSheet,
@@ -43,25 +42,19 @@ import {
 } from '../../api/mock/dealer/dealerOrders.mock';
 import { getDealerOrders } from '../../api/dealer/dealerOrders.api';
 import { showErrorToast } from '../../utils/toast';
-
-const { width: SCREEN_WIDTH } = Dimensions.get('window');
-
-const DESIGN_WIDTH = 832;
-const scale = SCREEN_WIDTH / DESIGN_WIDTH;
-const rs = (value: number) => Math.round(value * scale);
-const fs = (value: number) => rs(value + 3);
+import { colors, fonts, size, textSize } from '../../theme';
 
 const Header = () => {
   return (
     <View style={styles.header}>
       <TouchableOpacity activeOpacity={0.8}>
-        <Menu color="#FFFFFF" size={rs(36)} strokeWidth={2.5} />
+        <Menu color={colors.white} size={size(36)} strokeWidth={2.5} />
       </TouchableOpacity>
 
       <Text style={styles.headerTitle}>Orders</Text>
 
       <TouchableOpacity activeOpacity={0.8}>
-        <Filter color="#FFFFFF" size={rs(36)} strokeWidth={2.4} />
+        <Filter color={colors.white} size={size(36)} strokeWidth={2.4} />
       </TouchableOpacity>
     </View>
   );
@@ -124,13 +117,13 @@ const SearchBox = ({
 }) => {
   return (
     <View style={styles.searchBox}>
-      <Search color="#5D607E" size={rs(28)} strokeWidth={2.1} />
+      <Search color={colors.slateText} size={size(28)} strokeWidth={2.1} />
 
       <TextInput
         value={value}
         onChangeText={onChangeText}
         placeholder="Search order ID, customer or product"
-        placeholderTextColor="#5D607E"
+        placeholderTextColor={colors.slateText}
         style={styles.searchInput}
       />
     </View>
@@ -249,8 +242,8 @@ const CustomerOrderCard = ({
           ]}
         >
           <ShoppingCart
-            color={isDelivered ? '#138A36' : '#173CFF'}
-            size={rs(36)}
+            color={isDelivered ? colors.success : colors.financeBlue}
+            size={size(36)}
             strokeWidth={2.2}
           />
         </View>
@@ -260,7 +253,7 @@ const CustomerOrderCard = ({
           <Text style={styles.orderName}>{item.customer}</Text>
 
           <View style={styles.locationRow}>
-            <Home color="#5D607E" size={rs(15)} strokeWidth={2.1} />
+            <Home color={colors.slateText} size={size(15)} strokeWidth={2.1} />
             <Text style={styles.locationText}>{item.location}</Text>
           </View>
         </View>
@@ -271,12 +264,12 @@ const CustomerOrderCard = ({
           <Text style={styles.orderDate}>{item.date}</Text>
         </View>
 
-        <ChevronRight color="#061247" size={rs(26)} strokeWidth={2.4} />
+        <ChevronRight color={colors.primaryText} size={size(26)} strokeWidth={2.4} />
       </View>
 
       <View style={styles.metricsRow}>
         <View style={styles.metricBlock}>
-          <Box color="#173CFF" size={rs(27)} strokeWidth={2.2} />
+          <Box color={colors.financeBlue} size={size(27)} strokeWidth={2.2} />
           <View>
             <Text style={styles.metricValue}>{item.items}</Text>
             <Text style={styles.metricLabel}>Products</Text>
@@ -287,8 +280,8 @@ const CustomerOrderCard = ({
 
         <View style={styles.metricBlock}>
           <WalletCards
-            color={isDelivered ? '#138A36' : '#F06419'}
-            size={rs(27)}
+            color={isDelivered ? colors.success : colors.profileOrange}
+            size={size(27)}
             strokeWidth={2.2}
           />
           <View>
@@ -301,8 +294,8 @@ const CustomerOrderCard = ({
 
         <View style={styles.metricBlock}>
           <ClipboardList
-            color={isDelivered ? '#138A36' : '#173CFF'}
-            size={rs(27)}
+            color={isDelivered ? colors.success : colors.financeBlue}
+            size={size(27)}
             strokeWidth={2.2}
           />
           <View>
@@ -319,17 +312,17 @@ const CustomerOrderCard = ({
             onPress={() => onDeliver(item.id)}
             style={styles.primaryAction}
           >
-            <Truck color="#FFFFFF" size={rs(22)} strokeWidth={2.2} />
+            <Truck color={colors.white} size={size(22)} strokeWidth={2.2} />
             <Text style={styles.primaryActionText}>Deliver</Text>
           </TouchableOpacity>
 
           <TouchableOpacity activeOpacity={0.85} style={styles.outlineAction}>
-            <ClipboardList color="#173CFF" size={rs(22)} strokeWidth={2.2} />
+            <ClipboardList color={colors.financeBlue} size={size(22)} strokeWidth={2.2} />
             <Text style={styles.outlineActionText}>Invoice</Text>
           </TouchableOpacity>
 
           <TouchableOpacity activeOpacity={0.85} style={styles.outlineAction}>
-            <Eye color="#173CFF" size={rs(22)} strokeWidth={2.2} />
+            <Eye color={colors.financeBlue} size={size(22)} strokeWidth={2.2} />
             <Text style={styles.outlineActionText}>View</Text>
           </TouchableOpacity>
         </View>
@@ -347,7 +340,7 @@ const CustomerOrderCard = ({
             activeOpacity={0.85}
             style={styles.greenOutlineAction}
           >
-            <ClipboardList color="#138A36" size={rs(22)} strokeWidth={2.2} />
+            <ClipboardList color={colors.success} size={size(22)} strokeWidth={2.2} />
             <Text style={styles.greenOutlineText}>Invoice</Text>
           </TouchableOpacity>
         </View>
@@ -364,13 +357,13 @@ const StockOrderCard = ({
   onCancel: (id: string) => void;
 }) => {
   const isTransit = item.status === 'In Transit';
-  const isPending = item.status === 'Approval Pending';
+  // const isPending = item.status === 'Approval Pending';
 
   return (
     <View style={styles.orderCard}>
       <View style={styles.orderTopRow}>
         <View style={styles.purpleSoftIcon}>
-          <Warehouse color="#7B22EA" size={rs(36)} strokeWidth={2.2} />
+          <Warehouse color={colors.purple} size={size(36)} strokeWidth={2.2} />
         </View>
 
         <View style={styles.orderInfo}>
@@ -378,7 +371,7 @@ const StockOrderCard = ({
           <Text style={styles.orderName}>{item.stockist}</Text>
 
           <View style={styles.locationRow}>
-            <Home color="#5D607E" size={rs(15)} strokeWidth={2.1} />
+            <Home color={colors.slateText} size={size(15)} strokeWidth={2.1} />
             <Text style={styles.locationText}>{item.location}</Text>
           </View>
         </View>
@@ -389,12 +382,12 @@ const StockOrderCard = ({
           <Text style={styles.orderDate}>{item.dateLabel}</Text>
         </View>
 
-        <ChevronRight color="#061247" size={rs(26)} strokeWidth={2.4} />
+        <ChevronRight color={colors.primaryText} size={size(26)} strokeWidth={2.4} />
       </View>
 
       <View style={styles.metricsRow}>
         <View style={styles.metricBlock}>
-          <Box color="#7B22EA" size={rs(27)} strokeWidth={2.2} />
+          <Box color={colors.purple} size={size(27)} strokeWidth={2.2} />
           <View>
             <Text style={styles.metricValue}>{item.sku}</Text>
             <Text style={styles.metricLabel}>Products</Text>
@@ -405,8 +398,8 @@ const StockOrderCard = ({
 
         <View style={styles.metricBlock}>
           <Truck
-            color={isTransit ? '#173CFF' : '#F06419'}
-            size={rs(27)}
+            color={isTransit ? colors.financeBlue : colors.profileOrange}
+            size={size(27)}
             strokeWidth={2.2}
           />
           <View>
@@ -418,7 +411,7 @@ const StockOrderCard = ({
         <View style={styles.metricDivider} />
 
         <View style={styles.metricBlock}>
-          <CalendarDays color="#7B22EA" size={rs(27)} strokeWidth={2.2} />
+          <CalendarDays color={colors.purple} size={size(27)} strokeWidth={2.2} />
           <View>
             <Text style={styles.metricValue}>{item.expectedDelivery}</Text>
             <Text style={styles.metricLabel}>Expected Delivery</Text>
@@ -432,7 +425,7 @@ const StockOrderCard = ({
             activeOpacity={0.85}
             style={styles.primaryActionWide}
           >
-            <Truck color="#FFFFFF" size={rs(22)} strokeWidth={2.2} />
+            <Truck color={colors.white} size={size(22)} strokeWidth={2.2} />
             <Text style={styles.primaryActionText}>Track</Text>
           </TouchableOpacity>
 
@@ -440,7 +433,7 @@ const StockOrderCard = ({
             activeOpacity={0.85}
             style={styles.outlineActionWide}
           >
-            <ClipboardList color="#173CFF" size={rs(22)} strokeWidth={2.2} />
+            <ClipboardList color={colors.financeBlue} size={size(22)} strokeWidth={2.2} />
             <Text style={styles.outlineActionText}>Invoice</Text>
           </TouchableOpacity>
         </View>
@@ -450,7 +443,7 @@ const StockOrderCard = ({
             activeOpacity={0.85}
             style={styles.orangeOutlineAction}
           >
-            <Edit3 color="#F06419" size={rs(22)} strokeWidth={2.2} />
+            <Edit3 color={colors.profileOrange} size={size(22)} strokeWidth={2.2} />
             <Text style={styles.orangeOutlineText}>Edit</Text>
           </TouchableOpacity>
 
@@ -459,7 +452,7 @@ const StockOrderCard = ({
             onPress={() => onCancel(item.id)}
             style={styles.dangerOutlineAction}
           >
-            <X color="#E00014" size={rs(22)} strokeWidth={2.2} />
+            <X color={colors.dangerDark} size={size(22)} strokeWidth={2.2} />
             <Text style={styles.dangerOutlineText}>Cancel</Text>
           </TouchableOpacity>
         </View>
@@ -472,7 +465,7 @@ const OrderSummary = ({ items }: { items: SummaryItem[] }) => {
   return (
     <View style={styles.summaryCard}>
       <View style={styles.summaryTitleRow}>
-        <ClipboardList color="#173CFF" size={rs(28)} strokeWidth={2.3} />
+        <ClipboardList color={colors.financeBlue} size={size(28)} strokeWidth={2.3} />
         <Text style={styles.summaryTitle}>Order Summary</Text>
       </View>
 
@@ -481,16 +474,16 @@ const OrderSummary = ({ items }: { items: SummaryItem[] }) => {
           <View key={item.id} style={styles.summaryItem}>
             <View style={[styles.summaryIcon, { backgroundColor: item.bg }]}>
               {item.icon === 'customer' && (
-                <ShoppingCart color="#FFFFFF" size={rs(31)} strokeWidth={2.2} />
+                <ShoppingCart color={colors.white} size={size(31)} strokeWidth={2.2} />
               )}
               {item.icon === 'pending' && (
-                <Truck color="#FFFFFF" size={rs(31)} strokeWidth={2.2} />
+                <Truck color={colors.white} size={size(31)} strokeWidth={2.2} />
               )}
               {item.icon === 'inventory' && (
-                <Download color="#FFFFFF" size={rs(31)} strokeWidth={2.2} />
+                <Download color={colors.white} size={size(31)} strokeWidth={2.2} />
               )}
               {item.icon === 'cancelled' && (
-                <X color="#FFFFFF" size={rs(31)} strokeWidth={2.2} />
+                <X color={colors.white} size={size(31)} strokeWidth={2.2} />
               )}
             </View>
 
@@ -523,7 +516,7 @@ const FloatingActions = ({
         onPress={onCustomerOrder}
         style={styles.floatingButton}
       >
-        <Plus color="#173CFF" size={rs(30)} strokeWidth={2.5} />
+        <Plus color={colors.financeBlue} size={size(30)} strokeWidth={2.5} />
         <Text style={styles.floatingText}>Create{'\n'}Customer Order</Text>
       </TouchableOpacity>
 
@@ -532,7 +525,7 @@ const FloatingActions = ({
         onPress={onStockOrder}
         style={styles.floatingButton}
       >
-        <Plus color="#173CFF" size={rs(30)} strokeWidth={2.5} />
+        <Plus color={colors.financeBlue} size={size(30)} strokeWidth={2.5} />
         <Text style={styles.floatingText}>Create{'\n'}Stock Order</Text>
       </TouchableOpacity>
     </View>
@@ -659,15 +652,15 @@ const DealerOrderScreen = () => {
   if (loading || !data) {
     return (
       <SafeAreaView style={styles.loaderScreen}>
-        <StatusBar backgroundColor="#061B66" barStyle="light-content" />
-        <ActivityIndicator size="large" color="#173CFF" />
+        <StatusBar backgroundColor={colors.primary} barStyle="light-content" />
+        <ActivityIndicator size="large" color={colors.financeBlue} />
       </SafeAreaView>
     );
   }
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <StatusBar backgroundColor="#061B66" barStyle="light-content" />
+      <StatusBar backgroundColor={colors.primary} barStyle="light-content" />
 
       <Header />
 
@@ -688,7 +681,7 @@ const DealerOrderScreen = () => {
 
         {activeTab === 'customer' ? (
           <>
-            <SectionTitle title="Customer Orders" color="#173CFF" />
+            <SectionTitle title="Customer Orders" color={colors.financeBlue} />
 
             {filteredCustomerOrders.map(item => (
               <CustomerOrderCard
@@ -699,7 +692,7 @@ const DealerOrderScreen = () => {
               />
             ))}
 
-            <SectionTitle title="Orders To Stockist" color="#7B22EA" />
+            <SectionTitle title="Orders To Stockist" color={colors.purple} />
 
             {data.stockOrders.map(item => (
               <StockOrderCard
@@ -711,7 +704,7 @@ const DealerOrderScreen = () => {
           </>
         ) : (
           <>
-            <SectionTitle title="Orders To Stockist" color="#7B22EA" />
+            <SectionTitle title="Orders To Stockist" color={colors.purple} />
 
             {filteredStockOrders.map(item => (
               <StockOrderCard
@@ -736,50 +729,50 @@ const DealerOrderScreen = () => {
 
 export default DealerOrderScreen;
 
-const PAGE_PADDING = rs(28);
+const PAGE_PADDING = size(28);
 
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#F8F9FD',
+    backgroundColor: colors.financeBackground,
   },
   loaderScreen: {
     flex: 1,
-    backgroundColor: '#F8F9FD',
+    backgroundColor: colors.financeBackground,
     alignItems: 'center',
     justifyContent: 'center',
   },
   header: {
-    height: rs(78),
-    backgroundColor: '#061B66',
-    paddingHorizontal: rs(28),
-    paddingTop: rs(8),
+    height: size(78),
+    backgroundColor: colors.primary,
+    paddingHorizontal: size(28),
+    paddingTop: size(8),
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
   },
   headerTitle: {
-    color: '#FFFFFF',
-    fontSize: fs(31),
-    fontWeight: '900',
+    color: colors.white,
+    fontSize: textSize(31),
+    fontFamily: fonts.extraBold,
   },
   scrollView: {
     flex: 1,
   },
   scrollContent: {
     paddingHorizontal: PAGE_PADDING,
-    paddingTop: rs(22),
-    paddingBottom: rs(160),
+    paddingTop: size(22),
+    paddingBottom: size(160),
   },
   mainTabs: {
-    height: rs(54),
+    height: size(54),
     borderWidth: 1,
-    borderColor: '#D9DCE8',
-    borderRadius: rs(6),
+    borderColor: colors.inputBorder,
+    borderRadius: size(6),
     flexDirection: 'row',
     overflow: 'hidden',
-    backgroundColor: '#FFFFFF',
-    marginBottom: rs(14),
+    backgroundColor: colors.white,
+    marginBottom: size(14),
   },
   mainTabButton: {
     flex: 1,
@@ -787,95 +780,95 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   activeMainTab: {
-    backgroundColor: '#061B66',
+    backgroundColor: colors.primary,
   },
   mainTabText: {
-    color: '#5D607E',
-    fontSize: fs(18),
-    fontWeight: '800',
+    color: colors.slateText,
+    fontSize: textSize(18),
+    fontFamily: fonts.bold,
   },
   activeMainTabText: {
-    color: '#FFFFFF',
+    color: colors.white,
   },
   subTitle: {
-    color: '#5D607E',
-    fontSize: fs(16),
-    fontWeight: '700',
-    marginLeft: rs(12),
-    marginBottom: rs(18),
+    color: colors.slateText,
+    fontSize: textSize(16),
+    fontFamily: fonts.semiBold,
+    marginLeft: size(12),
+    marginBottom: size(18),
   },
   searchBox: {
-    height: rs(62),
-    backgroundColor: '#FFFFFF',
+    height: size(62),
+    backgroundColor: colors.white,
     borderWidth: 1,
-    borderColor: '#D9DCE8',
-    borderRadius: rs(8),
-    paddingHorizontal: rs(20),
+    borderColor: colors.inputBorder,
+    borderRadius: size(8),
+    paddingHorizontal: size(20),
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: rs(18),
+    marginBottom: size(18),
   },
   searchInput: {
     flex: 1,
-    color: '#111327',
-    fontSize: fs(17),
-    fontWeight: '500',
+    color: colors.text,
+    fontSize: textSize(17),
+    fontFamily: fonts.medium,
     paddingVertical: 0,
-    marginLeft: rs(16),
+    marginLeft: size(16),
   },
   filterRow: {
-    paddingBottom: rs(18),
+    paddingBottom: size(18),
   },
   filterChip: {
-    minWidth: rs(104),
-    height: rs(46),
+    minWidth: size(104),
+    height: size(46),
     borderWidth: 1,
-    borderColor: '#D9DCE8',
-    borderRadius: rs(7),
-    backgroundColor: '#FFFFFF',
+    borderColor: colors.inputBorder,
+    borderRadius: size(7),
+    backgroundColor: colors.white,
     alignItems: 'center',
     justifyContent: 'center',
-    marginRight: rs(26),
-    paddingHorizontal: rs(14),
+    marginRight: size(26),
+    paddingHorizontal: size(14),
   },
   activeFilterChip: {
-    backgroundColor: '#061B66',
-    borderColor: '#061B66',
+    backgroundColor: colors.primary,
+    borderColor: colors.primary,
   },
   filterText: {
-    color: '#061247',
-    fontSize: fs(15),
-    fontWeight: '800',
+    color: colors.primaryText,
+    fontSize: textSize(15),
+    fontFamily: fonts.bold,
   },
   activeFilterText: {
-    color: '#FFFFFF',
+    color: colors.white,
   },
   sectionTitleRow: {
-    height: rs(44),
+    height: size(44),
     flexDirection: 'row',
     alignItems: 'center',
   },
   sectionLine: {
-    width: rs(4),
-    height: rs(31),
-    borderRadius: rs(2),
-    marginRight: rs(16),
+    width: size(4),
+    height: size(31),
+    borderRadius: size(2),
+    marginRight: size(16),
   },
   sectionTitle: {
-    color: '#061247',
-    fontSize: fs(23),
-    fontWeight: '900',
+    color: colors.primaryText,
+    fontSize: textSize(23),
+    fontFamily: fonts.extraBold,
   },
   orderCard: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: rs(10),
-    paddingHorizontal: rs(20),
-    paddingVertical: rs(18),
-    marginBottom: rs(14),
-    shadowColor: '#000000',
+    backgroundColor: colors.white,
+    borderRadius: size(10),
+    paddingHorizontal: size(20),
+    paddingVertical: size(18),
+    marginBottom: size(14),
+    shadowColor: colors.black,
     shadowOpacity: 0.04,
-    shadowRadius: rs(12),
-    shadowOffset: { width: 0, height: rs(5) },
+    shadowRadius: size(12),
+    shadowOffset: { width: 0, height: size(5) },
     elevation: 3,
   },
   orderTopRow: {
@@ -883,118 +876,118 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   orderIcon: {
-    width: rs(74),
-    height: rs(74),
-    borderRadius: rs(13),
+    width: size(74),
+    height: size(74),
+    borderRadius: size(13),
     alignItems: 'center',
     justifyContent: 'center',
-    marginRight: rs(22),
+    marginRight: size(22),
   },
   blueSoftIcon: {
-    backgroundColor: '#EEF3FF',
+    backgroundColor: colors.dealerBlueSoft,
   },
   greenSoftIcon: {
-    backgroundColor: '#EAF8EC',
+    backgroundColor: colors.successLight,
   },
   purpleSoftIcon: {
-    width: rs(74),
-    height: rs(74),
-    borderRadius: rs(13),
-    backgroundColor: '#F7F0FF',
+    width: size(74),
+    height: size(74),
+    borderRadius: size(13),
+    backgroundColor: colors.purpleSoft,
     alignItems: 'center',
     justifyContent: 'center',
-    marginRight: rs(22),
+    marginRight: size(22),
   },
   orderInfo: {
     flex: 1,
   },
   orderId: {
-    color: '#061247',
-    fontSize: fs(24),
-    fontWeight: '900',
+    color: colors.primaryText,
+    fontSize: textSize(24),
+    fontFamily: fonts.extraBold,
   },
   orderName: {
-    color: '#061247',
-    fontSize: fs(16),
-    fontWeight: '900',
-    marginTop: rs(8),
+    color: colors.primaryText,
+    fontSize: textSize(16),
+    fontFamily: fonts.extraBold,
+    marginTop: size(8),
   },
   locationRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginTop: rs(8),
+    marginTop: size(8),
   },
   locationText: {
-    color: '#5D607E',
-    fontSize: fs(13),
-    fontWeight: '700',
-    marginLeft: rs(8),
+    color: colors.slateText,
+    fontSize: textSize(13),
+    fontFamily: fonts.semiBold,
+    marginLeft: size(8),
   },
   orderRight: {
     alignItems: 'flex-end',
-    marginRight: rs(14),
+    marginRight: size(14),
   },
   orderAmount: {
-    color: '#061247',
-    fontSize: fs(24),
-    fontWeight: '900',
-    marginTop: rs(10),
+    color: colors.primaryText,
+    fontSize: textSize(24),
+    fontFamily: fonts.extraBold,
+    marginTop: size(10),
   },
   orderDate: {
-    color: '#5D607E',
-    fontSize: fs(13),
-    fontWeight: '700',
-    marginTop: rs(8),
+    color: colors.slateText,
+    fontSize: textSize(13),
+    fontFamily: fonts.semiBold,
+    marginTop: size(8),
   },
   statusBadge: {
-    minWidth: rs(104),
-    height: rs(32),
-    borderRadius: rs(5),
+    minWidth: size(104),
+    height: size(32),
+    borderRadius: size(5),
     alignItems: 'center',
     justifyContent: 'center',
-    paddingHorizontal: rs(10),
+    paddingHorizontal: size(10),
   },
   deliveredBadge: {
-    backgroundColor: '#EAF8EC',
+    backgroundColor: colors.successLight,
   },
   processingBadge: {
-    backgroundColor: '#FFF3E9',
+    backgroundColor: colors.orangeSoft,
   },
   transitBadge: {
-    backgroundColor: '#F1F5FF',
+    backgroundColor: colors.blueLight,
   },
   pendingBadge: {
-    backgroundColor: '#FFF3E9',
+    backgroundColor: colors.orangeSoft,
   },
   cancelledBadge: {
-    backgroundColor: '#FFF0F0',
+    backgroundColor: colors.dangerLight,
   },
   statusText: {
-    fontSize: fs(13),
-    fontWeight: '900',
+    fontSize: textSize(13),
+    fontFamily: fonts.extraBold,
   },
   deliveredText: {
-    color: '#138A36',
+    color: colors.success,
   },
   processingText: {
-    color: '#F06419',
+    color: colors.profileOrange,
   },
   transitText: {
-    color: '#173CFF',
+    color: colors.financeBlue,
   },
   pendingText: {
-    color: '#F06419',
+    color: colors.profileOrange,
   },
   cancelledText: {
-    color: '#E00014',
+    color: colors.dangerDark,
   },
   metricsRow: {
-    height: rs(72),
+    height: size(72),
     borderTopWidth: 1,
-    borderTopColor: '#EEF0F6',
+    borderTopColor: colors.financeDivider,
     flexDirection: 'row',
     alignItems: 'center',
-    marginTop: rs(18),
+    marginTop: size(18),
   },
   metricBlock: {
     flex: 1,
@@ -1003,146 +996,146 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   metricValue: {
-    color: '#061247',
-    fontSize: fs(16),
-    fontWeight: '900',
+    color: colors.primaryText,
+    fontSize: textSize(16),
+    fontFamily: fonts.extraBold,
   },
   metricLabel: {
-    color: '#5D607E',
-    fontSize: fs(12),
-    fontWeight: '700',
-    marginTop: rs(4),
+    color: colors.slateText,
+    fontSize: textSize(12),
+    fontFamily: fonts.semiBold,
+    marginTop: size(4),
   },
   metricDivider: {
     width: 1,
-    height: rs(48),
-    backgroundColor: '#D9DCE8',
+    height: size(48),
+    backgroundColor: colors.inputBorder,
   },
   actionRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginTop: rs(10),
+    marginTop: size(10),
   },
   primaryAction: {
     width: '31%',
-    height: rs(44),
-    backgroundColor: '#173CFF',
-    borderRadius: rs(5),
+    height: size(44),
+    backgroundColor: colors.financeBlue,
+    borderRadius: size(5),
     alignItems: 'center',
     justifyContent: 'center',
     flexDirection: 'row',
   },
   primaryActionWide: {
     width: '49%',
-    height: rs(44),
-    backgroundColor: '#173CFF',
-    borderRadius: rs(5),
+    height: size(44),
+    backgroundColor: colors.financeBlue,
+    borderRadius: size(5),
     alignItems: 'center',
     justifyContent: 'center',
     flexDirection: 'row',
   },
   primaryActionText: {
-    color: '#FFFFFF',
-    fontSize: fs(15),
-    fontWeight: '900',
-    marginLeft: rs(10),
+    color: colors.white,
+    fontSize: textSize(15),
+    fontFamily: fonts.extraBold,
+    marginLeft: size(10),
   },
   outlineAction: {
     width: '31%',
-    height: rs(44),
+    height: size(44),
     borderWidth: 1,
-    borderColor: '#B8C8FF',
-    borderRadius: rs(5),
+    borderColor: colors.blueBorderSoft,
+    borderRadius: size(5),
     alignItems: 'center',
     justifyContent: 'center',
     flexDirection: 'row',
   },
   outlineActionWide: {
     width: '49%',
-    height: rs(44),
+    height: size(44),
     borderWidth: 1,
-    borderColor: '#B8C8FF',
-    borderRadius: rs(5),
+    borderColor: colors.blueBorderSoft,
+    borderRadius: size(5),
     alignItems: 'center',
     justifyContent: 'center',
     flexDirection: 'row',
   },
   outlineActionText: {
-    color: '#173CFF',
-    fontSize: fs(15),
-    fontWeight: '900',
-    marginLeft: rs(10),
+    color: colors.financeBlue,
+    fontSize: textSize(15),
+    fontFamily: fonts.extraBold,
+    marginLeft: size(10),
   },
   greenOutlineAction: {
     width: '49%',
-    height: rs(44),
+    height: size(44),
     borderWidth: 1,
-    borderColor: '#88C99A',
-    borderRadius: rs(5),
+    borderColor: colors.greenBorder,
+    borderRadius: size(5),
     alignItems: 'center',
     justifyContent: 'center',
     flexDirection: 'row',
   },
   greenOutlineText: {
-    color: '#138A36',
-    fontSize: fs(15),
-    fontWeight: '900',
-    marginLeft: rs(10),
+    color: colors.success,
+    fontSize: textSize(15),
+    fontFamily: fonts.extraBold,
+    marginLeft: size(10),
   },
   orangeOutlineAction: {
     width: '49%',
-    height: rs(44),
+    height: size(44),
     borderWidth: 1,
-    borderColor: '#F8C9A8',
-    borderRadius: rs(5),
+    borderColor: colors.orangeBorder,
+    borderRadius: size(5),
     alignItems: 'center',
     justifyContent: 'center',
     flexDirection: 'row',
   },
   orangeOutlineText: {
-    color: '#F06419',
-    fontSize: fs(15),
-    fontWeight: '900',
-    marginLeft: rs(10),
+    color: colors.profileOrange,
+    fontSize: textSize(15),
+    fontFamily: fonts.extraBold,
+    marginLeft: size(10),
   },
   dangerOutlineAction: {
     width: '49%',
-    height: rs(44),
+    height: size(44),
     borderWidth: 1,
-    borderColor: '#FFB6B6',
-    borderRadius: rs(5),
+    borderColor: colors.dangerBorder,
+    borderRadius: size(5),
     alignItems: 'center',
     justifyContent: 'center',
     flexDirection: 'row',
   },
   dangerOutlineText: {
-    color: '#E00014',
-    fontSize: fs(15),
-    fontWeight: '900',
-    marginLeft: rs(10),
+    color: colors.dangerDark,
+    fontSize: textSize(15),
+    fontFamily: fonts.extraBold,
+    marginLeft: size(10),
   },
   summaryCard: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: rs(10),
-    paddingHorizontal: rs(20),
-    paddingVertical: rs(18),
-    marginBottom: rs(16),
-    shadowColor: '#000000',
+    backgroundColor: colors.white,
+    borderRadius: size(10),
+    paddingHorizontal: size(20),
+    paddingVertical: size(18),
+    marginBottom: size(16),
+    shadowColor: colors.black,
     shadowOpacity: 0.04,
-    shadowRadius: rs(12),
-    shadowOffset: { width: 0, height: rs(5) },
+    shadowRadius: size(12),
+    shadowOffset: { width: 0, height: size(5) },
     elevation: 3,
   },
   summaryTitleRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: rs(18),
+    marginBottom: size(18),
   },
   summaryTitle: {
-    color: '#061247',
-    fontSize: fs(20),
-    fontWeight: '900',
-    marginLeft: rs(12),
+    color: colors.primaryText,
+    fontSize: textSize(20),
+    fontFamily: fonts.extraBold,
+    marginLeft: size(12),
   },
   summaryItemsRow: {
     flexDirection: 'row',
@@ -1155,57 +1148,57 @@ const styles = StyleSheet.create({
     position: 'relative',
   },
   summaryIcon: {
-    width: rs(55),
-    height: rs(55),
-    borderRadius: rs(28),
+    width: size(55),
+    height: size(55),
+    borderRadius: size(28),
     alignItems: 'center',
     justifyContent: 'center',
-    marginRight: rs(14),
+    marginRight: size(14),
   },
   summaryValue: {
-    color: '#061247',
-    fontSize: fs(23),
-    fontWeight: '900',
+    color: colors.primaryText,
+    fontSize: textSize(23),
+    fontFamily: fonts.extraBold,
   },
   summaryLabel: {
-    color: '#5D607E',
-    fontSize: fs(12),
-    fontWeight: '700',
-    marginTop: rs(4),
+    color: colors.slateText,
+    fontSize: textSize(12),
+    fontFamily: fonts.semiBold,
+    marginTop: size(4),
   },
   summaryDivider: {
     position: 'absolute',
     right: 0,
     width: 1,
-    height: rs(50),
-    backgroundColor: '#D9DCE8',
+    height: size(50),
+    backgroundColor: colors.inputBorder,
   },
   floatingActions: {
     position: 'absolute',
-    right: rs(28),
-    bottom: rs(86),
+    right: size(28),
+    bottom: size(86),
     flexDirection: 'row',
-    gap: rs(18),
+    gap: size(18),
   },
   floatingButton: {
-    width: rs(206),
-    height: rs(56),
-    borderRadius: rs(28),
-    backgroundColor: '#173CFF',
+    width: size(206),
+    height: size(56),
+    borderRadius: size(28),
+    backgroundColor: colors.financeBlue,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    shadowColor: '#000000',
+    shadowColor: colors.black,
     shadowOpacity: 0.18,
-    shadowRadius: rs(12),
-    shadowOffset: { width: 0, height: rs(5) },
+    shadowRadius: size(12),
+    shadowOffset: { width: 0, height: size(5) },
     elevation: 10,
   },
   floatingText: {
-    color: '#FFFFFF',
-    fontSize: fs(15),
-    fontWeight: '900',
-    marginLeft: rs(10),
-    lineHeight: rs(18),
+    color: colors.white,
+    fontSize: textSize(15),
+    fontFamily: fonts.extraBold,
+    marginLeft: size(10),
+    lineHeight: size(18),
   },
 });

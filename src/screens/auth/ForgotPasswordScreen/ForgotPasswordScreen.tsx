@@ -15,12 +15,9 @@ import {
 import {useNavigation} from '@react-navigation/native';
 import {ArrowLeft, Phone} from 'lucide-react-native';
 import {showErrorToast, showSuccessToast} from '../../../utils/toast';
+import {colors, fonts, forgotPasswordSize as rs} from '../../../theme';
 
 const {width: SCREEN_WIDTH, height: SCREEN_HEIGHT} = Dimensions.get('window');
-
-const DESIGN_WIDTH = 263;
-const scale = SCREEN_WIDTH / DESIGN_WIDTH;
-const rs = (value: number) => Math.round(value * scale);
 
 const ForgotPasswordScreen = () => {
   const navigation = useNavigation<any>();
@@ -107,7 +104,7 @@ const ForgotPasswordScreen = () => {
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <StatusBar backgroundColor="#0D3696" barStyle="light-content" />
+      <StatusBar backgroundColor={colors.forgotPrimary} barStyle="light-content" />
 
       <KeyboardAvoidingView
         style={styles.container}
@@ -122,7 +119,7 @@ const ForgotPasswordScreen = () => {
                 activeOpacity={0.8}
                 style={styles.backButton}
                 onPress={goToLogin}>
-                <ArrowLeft color="#FFFFFF" size={rs(11)} strokeWidth={2.4} />
+                <ArrowLeft color={colors.white} size={rs(11)} strokeWidth={2.4} />
               </TouchableOpacity>
 
               <View style={styles.logoRow}>
@@ -142,13 +139,13 @@ const ForgotPasswordScreen = () => {
               </Text>
 
               <View style={styles.inputBox}>
-                <Phone color="#8A8F99" size={rs(11)} strokeWidth={2} />
+                <Phone color={colors.forgotPhoneIcon} size={rs(11)} strokeWidth={2} />
 
                 <TextInput
                   value={emailOrPhone}
                   onChangeText={setEmailOrPhone}
                   placeholder="Mobile Number or Email"
-                  placeholderTextColor="#5F6670"
+                  placeholderTextColor={colors.forgotPlaceholder}
                   autoCapitalize="none"
                   keyboardType="email-address"
                   style={styles.input}
@@ -222,25 +219,25 @@ export default ForgotPasswordScreen;
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#0D3696',
+    backgroundColor: colors.forgotPrimary,
   },
 
   container: {
     flex: 1,
-    backgroundColor: '#EEF2F3',
+    backgroundColor: colors.forgotContainerBg,
   },
 
   scrollContent: {
     flexGrow: 1,
     minHeight: SCREEN_HEIGHT,
-    backgroundColor: '#F7F9FA',
+    backgroundColor: colors.forgotScreenBg,
   },
 
   screenWrap: {
     width: SCREEN_WIDTH,
     minHeight: SCREEN_HEIGHT,
-    backgroundColor: '#F7F9FA',
-    shadowColor: '#000000',
+    backgroundColor: colors.forgotScreenBg,
+    shadowColor: colors.black,
     shadowOpacity: 0.12,
     shadowRadius: rs(14),
     shadowOffset: {width: 0, height: rs(8)},
@@ -249,7 +246,7 @@ const styles = StyleSheet.create({
 
   topSection: {
     height: rs(92),
-    backgroundColor: '#0D3696',
+    backgroundColor: colors.forgotPrimary,
     borderTopLeftRadius: rs(4),
     borderTopRightRadius: rs(4),
     alignItems: 'center',
@@ -276,35 +273,35 @@ const styles = StyleSheet.create({
     width: rs(13),
     height: rs(13),
     borderRadius: rs(6.5),
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.white,
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: rs(4),
   },
 
   logoMark: {
-    color: '#0D3696',
+    color: colors.forgotPrimary,
     fontSize: rs(8),
-    fontWeight: '900',
+    fontFamily: fonts.extraBold,
     marginTop: -rs(1),
   },
 
   logoText: {
-    color: '#FFFFFF',
+    color: colors.white,
     fontSize: rs(11),
-    fontWeight: '800',
+    fontFamily: fonts.extraBold,
     letterSpacing: rs(0.2),
   },
 
   card: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.white,
     marginHorizontal: rs(14),
     marginTop: -rs(18),
     borderRadius: rs(2),
     paddingHorizontal: rs(10),
     paddingTop: rs(18),
     paddingBottom: rs(14),
-    shadowColor: '#000000',
+    shadowColor: colors.black,
     shadowOpacity: 0.08,
     shadowRadius: rs(8),
     shadowOffset: {width: 0, height: rs(4)},
@@ -312,16 +309,16 @@ const styles = StyleSheet.create({
   },
 
   heading: {
-    color: '#111827',
+    color: colors.loginText,
     fontSize: rs(14),
-    fontWeight: '900',
+    fontFamily: fonts.extraBold,
     textAlign: 'center',
   },
 
   subTitle: {
-    color: '#6B7280',
+    color: colors.forgotSubtitle,
     fontSize: rs(7),
-    fontWeight: '500',
+    fontFamily: fonts.medium,
     textAlign: 'center',
     lineHeight: rs(10),
     marginTop: rs(6),
@@ -331,9 +328,9 @@ const styles = StyleSheet.create({
   inputBox: {
     height: rs(22),
     borderWidth: 1,
-    borderColor: '#D8DDE5',
+    borderColor: colors.forgotInputBorder,
     borderRadius: rs(11),
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.white,
     paddingHorizontal: rs(10),
     flexDirection: 'row',
     alignItems: 'center',
@@ -341,16 +338,16 @@ const styles = StyleSheet.create({
 
   input: {
     flex: 1,
-    color: '#111827',
+    color: colors.loginText,
     fontSize: rs(8),
-    fontWeight: '600',
+    fontFamily: fonts.semiBold,
     paddingVertical: 0,
     marginLeft: rs(7),
   },
 
   primaryButton: {
     height: rs(23),
-    backgroundColor: '#1F5CC1',
+    backgroundColor: colors.loginButton,
     borderRadius: rs(2),
     alignItems: 'center',
     justifyContent: 'center',
@@ -358,9 +355,9 @@ const styles = StyleSheet.create({
   },
 
   primaryButtonText: {
-    color: '#FFFFFF',
+    color: colors.white,
     fontSize: rs(7),
-    fontWeight: '800',
+    fontFamily: fonts.extraBold,
   },
 
   otpContainer: {
@@ -373,11 +370,11 @@ const styles = StyleSheet.create({
     width: rs(23),
     height: rs(23),
     borderWidth: 1.4,
-    borderColor: '#1F5CC1',
+    borderColor: colors.loginButton,
     borderRadius: rs(2),
-    color: '#111827',
+    color: colors.loginText,
     fontSize: rs(12),
-    fontWeight: '800',
+    fontFamily: fonts.extraBold,
     textAlign: 'center',
     padding: 0,
   },
@@ -390,25 +387,25 @@ const styles = StyleSheet.create({
   },
 
   timerText: {
-    color: '#7A808A',
+    color: colors.forgotTimer,
     fontSize: rs(7),
-    fontWeight: '500',
+    fontFamily: fonts.medium,
   },
 
   resendText: {
-    color: '#9CA3AF',
+    color: colors.forgotResendDisabled,
     fontSize: rs(7),
-    fontWeight: '600',
+    fontFamily: fonts.semiBold,
     textDecorationLine: 'underline',
   },
 
   resendActiveText: {
-    color: '#1F5CC1',
+    color: colors.loginButton,
   },
 
   verifyButton: {
     height: rs(23),
-    backgroundColor: '#1F5CC1',
+    backgroundColor: colors.loginButton,
     borderRadius: rs(2),
     alignItems: 'center',
     justifyContent: 'center',
@@ -416,15 +413,15 @@ const styles = StyleSheet.create({
   },
 
   verifyButtonText: {
-    color: '#FFFFFF',
+    color: colors.white,
     fontSize: rs(7),
-    fontWeight: '800',
+    fontFamily: fonts.extraBold,
   },
 
   backText: {
-    color: '#111827',
+    color: colors.loginText,
     fontSize: rs(7),
-    fontWeight: '600',
+    fontFamily: fonts.semiBold,
     textAlign: 'center',
     marginTop: rs(12),
   },

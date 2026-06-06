@@ -37,25 +37,21 @@ import type {
   SummaryCard,
 } from '../../../api/mock/superadmin/payment.mock';
 import { showErrorToast } from '../../../utils/toast';
+import { colors, fonts, size as rs, superAdminTextSize as fs } from '../../../theme';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
-
-const DESIGN_WIDTH = 832;
-const scale = SCREEN_WIDTH / DESIGN_WIDTH;
-const rs = (value: number) => Math.round(value * scale);
-const fs = (value: number) => rs(value + 5);
 
 const Header = () => {
   return (
     <View style={styles.header}>
       <TouchableOpacity activeOpacity={0.8}>
-        <Menu color="#FFFFFF" size={rs(36)} strokeWidth={2.6} />
+        <Menu color={colors.white} size={rs(36)} strokeWidth={2.6} />
       </TouchableOpacity>
 
       <Text style={styles.headerTitle}>Payments</Text>
 
       <TouchableOpacity activeOpacity={0.8}>
-        <Upload color="#FFFFFF" size={rs(34)} strokeWidth={2.4} />
+        <Upload color={colors.white} size={rs(34)} strokeWidth={2.4} />
       </TouchableOpacity>
     </View>
   );
@@ -98,21 +94,21 @@ const SummaryIcon = ({ item }: { item: SummaryCard }) => {
   return (
     <View style={[styles.summaryIcon, { backgroundColor: item.bg }]}>
       {item.icon === 'collected' && (
-        <Database color={item.color} size={rs(38)} strokeWidth={2.3} />
+        <Database color={item.color} size={rs(30)} strokeWidth={2.3} />
       )}
       {item.icon === 'outstanding' && (
-        <Clock3 color={item.color} size={rs(40)} strokeWidth={2.3} />
+        <Clock3 color={item.color} size={rs(32)} strokeWidth={2.3} />
       )}
       {item.icon === 'overdue' && (
         <AlertTriangle
           color={item.color}
           fill={item.color}
-          size={rs(42)}
+          size={rs(34)}
           strokeWidth={1.6}
         />
       )}
       {item.icon === 'revenue' && (
-        <TrendingUp color={item.color} size={rs(42)} strokeWidth={2.4} />
+        <TrendingUp color={item.color} size={rs(34)} strokeWidth={2.4} />
       )}
     </View>
   );
@@ -124,11 +120,23 @@ const SummaryCardItem = ({ item }: { item: SummaryCard }) => {
       <SummaryIcon item={item} />
 
       <View style={styles.summaryTextBox}>
-        <Text style={styles.summaryTitle}>{item.title}</Text>
-        <Text style={[styles.summaryValue, { color: item.color }]}>
+        <Text numberOfLines={1} style={styles.summaryTitle}>
+          {item.title}
+        </Text>
+        <Text
+          numberOfLines={1}
+          adjustsFontSizeToFit
+          minimumFontScale={0.72}
+          style={[styles.summaryValue, { color: item.color }]}
+        >
           {item.value}
         </Text>
-        <Text style={[styles.summarySubtitle, { color: item.color }]}>
+        <Text
+          numberOfLines={1}
+          adjustsFontSizeToFit
+          minimumFontScale={0.78}
+          style={[styles.summarySubtitle, { color: item.color }]}
+        >
           {item.subtitle}
         </Text>
       </View>
@@ -158,7 +166,7 @@ const CollectionTrendCard = ({
 
         <TouchableOpacity activeOpacity={0.85} style={styles.weeklyButton}>
           <Text style={styles.weeklyText}>Weekly</Text>
-          <ChevronDown color="#061247" size={rs(20)} strokeWidth={2.3} />
+          <ChevronDown color={colors.primaryText} size={rs(20)} strokeWidth={2.3} />
         </TouchableOpacity>
       </View>
 
@@ -231,18 +239,45 @@ const CollectionTrendCard = ({
 
       <View style={styles.trendCardsRow}>
         <View style={[styles.trendSmallCard, styles.collectedSmallCard]}>
-          <Text style={styles.greenLegend}>● Collected</Text>
-          <Text style={styles.greenBig}>{data.collected}</Text>
+          <Text numberOfLines={1} style={styles.greenLegend}>
+            ● Collected
+          </Text>
+          <Text
+            numberOfLines={1}
+            adjustsFontSizeToFit
+            minimumFontScale={0.75}
+            style={styles.greenBig}
+          >
+            {data.collected}
+          </Text>
         </View>
 
         <View style={[styles.trendSmallCard, styles.pendingSmallCard]}>
-          <Text style={styles.orangeLegend}>● Pending</Text>
-          <Text style={styles.orangeBig}>{data.pending}</Text>
+          <Text numberOfLines={1} style={styles.orangeLegend}>
+            ● Pending
+          </Text>
+          <Text
+            numberOfLines={1}
+            adjustsFontSizeToFit
+            minimumFontScale={0.75}
+            style={styles.orangeBig}
+          >
+            {data.pending}
+          </Text>
         </View>
 
         <View style={[styles.trendSmallCard, styles.overdueSmallCard]}>
-          <Text style={styles.redLegend}>● Overdue</Text>
-          <Text style={styles.redBig}>{data.overdue}</Text>
+          <Text numberOfLines={1} style={styles.redLegend}>
+            ● Overdue
+          </Text>
+          <Text
+            numberOfLines={1}
+            adjustsFontSizeToFit
+            minimumFontScale={0.75}
+            style={styles.redBig}
+          >
+            {data.overdue}
+          </Text>
         </View>
       </View>
     </View>
@@ -357,16 +392,16 @@ const LatestPaymentIcon = ({ status }: { status: PaymentStatus }) => {
     <View
       style={[
         styles.latestIcon,
-        isCollected && { backgroundColor: '#138A36' },
-        isPending && { backgroundColor: '#F06419' },
-        isOverdue && { backgroundColor: '#E00014' },
-        status === 'Processing' && { backgroundColor: '#173CFF' },
+        isCollected && { backgroundColor: colors.success },
+        isPending && { backgroundColor: colors.profileOrange },
+        isOverdue && { backgroundColor: colors.dangerDark },
+        status === 'Processing' && { backgroundColor: colors.financeBlue },
       ]}
     >
-      {isCollected && <CheckCircle2 color="#FFFFFF" size={rs(34)} />}
-      {isPending && <Clock3 color="#FFFFFF" size={rs(34)} />}
-      {isOverdue && <AlertTriangle color="#FFFFFF" size={rs(34)} />}
-      {status === 'Processing' && <CreditCard color="#FFFFFF" size={rs(34)} />}
+      {isCollected && <CheckCircle2 color={colors.white} size={rs(34)} />}
+      {isPending && <Clock3 color={colors.white} size={rs(34)} />}
+      {isOverdue && <AlertTriangle color={colors.white} size={rs(34)} />}
+      {status === 'Processing' && <CreditCard color={colors.white} size={rs(34)} />}
     </View>
   );
 };
@@ -397,10 +432,10 @@ const LatestPaymentsCard = ({ items }: { items: LatestPayment[] }) => {
             <Text
               style={[
                 styles.paymentAmount,
-                item.status === 'Collected' && { color: '#138A36' },
-                item.status === 'Pending' && { color: '#F06419' },
-                item.status === 'Overdue' && { color: '#E00014' },
-                item.status === 'Processing' && { color: '#173CFF' },
+                item.status === 'Collected' && { color: colors.success },
+                item.status === 'Pending' && { color: colors.profileOrange },
+                item.status === 'Overdue' && { color: colors.dangerDark },
+                item.status === 'Processing' && { color: colors.financeBlue },
               ]}
             >
               {item.amount}
@@ -422,7 +457,7 @@ const BottomActions = () => {
         style={styles.exportButton}
         onPress={() => Alert.alert('Export Report', 'Payment report exported.')}
       >
-        <Download color="#061247" size={rs(24)} strokeWidth={2.3} />
+        <Download color={colors.primaryText} size={rs(24)} strokeWidth={2.3} />
         <Text style={styles.exportText}>Export Report</Text>
       </TouchableOpacity>
 
@@ -431,7 +466,7 @@ const BottomActions = () => {
         style={styles.reminderButton}
         onPress={() => Alert.alert('Send Reminders', 'Payment reminders sent.')}
       >
-        <Send color="#FFFFFF" size={rs(24)} strokeWidth={2.3} />
+        <Send color={colors.white} size={rs(24)} strokeWidth={2.3} />
         <Text style={styles.reminderText}>Send Reminders</Text>
       </TouchableOpacity>
     </View>
@@ -495,8 +530,8 @@ const PaymentScreen = () => {
   if (loading) {
     return (
       <SafeAreaView style={styles.loaderScreen}>
-        <StatusBar backgroundColor="#061B66" barStyle="light-content" />
-        <ActivityIndicator size="large" color="#173CFF" />
+        <StatusBar backgroundColor={colors.primary} barStyle="light-content" />
+        <ActivityIndicator size="large" color={colors.financeBlue} />
       </SafeAreaView>
     );
   }
@@ -504,13 +539,13 @@ const PaymentScreen = () => {
   if (error || !activeData) {
     return (
       <SafeAreaView style={styles.loaderScreen}>
-        <StatusBar backgroundColor="#061B66" barStyle="light-content" />
+        <StatusBar backgroundColor={colors.primary} barStyle="light-content" />
 
         <Text
           style={{
-            color: '#061247',
+            color: colors.primaryText,
             fontSize: rs(18),
-            fontWeight: '700',
+            fontFamily: fonts.bold,
             marginBottom: rs(18),
             textAlign: 'center',
           }}
@@ -522,13 +557,13 @@ const PaymentScreen = () => {
           activeOpacity={0.85}
           onPress={handleRetry}
           style={{
-            backgroundColor: '#061B66',
+            backgroundColor: colors.primary,
             paddingHorizontal: rs(28),
             paddingVertical: rs(14),
             borderRadius: rs(8),
           }}
         >
-          <Text style={{ color: '#FFFFFF', fontWeight: '800' }}>Retry</Text>
+          <Text style={{ color: colors.white, fontFamily: fonts.extraBold }}>Retry</Text>
         </TouchableOpacity>
       </SafeAreaView>
     );
@@ -536,7 +571,7 @@ const PaymentScreen = () => {
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <StatusBar backgroundColor="#061B66" barStyle="light-content" />
+      <StatusBar backgroundColor={colors.primary} barStyle="light-content" />
 
       <Header />
 
@@ -573,17 +608,17 @@ const HALF_WIDTH = (SCREEN_WIDTH - PAGE_PADDING * 2 - CARD_GAP) / 2;
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#F8F9FD',
+    backgroundColor: colors.financeBackground,
   },
   loaderScreen: {
     flex: 1,
-    backgroundColor: '#F8F9FD',
+    backgroundColor: colors.financeBackground,
     alignItems: 'center',
     justifyContent: 'center',
   },
   header: {
     height: rs(96),
-    backgroundColor: '#061B66',
+    backgroundColor: colors.primary,
     paddingHorizontal: rs(30),
     paddingTop: rs(8),
     flexDirection: 'row',
@@ -591,9 +626,9 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   headerTitle: {
-    color: '#FFFFFF',
+    color: colors.white,
     fontSize: fs(34),
-    fontWeight: '900',
+    fontFamily: fonts.extraBold,
   },
   scrollView: {
     flex: 1,
@@ -612,23 +647,23 @@ const styles = StyleSheet.create({
     width: (SCREEN_WIDTH - PAGE_PADDING * 2 - rs(90)) / 4,
     height: rs(48),
     borderWidth: 1,
-    borderColor: '#BFC3D3',
+    borderColor: colors.superAdminTabBorder,
     borderRadius: rs(7),
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.white,
     alignItems: 'center',
     justifyContent: 'center',
   },
   activePeriodTab: {
-    backgroundColor: '#061B66',
-    borderColor: '#061B66',
+    backgroundColor: colors.primary,
+    borderColor: colors.primary,
   },
   periodText: {
-    color: '#061247',
+    color: colors.primaryText,
     fontSize: fs(17),
-    fontWeight: '800',
+    fontFamily: fonts.extraBold,
   },
   activePeriodText: {
-    color: '#FFFFFF',
+    color: colors.white,
   },
   summaryGrid: {
     flexDirection: 'row',
@@ -638,65 +673,67 @@ const styles = StyleSheet.create({
   },
   summaryCard: {
     width: HALF_WIDTH,
-    height: rs(142),
-    backgroundColor: '#FFFFFF',
+    minHeight: rs(142),
+    backgroundColor: colors.white,
     borderRadius: rs(10),
-    paddingHorizontal: rs(22),
+    paddingHorizontal: rs(14),
+    paddingVertical: rs(12),
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: rs(14),
-    shadowColor: '#000000',
+    shadowColor: colors.black,
     shadowOpacity: 0.04,
     shadowRadius: rs(12),
     shadowOffset: { width: 0, height: rs(5) },
     elevation: 3,
   },
   summaryIcon: {
-    width: rs(92),
-    height: rs(92),
-    borderRadius: rs(46),
+    width: rs(72),
+    height: rs(72),
+    borderRadius: rs(36),
     alignItems: 'center',
     justifyContent: 'center',
-    marginRight: rs(20),
+    marginRight: rs(12),
   },
   summaryTextBox: {
     flex: 1,
+    minWidth: 0,
   },
   summaryTitle: {
-    color: '#5D607E',
-    fontSize: fs(16),
-    fontWeight: '700',
-    marginBottom: rs(9),
+    color: colors.slateText,
+    fontSize: fs(13),
+    fontFamily: fonts.bold,
+    marginBottom: rs(6),
   },
   summaryValue: {
-    fontSize: fs(30),
-    fontWeight: '900',
-    letterSpacing: rs(2.5),
+    fontSize: fs(24),
+    fontFamily: fonts.extraBold,
+    letterSpacing: rs(0.5),
   },
   summarySubtitle: {
-    fontSize: fs(15),
-    fontWeight: '800',
-    marginTop: rs(9),
+    fontSize: fs(12),
+    fontFamily: fonts.extraBold,
+    marginTop: rs(6),
   },
   card: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.white,
     borderRadius: rs(10),
     paddingHorizontal: rs(22),
     paddingVertical: rs(18),
     marginBottom: rs(16),
-    shadowColor: '#000000',
+    shadowColor: colors.black,
     shadowOpacity: 0.04,
     shadowRadius: rs(12),
     shadowOffset: { width: 0, height: rs(5) },
     elevation: 3,
   },
   latestCard: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.white,
     borderRadius: rs(10),
     paddingHorizontal: rs(22),
     paddingVertical: rs(18),
     marginBottom: rs(16),
-    shadowColor: '#000000',
+    shadowColor: colors.black,
     shadowOpacity: 0.04,
     shadowRadius: rs(12),
     shadowOffset: { width: 0, height: rs(5) },
@@ -710,31 +747,31 @@ const styles = StyleSheet.create({
     marginBottom: rs(10),
   },
   cardTitle: {
-    color: '#111327',
+    color: colors.text,
     fontSize: fs(24),
-    fontWeight: '900',
+    fontFamily: fonts.extraBold,
   },
   viewAllText: {
-    color: '#173CFF',
+    color: colors.financeBlue,
     fontSize: fs(18),
-    fontWeight: '800',
+    fontFamily: fonts.extraBold,
   },
   weeklyButton: {
     width: rs(128),
     height: rs(38),
     borderWidth: 1,
-    borderColor: '#D8DCE8',
+    borderColor: colors.superAdminBorder,
     borderRadius: rs(6),
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.white,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: rs(14),
   },
   weeklyText: {
-    color: '#061247',
+    color: colors.primaryText,
     fontSize: fs(15),
-    fontWeight: '800',
+    fontFamily: fonts.extraBold,
   },
   chartArea: {
     height: rs(230),
@@ -747,16 +784,16 @@ const styles = StyleSheet.create({
     paddingVertical: rs(6),
   },
   axisText: {
-    color: '#5D607E',
+    color: colors.slateText,
     fontSize: fs(13),
-    fontWeight: '700',
+    fontFamily: fonts.bold,
   },
   chartBox: {
     flex: 1,
     position: 'relative',
     borderLeftWidth: 1,
     borderBottomWidth: 1,
-    borderColor: '#D8DCE8',
+    borderColor: colors.superAdminBorder,
     overflow: 'visible',
   },
   gridLine: {
@@ -765,7 +802,7 @@ const styles = StyleSheet.create({
     right: 0,
     borderTopWidth: 1,
     borderStyle: 'dashed',
-    borderColor: '#D8DCE8',
+    borderColor: colors.superAdminBorder,
   },
   greenFillArea: {
     position: 'absolute',
@@ -773,12 +810,12 @@ const styles = StyleSheet.create({
     right: rs(64),
     bottom: 0,
     height: '62%',
-    backgroundColor: 'rgba(19, 138, 54, 0.12)',
+    backgroundColor: colors.superAdminGreenArea,
   },
   blueLine: {
     position: 'absolute',
     borderTopWidth: 3,
-    borderColor: '#173CFF',
+    borderColor: colors.financeBlue,
   },
   blueLineOne: {
     left: '4%',
@@ -801,7 +838,7 @@ const styles = StyleSheet.create({
   orangeLine: {
     position: 'absolute',
     borderTopWidth: 2,
-    borderColor: '#F06419',
+    borderColor: colors.profileOrange,
     borderStyle: 'dashed',
   },
   orangeLineOne: {
@@ -827,22 +864,22 @@ const styles = StyleSheet.create({
     width: rs(12),
     height: rs(12),
     borderRadius: rs(6),
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.white,
     borderWidth: 3,
-    borderColor: '#173CFF',
+    borderColor: colors.financeBlue,
   },
   orangeDot: {
     position: 'absolute',
     width: rs(11),
     height: rs(11),
     borderRadius: rs(5.5),
-    backgroundColor: '#F06419',
+    backgroundColor: colors.profileOrange,
   },
   tooltip: {
     position: 'absolute',
     right: rs(22),
     top: -rs(16),
-    backgroundColor: '#173CFF',
+    backgroundColor: colors.financeBlue,
     borderRadius: rs(4),
     height: rs(26),
     paddingHorizontal: rs(10),
@@ -850,9 +887,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   tooltipText: {
-    color: '#FFFFFF',
+    color: colors.white,
     fontSize: fs(14),
-    fontWeight: '800',
+    fontFamily: fonts.extraBold,
   },
   xAxisRow: {
     marginLeft: rs(54),
@@ -862,9 +899,9 @@ const styles = StyleSheet.create({
     marginBottom: rs(16),
   },
   xAxisText: {
-    color: '#5D607E',
+    color: colors.slateText,
     fontSize: fs(15),
-    fontWeight: '700',
+    fontFamily: fonts.bold,
   },
   trendCardsRow: {
     flexDirection: 'row',
@@ -872,56 +909,64 @@ const styles = StyleSheet.create({
   },
   trendSmallCard: {
     width: '31%',
-    height: rs(68),
+    minHeight: rs(68),
     borderWidth: 1,
     borderRadius: rs(7),
     alignItems: 'center',
     justifyContent: 'center',
+    paddingHorizontal: rs(8),
+    paddingVertical: rs(8),
   },
   collectedSmallCard: {
-    backgroundColor: '#F0FAF3',
-    borderColor: '#88C99A',
+    backgroundColor: colors.superAdminCollectedBg,
+    borderColor: colors.superAdminCollectedBorder,
   },
   pendingSmallCard: {
-    backgroundColor: '#FFF8F1',
-    borderColor: '#F8C9A8',
+    backgroundColor: colors.superAdminPendingBg,
+    borderColor: colors.orangeBorder,
   },
   overdueSmallCard: {
-    backgroundColor: '#FFF5F5',
-    borderColor: '#FFB6B6',
+    backgroundColor: colors.stockistDangerSoft,
+    borderColor: colors.dangerBorder,
   },
   greenLegend: {
-    color: '#138A36',
-    fontSize: fs(14),
-    fontWeight: '800',
+    color: colors.success,
+    fontSize: fs(11),
+    fontFamily: fonts.extraBold,
+    textAlign: 'center',
   },
   orangeLegend: {
-    color: '#F06419',
-    fontSize: fs(14),
-    fontWeight: '800',
+    color: colors.profileOrange,
+    fontSize: fs(11),
+    fontFamily: fonts.extraBold,
+    textAlign: 'center',
   },
   redLegend: {
-    color: '#E00014',
-    fontSize: fs(14),
-    fontWeight: '800',
+    color: colors.dangerDark,
+    fontSize: fs(11),
+    fontFamily: fonts.extraBold,
+    textAlign: 'center',
   },
   greenBig: {
-    color: '#138A36',
-    fontSize: fs(22),
-    fontWeight: '900',
+    color: colors.success,
+    fontSize: fs(18),
+    fontFamily: fonts.extraBold,
     marginTop: rs(4),
+    textAlign: 'center',
   },
   orangeBig: {
-    color: '#F06419',
-    fontSize: fs(22),
-    fontWeight: '900',
+    color: colors.profileOrange,
+    fontSize: fs(18),
+    fontFamily: fonts.extraBold,
     marginTop: rs(4),
+    textAlign: 'center',
   },
   redBig: {
-    color: '#E00014',
-    fontSize: fs(22),
-    fontWeight: '900',
+    color: colors.dangerDark,
+    fontSize: fs(18),
+    fontFamily: fonts.extraBold,
     marginTop: rs(4),
+    textAlign: 'center',
   },
   breakdownList: {
     marginTop: rs(4),
@@ -933,9 +978,9 @@ const styles = StyleSheet.create({
   },
   companyName: {
     width: rs(120),
-    color: '#44465F',
+    color: colors.superAdminCompanyText,
     fontSize: fs(17),
-    fontWeight: '700',
+    fontFamily: fonts.bold,
   },
   stackedBar: {
     flex: 1,
@@ -946,26 +991,26 @@ const styles = StyleSheet.create({
   },
   collectedBar: {
     height: '100%',
-    backgroundColor: '#138A36',
+    backgroundColor: colors.success,
     alignItems: 'center',
     justifyContent: 'center',
   },
   pendingBar: {
     height: '100%',
-    backgroundColor: '#F06419',
+    backgroundColor: colors.profileOrange,
     alignItems: 'center',
     justifyContent: 'center',
   },
   overdueBar: {
     height: '100%',
-    backgroundColor: '#E00014',
+    backgroundColor: colors.dangerDark,
     alignItems: 'center',
     justifyContent: 'center',
   },
   barText: {
-    color: '#FFFFFF',
+    color: colors.white,
     fontSize: fs(13),
-    fontWeight: '900',
+    fontFamily: fonts.extraBold,
   },
   breakdownFooter: {
     flexDirection: 'row',
@@ -980,39 +1025,39 @@ const styles = StyleSheet.create({
   legendGreenBox: {
     width: rs(12),
     height: rs(12),
-    backgroundColor: '#138A36',
+    backgroundColor: colors.success,
     borderRadius: rs(2),
     marginRight: rs(8),
   },
   legendOrangeBox: {
     width: rs(12),
     height: rs(12),
-    backgroundColor: '#F06419',
+    backgroundColor: colors.profileOrange,
     borderRadius: rs(2),
     marginRight: rs(8),
   },
   legendRedBox: {
     width: rs(12),
     height: rs(12),
-    backgroundColor: '#E00014',
+    backgroundColor: colors.dangerDark,
     borderRadius: rs(2),
     marginRight: rs(8),
   },
   legendText: {
-    color: '#5D607E',
+    color: colors.slateText,
     fontSize: fs(13),
-    fontWeight: '700',
+    fontFamily: fonts.bold,
   },
   amountNote: {
     marginLeft: 'auto',
-    color: '#5D607E',
+    color: colors.slateText,
     fontSize: fs(14),
-    fontWeight: '700',
+    fontFamily: fonts.bold,
   },
   paymentRow: {
     minHeight: rs(76),
     borderTopWidth: 1,
-    borderTopColor: '#EEF0F6',
+    borderTopColor: colors.financeDivider,
     flexDirection: 'row',
     alignItems: 'center',
   },
@@ -1028,27 +1073,27 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   paymentCompany: {
-    color: '#111327',
+    color: colors.text,
     fontSize: fs(17),
-    fontWeight: '900',
+    fontFamily: fonts.extraBold,
   },
   paymentDescription: {
-    color: '#5D607E',
+    color: colors.slateText,
     fontSize: fs(14),
-    fontWeight: '600',
+    fontFamily: fonts.semiBold,
     marginTop: rs(6),
   },
   paymentRight: {
     width: rs(160),
   },
   paymentTime: {
-    color: '#5D607E',
+    color: colors.slateText,
     fontSize: fs(13),
-    fontWeight: '700',
+    fontFamily: fonts.bold,
   },
   paymentAmount: {
     fontSize: fs(20),
-    fontWeight: '900',
+    fontFamily: fonts.extraBold,
     marginTop: rs(7),
   },
   paymentBadge: {
@@ -1060,39 +1105,39 @@ const styles = StyleSheet.create({
   },
   paymentBadgeText: {
     fontSize: fs(14),
-    fontWeight: '900',
+    fontFamily: fonts.extraBold,
   },
   collectedBadge: {
-    backgroundColor: '#EAF8EC',
+    backgroundColor: colors.successLight,
     borderWidth: 1,
-    borderColor: '#BEE7C5',
+    borderColor: colors.successBorder,
   },
   pendingBadge: {
-    backgroundColor: '#FFF3E9',
+    backgroundColor: colors.orangeSoft,
     borderWidth: 1,
-    borderColor: '#F8C9A8',
+    borderColor: colors.orangeBorder,
   },
   overdueBadge: {
-    backgroundColor: '#FFF0F0',
+    backgroundColor: colors.dangerLight,
     borderWidth: 1,
-    borderColor: '#FFB6B6',
+    borderColor: colors.dangerBorder,
   },
   processingBadge: {
-    backgroundColor: '#F1F5FF',
+    backgroundColor: colors.blueLight,
     borderWidth: 1,
-    borderColor: '#B8C8FF',
+    borderColor: colors.blueBorderSoft,
   },
   collectedBadgeText: {
-    color: '#138A36',
+    color: colors.success,
   },
   pendingBadgeText: {
-    color: '#F06419',
+    color: colors.profileOrange,
   },
   overdueBadgeText: {
-    color: '#E00014',
+    color: colors.dangerDark,
   },
   processingBadgeText: {
-    color: '#173CFF',
+    color: colors.financeBlue,
   },
   bottomActions: {
     height: rs(52),
@@ -1103,32 +1148,32 @@ const styles = StyleSheet.create({
     width: '48%',
     height: rs(52),
     borderWidth: 1,
-    borderColor: '#061247',
+    borderColor: colors.primaryText,
     borderRadius: rs(6),
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.white,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
   },
   exportText: {
-    color: '#061247',
+    color: colors.primaryText,
     fontSize: fs(17),
-    fontWeight: '800',
+    fontFamily: fonts.extraBold,
     marginLeft: rs(10),
   },
   reminderButton: {
     width: '48%',
     height: rs(52),
     borderRadius: rs(6),
-    backgroundColor: '#061B66',
+    backgroundColor: colors.primary,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
   },
   reminderText: {
-    color: '#FFFFFF',
+    color: colors.white,
     fontSize: fs(17),
-    fontWeight: '800',
+    fontFamily: fonts.extraBold,
     marginLeft: rs(10),
   },
 });

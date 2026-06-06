@@ -1,7 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import {
   ActivityIndicator,
-  Dimensions,
   Image,
   ScrollView,
   StatusBar,
@@ -37,25 +36,19 @@ import {
 } from '../../api/mock/stockist/stockistInventory.mock';
 import { getStockistInventory } from '../../api/stockist/stockistInventory.api';
 import { showErrorToast } from '../../utils/toast';
-
-const { width: SCREEN_WIDTH } = Dimensions.get('window');
-
-const DESIGN_WIDTH = 832;
-const scale = SCREEN_WIDTH / DESIGN_WIDTH;
-const rs = (value: number) => Math.round(value * scale);
-const fs = (value: number) => rs(value + 3);
+import { colors, fonts, size as rs, textSize as fs } from '../../theme';
 
 const Header = () => {
   return (
     <View style={styles.header}>
       <TouchableOpacity activeOpacity={0.8}>
-        <Menu color="#FFFFFF" size={rs(36)} strokeWidth={2.5} />
+        <Menu color={colors.white} size={rs(36)} strokeWidth={2.5} />
       </TouchableOpacity>
 
       <Text style={styles.headerTitle}>Inventory</Text>
 
       <TouchableOpacity activeOpacity={0.8}>
-        <Barcode color="#FFFFFF" size={rs(34)} strokeWidth={2.4} />
+        <Barcode color={colors.white} size={rs(34)} strokeWidth={2.4} />
       </TouchableOpacity>
     </View>
   );
@@ -70,12 +63,12 @@ const SearchBar = ({
 }) => {
   return (
     <View style={styles.searchBox}>
-      <Search color="#5D607E" size={rs(28)} strokeWidth={2.1} />
+      <Search color={colors.slateText} size={rs(28)} strokeWidth={2.1} />
       <TextInput
         value={value}
         onChangeText={onChangeText}
         placeholder="Search product, SKU or barcode"
-        placeholderTextColor="#5D607E"
+        placeholderTextColor={colors.slateText}
         style={styles.searchInput}
       />
     </View>
@@ -138,7 +131,7 @@ const SummaryCard = ({ data }: { data: InventorySummary }) => {
     <View style={styles.summaryCard}>
       <View style={styles.summaryItem}>
         <View style={styles.summaryIconSoft}>
-          <Box color="#173CFF" size={rs(34)} strokeWidth={2.3} />
+          <Box color={colors.financeBlue} size={rs(34)} strokeWidth={2.3} />
         </View>
         <View>
           <Text style={styles.summaryValue}>{data.products}</Text>
@@ -150,7 +143,7 @@ const SummaryCard = ({ data }: { data: InventorySummary }) => {
 
       <View style={styles.summaryItem}>
         <View style={[styles.summaryIconSoft, styles.greenSoft]}>
-          <IndianRupee color="#138A36" size={rs(34)} strokeWidth={2.3} />
+          <IndianRupee color={colors.success} size={rs(34)} strokeWidth={2.3} />
         </View>
         <View>
           <Text style={styles.summaryValueGreen}>{data.stockValue}</Text>
@@ -162,7 +155,7 @@ const SummaryCard = ({ data }: { data: InventorySummary }) => {
 
       <View style={styles.summaryItem}>
         <View style={[styles.summaryIconSoft, styles.orangeSoft]}>
-          <AlertTriangle color="#F06419" size={rs(34)} strokeWidth={2.3} />
+          <AlertTriangle color={colors.profileOrange} size={rs(34)} strokeWidth={2.3} />
         </View>
         <View>
           <Text style={styles.summaryValueOrange}>{data.lowStockAlerts}</Text>
@@ -247,7 +240,7 @@ const FastMovingCard = ({ item }: { item: InventoryProduct }) => {
               <Text style={styles.skuText}>SKU: {item.sku}</Text>
               <Text style={styles.dotText}>•</Text>
               <Text style={styles.skuText}>{item.warehouse}</Text>
-              <Link2 color="#5D607E" size={rs(16)} strokeWidth={2.1} />
+              <Link2 color={colors.slateText} size={rs(16)} strokeWidth={2.1} />
             </View>
           </View>
 
@@ -260,21 +253,21 @@ const FastMovingCard = ({ item }: { item: InventoryProduct }) => {
               <StatBlock
                 label="Available"
                 value={item.available}
-                color="#138A36"
+                color={colors.success}
               />
               <StatBlock
                 label="Reserved"
                 value={item.reserved}
-                color="#173CFF"
+                color={colors.financeBlue}
               />
               <StatBlock
                 label="Incoming"
                 value={item.incoming}
-                color="#7B22EA"
+                color={colors.purple}
               />
             </View>
 
-            <StockProgress value={item.progress} color="#138A36" />
+            <StockProgress value={item.progress} color={colors.success} />
           </View>
 
           <View style={styles.salesDivider} />
@@ -288,17 +281,17 @@ const FastMovingCard = ({ item }: { item: InventoryProduct }) => {
 
         <View style={styles.actionRow}>
           <TouchableOpacity activeOpacity={0.8} style={styles.actionButton}>
-            <SlidersHorizontal color="#173CFF" size={rs(22)} />
+            <SlidersHorizontal color={colors.financeBlue} size={rs(22)} />
             <Text style={styles.actionText}>Adjust</Text>
           </TouchableOpacity>
 
           <TouchableOpacity activeOpacity={0.8} style={styles.actionButton}>
-            <RotateCw color="#173CFF" size={rs(22)} />
+            <RotateCw color={colors.financeBlue} size={rs(22)} />
             <Text style={styles.actionText}>Transfer</Text>
           </TouchableOpacity>
 
           <TouchableOpacity activeOpacity={0.8} style={styles.actionButton}>
-            <History color="#173CFF" size={rs(22)} />
+            <History color={colors.financeBlue} size={rs(22)} />
             <Text style={styles.actionText}>History</Text>
           </TouchableOpacity>
         </View>
@@ -320,7 +313,7 @@ const LowStockCard = ({ item }: { item: InventoryProduct }) => {
               <Text style={styles.skuText}>SKU: {item.sku}</Text>
               <Text style={styles.dotText}>•</Text>
               <Text style={styles.skuText}>{item.warehouse}</Text>
-              <Link2 color="#5D607E" size={rs(16)} strokeWidth={2.1} />
+              <Link2 color={colors.slateText} size={rs(16)} strokeWidth={2.1} />
             </View>
           </View>
 
@@ -330,7 +323,7 @@ const LowStockCard = ({ item }: { item: InventoryProduct }) => {
         <View style={styles.lowStockBody}>
           <View style={styles.lowLeft}>
             <View style={styles.warningBox}>
-              <AlertTriangle color="#F06419" size={rs(19)} strokeWidth={2.2} />
+              <AlertTriangle color={colors.profileOrange} size={rs(19)} strokeWidth={2.2} />
               <Text style={styles.warningText}>{item.alertText}</Text>
             </View>
 
@@ -338,21 +331,21 @@ const LowStockCard = ({ item }: { item: InventoryProduct }) => {
               <StatBlock
                 label="Available"
                 value={item.available}
-                color="#F06419"
+                color={colors.profileOrange}
               />
               <StatBlock
                 label="Reserved"
                 value={item.reserved}
-                color="#173CFF"
+                color={colors.financeBlue}
               />
               <StatBlock
                 label="Incoming"
                 value={item.incoming}
-                color="#7B22EA"
+                color={colors.purple}
               />
             </View>
 
-            <StockProgress value={item.progress} color="#F06419" />
+            <StockProgress value={item.progress} color={colors.profileOrange} />
           </View>
 
           <View style={styles.reorderBox}>
@@ -384,7 +377,7 @@ const OutOfStockCard = ({ item }: { item: InventoryProduct }) => {
               <Text style={styles.skuText}>SKU: {item.sku}</Text>
               <Text style={styles.dotText}>•</Text>
               <Text style={styles.skuText}>{item.warehouse}</Text>
-              <Link2 color="#5D607E" size={rs(16)} strokeWidth={2.1} />
+              <Link2 color={colors.slateText} size={rs(16)} strokeWidth={2.1} />
             </View>
           </View>
 
@@ -398,12 +391,12 @@ const OutOfStockCard = ({ item }: { item: InventoryProduct }) => {
 
         <View style={styles.outActionRow}>
           <TouchableOpacity activeOpacity={0.8} style={styles.urgentButton}>
-            <ShoppingCart color="#FFFFFF" size={rs(22)} />
+            <ShoppingCart color={colors.white} size={rs(22)} />
             <Text style={styles.urgentButtonText}>Urgent Restock</Text>
           </TouchableOpacity>
 
           <TouchableOpacity activeOpacity={0.8} style={styles.notifyButton}>
-            <AlertTriangle color="#E00014" size={rs(22)} />
+            <AlertTriangle color={colors.dangerDark} size={rs(22)} />
             <Text style={styles.notifyButtonText}>Notify Dealers</Text>
           </TouchableOpacity>
         </View>
@@ -425,7 +418,7 @@ const ExpiringCard = ({ item }: { item: InventoryProduct }) => {
               <Text style={styles.skuText}>SKU: {item.sku}</Text>
               <Text style={styles.dotText}>•</Text>
               <Text style={styles.skuText}>{item.warehouse}</Text>
-              <Link2 color="#5D607E" size={rs(16)} strokeWidth={2.1} />
+              <Link2 color={colors.slateText} size={rs(16)} strokeWidth={2.1} />
             </View>
           </View>
 
@@ -435,7 +428,7 @@ const ExpiringCard = ({ item }: { item: InventoryProduct }) => {
         <View style={styles.expiringBody}>
           <View style={styles.expiringLeft}>
             <View style={styles.expireAlertBox}>
-              <Clock3 color="#7B22EA" size={rs(20)} />
+              <Clock3 color={colors.purple} size={rs(20)} />
               <View>
                 <Text style={styles.expireTitle}>{item.alertText}</Text>
                 <Text style={styles.expireSub}>{item.alertSubText}</Text>
@@ -446,21 +439,21 @@ const ExpiringCard = ({ item }: { item: InventoryProduct }) => {
               <StatBlock
                 label="Available"
                 value={item.available}
-                color="#7B22EA"
+                color={colors.purple}
               />
               <StatBlock
                 label="Reserved"
                 value={item.reserved}
-                color="#173CFF"
+                color={colors.financeBlue}
               />
               <StatBlock
                 label="Incoming"
                 value={item.incoming}
-                color="#7B22EA"
+                color={colors.purple}
               />
             </View>
 
-            <StockProgress value={item.progress} color="#7B22EA" />
+            <StockProgress value={item.progress} color={colors.purple} />
 
             <TouchableOpacity
               activeOpacity={0.8}
@@ -493,12 +486,12 @@ const QuickMenu = () => {
           activeOpacity={0.8}
           style={styles.quickMenuRow}
         >
-          {item.icon === 'box' && <Box color="#173CFF" size={rs(25)} />}
+          {item.icon === 'box' && <Box color={colors.financeBlue} size={rs(25)} />}
           {item.icon === 'adjust' && (
-            <SlidersHorizontal color="#173CFF" size={rs(25)} />
+            <SlidersHorizontal color={colors.financeBlue} size={rs(25)} />
           )}
-          {item.icon === 'truck' && <Truck color="#173CFF" size={rs(25)} />}
-          {item.icon === 'file' && <FilePlus2 color="#173CFF" size={rs(25)} />}
+          {item.icon === 'truck' && <Truck color={colors.financeBlue} size={rs(25)} />}
+          {item.icon === 'file' && <FilePlus2 color={colors.financeBlue} size={rs(25)} />}
           <Text style={styles.quickMenuText}>{item.title}</Text>
         </TouchableOpacity>
       ))}
@@ -577,15 +570,15 @@ const StockistInventoryScreen = () => {
   if (loading || !data) {
     return (
       <SafeAreaView style={styles.loaderScreen}>
-        <StatusBar backgroundColor="#061B66" barStyle="light-content" />
-        <ActivityIndicator size="large" color="#173CFF" />
+        <StatusBar backgroundColor={colors.primary} barStyle="light-content" />
+        <ActivityIndicator size="large" color={colors.financeBlue} />
       </SafeAreaView>
     );
   }
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <StatusBar backgroundColor="#061B66" barStyle="light-content" />
+      <StatusBar backgroundColor={colors.primary} barStyle="light-content" />
 
       <Header />
 
@@ -615,17 +608,17 @@ const PAGE_PADDING = rs(22);
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#F8F9FD',
+    backgroundColor: colors.financeBackground,
   },
   loaderScreen: {
     flex: 1,
-    backgroundColor: '#F8F9FD',
+    backgroundColor: colors.financeBackground,
     alignItems: 'center',
     justifyContent: 'center',
   },
   header: {
     height: rs(82),
-    backgroundColor: '#061B66',
+    backgroundColor: colors.primary,
     paddingHorizontal: rs(30),
     paddingTop: rs(10),
     flexDirection: 'row',
@@ -633,9 +626,9 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   headerTitle: {
-    color: '#FFFFFF',
+    color: colors.white,
     fontSize: fs(31),
-    fontWeight: '800',
+    fontFamily: fonts.extraBold,
   },
   scrollView: {
     flex: 1,
@@ -648,9 +641,9 @@ const styles = StyleSheet.create({
   searchBox: {
     height: rs(62),
     borderWidth: 1,
-    borderColor: '#DCE0EA',
+    borderColor: colors.stockistInputBorder,
     borderRadius: rs(11),
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.white,
     paddingHorizontal: rs(20),
     flexDirection: 'row',
     alignItems: 'center',
@@ -659,9 +652,9 @@ const styles = StyleSheet.create({
   searchInput: {
     flex: 1,
     marginLeft: rs(16),
-    color: '#111327',
+    color: colors.text,
     fontSize: fs(18),
-    fontWeight: '500',
+    fontFamily: fonts.medium,
     paddingVertical: 0,
   },
   filterContent: {
@@ -671,47 +664,47 @@ const styles = StyleSheet.create({
     minWidth: rs(116),
     height: rs(50),
     borderWidth: 1,
-    borderColor: '#DCE0EA',
+    borderColor: colors.stockistInputBorder,
     borderRadius: rs(25),
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.white,
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: rs(10),
     paddingHorizontal: rs(18),
   },
   activeFilterChip: {
-    backgroundColor: '#061B66',
-    borderColor: '#061B66',
+    backgroundColor: colors.primary,
+    borderColor: colors.primary,
   },
   filterText: {
-    color: '#061247',
+    color: colors.primaryText,
     fontSize: fs(15),
-    fontWeight: '800',
+    fontFamily: fonts.extraBold,
   },
   activeFilterText: {
-    color: '#FFFFFF',
+    color: colors.white,
   },
   orangeText: {
-    color: '#F06419',
+    color: colors.profileOrange,
   },
   redText: {
-    color: '#E00014',
+    color: colors.dangerDark,
   },
   greenText: {
-    color: '#138A36',
+    color: colors.success,
   },
   purpleText: {
-    color: '#7B22EA',
+    color: colors.purple,
   },
   summaryCard: {
     height: rs(105),
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.white,
     borderRadius: rs(8),
     paddingHorizontal: rs(28),
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: rs(22),
-    shadowColor: '#000000',
+    shadowColor: colors.black,
     shadowOpacity: 0.04,
     shadowRadius: rs(12),
     shadowOffset: { width: 0, height: rs(5) },
@@ -726,53 +719,53 @@ const styles = StyleSheet.create({
     width: rs(64),
     height: rs(64),
     borderRadius: rs(32),
-    backgroundColor: '#F1F5FF',
+    backgroundColor: colors.blueLight,
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: rs(22),
   },
   greenSoft: {
-    backgroundColor: '#EAF8EC',
+    backgroundColor: colors.successLight,
   },
   orangeSoft: {
-    backgroundColor: '#FFF1E7',
+    backgroundColor: colors.stockistOrangeSoft,
   },
   summaryValue: {
-    color: '#061247',
+    color: colors.primaryText,
     fontSize: fs(31),
-    fontWeight: '900',
+    fontFamily: fonts.extraBold,
     letterSpacing: rs(4),
   },
   summaryValueGreen: {
-    color: '#138A36',
+    color: colors.success,
     fontSize: fs(31),
-    fontWeight: '900',
+    fontFamily: fonts.extraBold,
     letterSpacing: rs(4),
   },
   summaryValueOrange: {
-    color: '#F06419',
+    color: colors.profileOrange,
     fontSize: fs(31),
-    fontWeight: '900',
+    fontFamily: fonts.extraBold,
   },
   summaryLabel: {
-    color: '#111327',
+    color: colors.text,
     fontSize: fs(15),
-    fontWeight: '700',
+    fontFamily: fonts.bold,
     marginTop: rs(8),
   },
   summaryDivider: {
     width: 1,
     height: rs(60),
-    backgroundColor: '#DCE0EA',
+    backgroundColor: colors.stockistInputBorder,
     marginHorizontal: rs(18),
   },
   productCard: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.white,
     borderRadius: rs(10),
     padding: rs(18),
     marginBottom: rs(16),
     flexDirection: 'row',
-    shadowColor: '#000000',
+    shadowColor: colors.black,
     shadowOpacity: 0.04,
     shadowRadius: rs(14),
     shadowOffset: { width: 0, height: rs(5) },
@@ -782,7 +775,7 @@ const styles = StyleSheet.create({
     width: rs(145),
     height: rs(120),
     borderRadius: rs(7),
-    backgroundColor: '#F2F3F8',
+    backgroundColor: colors.stockistImageBg,
     marginRight: rs(26),
   },
   productMain: {
@@ -794,9 +787,9 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
   },
   productName: {
-    color: '#111327',
+    color: colors.text,
     fontSize: fs(25),
-    fontWeight: '900',
+    fontFamily: fonts.extraBold,
   },
   skuRow: {
     flexDirection: 'row',
@@ -804,15 +797,15 @@ const styles = StyleSheet.create({
     marginTop: rs(11),
   },
   skuText: {
-    color: '#5D607E',
+    color: colors.slateText,
     fontSize: fs(17),
-    fontWeight: '600',
+    fontFamily: fonts.semiBold,
     marginRight: rs(10),
   },
   dotText: {
-    color: '#5D607E',
+    color: colors.slateText,
     fontSize: fs(17),
-    fontWeight: '900',
+    fontFamily: fonts.extraBold,
     marginRight: rs(10),
   },
   statusBadge: {
@@ -825,40 +818,40 @@ const styles = StyleSheet.create({
     paddingHorizontal: rs(12),
   },
   fastBadge: {
-    backgroundColor: '#EAF8EC',
-    borderColor: '#BEE7C5',
+    backgroundColor: colors.successLight,
+    borderColor: colors.successBorder,
   },
   lowBadge: {
-    backgroundColor: '#FFF1E7',
-    borderColor: '#F8C9A8',
+    backgroundColor: colors.stockistOrangeSoft,
+    borderColor: colors.orangeBorder,
   },
   outBadge: {
-    backgroundColor: '#FFF0F0',
-    borderColor: '#FFB6B6',
+    backgroundColor: colors.dangerLight,
+    borderColor: colors.dangerBorder,
   },
   expireBadge: {
-    backgroundColor: '#F7F0FF',
-    borderColor: '#D8B8FF',
+    backgroundColor: colors.purpleSoft,
+    borderColor: colors.stockistPurpleBorder,
   },
   fastBadgeText: {
-    color: '#138A36',
+    color: colors.success,
     fontSize: fs(13),
-    fontWeight: '900',
+    fontFamily: fonts.extraBold,
   },
   lowBadgeText: {
-    color: '#F06419',
+    color: colors.profileOrange,
     fontSize: fs(13),
-    fontWeight: '900',
+    fontFamily: fonts.extraBold,
   },
   outBadgeText: {
-    color: '#E00014',
+    color: colors.dangerDark,
     fontSize: fs(13),
-    fontWeight: '900',
+    fontFamily: fonts.extraBold,
   },
   expireBadgeText: {
-    color: '#7B22EA',
+    color: colors.purple,
     fontSize: fs(13),
-    fontWeight: '900',
+    fontFamily: fonts.extraBold,
   },
   productBodyRow: {
     flexDirection: 'row',
@@ -875,13 +868,13 @@ const styles = StyleSheet.create({
     width: '31%',
   },
   statLabel: {
-    color: '#5D607E',
+    color: colors.slateText,
     fontSize: fs(14),
-    fontWeight: '600',
+    fontFamily: fonts.semiBold,
   },
   statValue: {
     fontSize: fs(23),
-    fontWeight: '900',
+    fontFamily: fonts.extraBold,
     marginTop: rs(6),
   },
   progressRow: {
@@ -892,7 +885,7 @@ const styles = StyleSheet.create({
   progressTrack: {
     flex: 1,
     height: rs(10),
-    backgroundColor: '#E4E6EF',
+    backgroundColor: colors.dealerProgressTrack,
     borderRadius: rs(8),
     overflow: 'hidden',
   },
@@ -901,15 +894,15 @@ const styles = StyleSheet.create({
     borderRadius: rs(8),
   },
   progressText: {
-    color: '#061247',
+    color: colors.primaryText,
     fontSize: fs(17),
-    fontWeight: '900',
+    fontFamily: fonts.extraBold,
     marginLeft: rs(16),
   },
   salesDivider: {
     width: 1,
     height: rs(78),
-    backgroundColor: '#DCE0EA',
+    backgroundColor: colors.stockistInputBorder,
     marginHorizontal: rs(28),
   },
   soldBlock: {
@@ -918,19 +911,19 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   soldIcon: {
-    color: '#138A36',
+    color: colors.success,
     fontSize: fs(28),
-    fontWeight: '900',
+    fontFamily: fonts.extraBold,
   },
   soldNumber: {
-    color: '#061247',
+    color: colors.primaryText,
     fontSize: fs(28),
-    fontWeight: '900',
+    fontFamily: fonts.extraBold,
   },
   soldText: {
-    color: '#111327',
+    color: colors.text,
     fontSize: fs(15),
-    fontWeight: '600',
+    fontFamily: fonts.semiBold,
     marginTop: rs(5),
   },
   actionRow: {
@@ -942,16 +935,16 @@ const styles = StyleSheet.create({
     width: '32%',
     height: rs(50),
     borderWidth: 1,
-    borderColor: '#DCE0EA',
+    borderColor: colors.stockistInputBorder,
     borderRadius: rs(6),
     alignItems: 'center',
     justifyContent: 'center',
     flexDirection: 'row',
   },
   actionText: {
-    color: '#173CFF',
+    color: colors.financeBlue,
     fontSize: fs(16),
-    fontWeight: '800',
+    fontFamily: fonts.extraBold,
     marginLeft: rs(12),
   },
   lowStockBody: {
@@ -965,8 +958,8 @@ const styles = StyleSheet.create({
   warningBox: {
     height: rs(48),
     borderWidth: 1,
-    borderColor: '#F8C9A8',
-    backgroundColor: '#FFF6EF',
+    borderColor: colors.orangeBorder,
+    backgroundColor: colors.stockistWarningBg,
     borderRadius: rs(6),
     flexDirection: 'row',
     alignItems: 'center',
@@ -974,63 +967,63 @@ const styles = StyleSheet.create({
     marginBottom: rs(16),
   },
   warningText: {
-    color: '#F06419',
+    color: colors.profileOrange,
     fontSize: fs(18),
-    fontWeight: '800',
+    fontFamily: fonts.extraBold,
     marginLeft: rs(12),
   },
   reorderBox: {
     width: rs(220),
-    backgroundColor: '#F7F7FA',
+    backgroundColor: colors.stockistPanelBg,
     borderRadius: rs(6),
     alignItems: 'center',
     justifyContent: 'center',
     padding: rs(14),
   },
   reorderTitle: {
-    color: '#111327',
+    color: colors.text,
     fontSize: fs(16),
-    fontWeight: '700',
+    fontFamily: fonts.bold,
   },
   reorderSub: {
-    color: '#F06419',
+    color: colors.profileOrange,
     fontSize: fs(15),
-    fontWeight: '700',
+    fontFamily: fonts.bold,
     marginTop: rs(10),
     marginBottom: rs(18),
   },
   purchaseButton: {
     width: '100%',
     height: rs(45),
-    backgroundColor: '#173CFF',
+    backgroundColor: colors.financeBlue,
     borderRadius: rs(5),
     alignItems: 'center',
     justifyContent: 'center',
   },
   purchaseButtonText: {
-    color: '#FFFFFF',
+    color: colors.white,
     fontSize: fs(15),
-    fontWeight: '800',
+    fontFamily: fonts.extraBold,
   },
   outWarningBox: {
     minHeight: rs(82),
     borderWidth: 1,
-    borderColor: '#FFB6B6',
-    backgroundColor: '#FFF5F5',
+    borderColor: colors.dangerBorder,
+    backgroundColor: colors.stockistDangerSoft,
     borderRadius: rs(6),
     paddingHorizontal: rs(18),
     justifyContent: 'center',
     marginTop: rs(24),
   },
   outWarningTitle: {
-    color: '#E00014',
+    color: colors.dangerDark,
     fontSize: fs(20),
-    fontWeight: '900',
+    fontFamily: fonts.extraBold,
   },
   outWarningSub: {
-    color: '#111327',
+    color: colors.text,
     fontSize: fs(15),
-    fontWeight: '600',
+    fontFamily: fonts.semiBold,
     marginTop: rs(8),
   },
   outActionRow: {
@@ -1041,32 +1034,32 @@ const styles = StyleSheet.create({
   urgentButton: {
     width: '49%',
     height: rs(50),
-    backgroundColor: '#E00014',
+    backgroundColor: colors.dangerDark,
     borderRadius: rs(5),
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
   },
   urgentButtonText: {
-    color: '#FFFFFF',
+    color: colors.white,
     fontSize: fs(16),
-    fontWeight: '900',
+    fontFamily: fonts.extraBold,
     marginLeft: rs(12),
   },
   notifyButton: {
     width: '49%',
     height: rs(50),
     borderWidth: 1,
-    borderColor: '#E00014',
+    borderColor: colors.dangerDark,
     borderRadius: rs(5),
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
   },
   notifyButtonText: {
-    color: '#E00014',
+    color: colors.dangerDark,
     fontSize: fs(16),
-    fontWeight: '900',
+    fontFamily: fonts.extraBold,
     marginLeft: rs(12),
   },
   expiringBody: {
@@ -1080,8 +1073,8 @@ const styles = StyleSheet.create({
   expireAlertBox: {
     minHeight: rs(82),
     borderWidth: 1,
-    borderColor: '#D8B8FF',
-    backgroundColor: '#F8F1FF',
+    borderColor: colors.stockistPurpleBorder,
+    backgroundColor: colors.stockistPurpleSoft,
     borderRadius: rs(6),
     paddingHorizontal: rs(16),
     flexDirection: 'row',
@@ -1090,38 +1083,38 @@ const styles = StyleSheet.create({
     gap: rs(12),
   },
   expireTitle: {
-    color: '#7B22EA',
+    color: colors.purple,
     fontSize: fs(20),
-    fontWeight: '900',
+    fontFamily: fonts.extraBold,
   },
   expireSub: {
-    color: '#111327',
+    color: colors.text,
     fontSize: fs(15),
-    fontWeight: '600',
+    fontFamily: fonts.semiBold,
     marginTop: rs(6),
   },
   createOfferButton: {
     width: rs(310),
     height: rs(48),
     borderWidth: 1,
-    borderColor: '#7B22EA',
+    borderColor: colors.purple,
     borderRadius: rs(5),
     alignItems: 'center',
     justifyContent: 'center',
     marginTop: rs(26),
   },
   createOfferText: {
-    color: '#7B22EA',
+    color: colors.purple,
     fontSize: fs(16),
-    fontWeight: '900',
+    fontFamily: fonts.extraBold,
   },
   quickMenu: {
     width: rs(245),
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.white,
     borderRadius: rs(10),
     paddingVertical: rs(12),
     paddingHorizontal: rs(18),
-    shadowColor: '#000000',
+    shadowColor: colors.black,
     shadowOpacity: 0.12,
     shadowRadius: rs(16),
     shadowOffset: { width: 0, height: rs(7) },
@@ -1133,9 +1126,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   quickMenuText: {
-    color: '#111327',
+    color: colors.text,
     fontSize: fs(16),
-    fontWeight: '800',
+    fontFamily: fonts.extraBold,
     marginLeft: rs(18),
   },
   floatingButton: {
@@ -1145,10 +1138,10 @@ const styles = StyleSheet.create({
     width: rs(72),
     height: rs(72),
     borderRadius: rs(36),
-    backgroundColor: '#173CFF',
+    backgroundColor: colors.financeBlue,
     alignItems: 'center',
     justifyContent: 'center',
-    shadowColor: '#000000',
+    shadowColor: colors.black,
     shadowOpacity: 0.2,
     shadowRadius: rs(12),
     shadowOffset: { width: 0, height: rs(5) },

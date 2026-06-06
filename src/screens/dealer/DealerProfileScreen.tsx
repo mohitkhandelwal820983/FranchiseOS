@@ -2,7 +2,6 @@ import React, { useEffect, useMemo, useState } from 'react';
 import {
   ActivityIndicator,
   Alert,
-  Dimensions,
   Image,
   ScrollView,
   StatusBar,
@@ -13,6 +12,7 @@ import {
   View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { colors, fonts, size as rs, textSize as fs } from '../../theme';
 
 import {
   Award,
@@ -54,12 +54,6 @@ import { clearAuthStorage } from '../../utils/sessionManager';
 import { resetToLogin } from '../../navigation/navigationService';
 import { showErrorToast } from '../../utils/toast';
 
-const { width: SCREEN_WIDTH } = Dimensions.get('window');
-
-const DESIGN_WIDTH = 832;
-const scale = SCREEN_WIDTH / DESIGN_WIDTH;
-const rs = (value: number) => Math.round(value * scale);
-const fs = (value: number) => rs(value + 3);
 
 const Header = () => {
   return (
@@ -69,7 +63,7 @@ const Header = () => {
       <Text style={styles.headerTitle}>My Profile</Text>
 
       <TouchableOpacity activeOpacity={0.8}>
-        <Edit3 color="#FFFFFF" size={rs(32)} strokeWidth={2.3} />
+        <Edit3 color={colors.white} size={rs(32)} strokeWidth={2.3} />
       </TouchableOpacity>
     </View>
   );
@@ -113,134 +107,134 @@ const SectionIcon = ({ type }: { type: string }) => {
   const size = rs(22);
 
   if (type === 'business') {
-    return <Building2 color="#173CFF" size={size} strokeWidth={2.2} />;
+    return <Building2 color={colors.financeBlue} size={size} strokeWidth={2.2} />;
   }
 
   if (type === 'performance') {
-    return <TrendingUp color="#173CFF" size={size} strokeWidth={2.2} />;
+    return <TrendingUp color={colors.financeBlue} size={size} strokeWidth={2.2} />;
   }
 
   if (type === 'account') {
-    return <SlidersHorizontal color="#173CFF" size={size} strokeWidth={2.2} />;
+    return <SlidersHorizontal color={colors.financeBlue} size={size} strokeWidth={2.2} />;
   }
 
   if (type === 'documents') {
-    return <FileText color="#173CFF" size={size} strokeWidth={2.2} />;
+    return <FileText color={colors.financeBlue} size={size} strokeWidth={2.2} />;
   }
 
   if (type === 'support') {
-    return <Headphones color="#173CFF" size={size} strokeWidth={2.2} />;
+    return <Headphones color={colors.financeBlue} size={size} strokeWidth={2.2} />;
   }
 
   if (type === 'achievements') {
-    return <Trophy color="#173CFF" size={size} strokeWidth={2.2} />;
+    return <Trophy color={colors.financeBlue} size={size} strokeWidth={2.2} />;
   }
 
-  return <SlidersHorizontal color="#173CFF" size={size} strokeWidth={2.2} />;
+  return <SlidersHorizontal color={colors.financeBlue} size={size} strokeWidth={2.2} />;
 };
 
 const BusinessIcon = ({ type }: { type: BusinessInfoItem['icon'] }) => {
   const size = rs(19);
 
   if (type === 'business') {
-    return <Building2 color="#173CFF" size={size} strokeWidth={2.2} />;
+    return <Building2 color={colors.financeBlue} size={size} strokeWidth={2.2} />;
   }
 
   if (type === 'gst') {
-    return <FileText color="#173CFF" size={size} strokeWidth={2.2} />;
+    return <FileText color={colors.financeBlue} size={size} strokeWidth={2.2} />;
   }
 
   if (type === 'address') {
-    return <MapPin color="#173CFF" size={size} strokeWidth={2.2} />;
+    return <MapPin color={colors.financeBlue} size={size} strokeWidth={2.2} />;
   }
 
   if (type === 'phone') {
-    return <Phone color="#173CFF" size={size} strokeWidth={2.2} />;
+    return <Phone color={colors.financeBlue} size={size} strokeWidth={2.2} />;
   }
 
   if (type === 'email') {
-    return <Mail color="#173CFF" size={size} strokeWidth={2.2} />;
+    return <Mail color={colors.financeBlue} size={size} strokeWidth={2.2} />;
   }
 
-  return <CalendarDays color="#173CFF" size={size} strokeWidth={2.2} />;
+  return <CalendarDays color={colors.financeBlue} size={size} strokeWidth={2.2} />;
 };
 
 const RowIcon = ({ type }: { type: string }) => {
   const size = rs(20);
 
   if (type === 'lock') {
-    return <Lock color="#173CFF" size={size} strokeWidth={2.2} />;
+    return <Lock color={colors.financeBlue} size={size} strokeWidth={2.2} />;
   }
 
   if (type === 'shield') {
-    return <ShieldCheck color="#138A36" size={size} strokeWidth={2.2} />;
+    return <ShieldCheck color={colors.success} size={size} strokeWidth={2.2} />;
   }
 
   if (type === 'device') {
-    return <Smartphone color="#173CFF" size={size} strokeWidth={2.2} />;
+    return <Smartphone color={colors.financeBlue} size={size} strokeWidth={2.2} />;
   }
 
   if (type === 'settings') {
-    return <SlidersHorizontal color="#173CFF" size={size} strokeWidth={2.2} />;
+    return <SlidersHorizontal color={colors.financeBlue} size={size} strokeWidth={2.2} />;
   }
 
   if (type === 'gst') {
-    return <FileText color="#138A36" size={size} strokeWidth={2.2} />;
+    return <FileText color={colors.success} size={size} strokeWidth={2.2} />;
   }
 
   if (type === 'pan') {
-    return <KeyRound color="#173CFF" size={size} strokeWidth={2.2} />;
+    return <KeyRound color={colors.financeBlue} size={size} strokeWidth={2.2} />;
   }
 
   if (type === 'license') {
-    return <FileText color="#F06419" size={size} strokeWidth={2.2} />;
+    return <FileText color={colors.profileOrange} size={size} strokeWidth={2.2} />;
   }
 
   if (type === 'bank') {
-    return <Building2 color="#7B22EA" size={size} strokeWidth={2.2} />;
+    return <Building2 color={colors.purple} size={size} strokeWidth={2.2} />;
   }
 
   if (type === 'help') {
-    return <HelpCircle color="#5D607E" size={size} strokeWidth={2.2} />;
+    return <HelpCircle color={colors.slateText} size={size} strokeWidth={2.2} />;
   }
 
   if (type === 'ticket') {
-    return <Edit3 color="#5D607E" size={size} strokeWidth={2.2} />;
+    return <Edit3 color={colors.slateText} size={size} strokeWidth={2.2} />;
   }
 
   if (type === 'terms') {
-    return <FileText color="#5D607E" size={size} strokeWidth={2.2} />;
+    return <FileText color={colors.slateText} size={size} strokeWidth={2.2} />;
   }
 
   if (type === 'privacy') {
-    return <ShieldCheck color="#5D607E" size={size} strokeWidth={2.2} />;
+    return <ShieldCheck color={colors.slateText} size={size} strokeWidth={2.2} />;
   }
 
   if (type === 'reward') {
-    return <Award color="#F06419" size={size} strokeWidth={2.2} />;
+    return <Award color={colors.profileOrange} size={size} strokeWidth={2.2} />;
   }
 
   if (type === 'target') {
-    return <Target color="#173CFF" size={size} strokeWidth={2.2} />;
+    return <Target color={colors.financeBlue} size={size} strokeWidth={2.2} />;
   }
 
   if (type === 'rank') {
-    return <Trophy color="#F06419" size={size} strokeWidth={2.2} />;
+    return <Trophy color={colors.profileOrange} size={size} strokeWidth={2.2} />;
   }
 
   if (type === 'dark') {
-    return <Moon color="#5D607E" size={size} strokeWidth={2.2} />;
+    return <Moon color={colors.slateText} size={size} strokeWidth={2.2} />;
   }
 
   if (type === 'language') {
-    return <Globe2 color="#5D607E" size={size} strokeWidth={2.2} />;
+    return <Globe2 color={colors.slateText} size={size} strokeWidth={2.2} />;
   }
 
   if (type === 'payment') {
-    return <WalletCards color="#5D607E" size={size} strokeWidth={2.2} />;
+    return <WalletCards color={colors.slateText} size={size} strokeWidth={2.2} />;
   }
 
-  return <FileText color="#5D607E" size={size} strokeWidth={2.2} />;
+  return <FileText color={colors.slateText} size={size} strokeWidth={2.2} />;
 };
 
 const BusinessInfoCard = ({ items }: { items: BusinessInfoItem[] }) => {
@@ -262,7 +256,7 @@ const BusinessInfoCard = ({ items }: { items: BusinessInfoItem[] }) => {
 
           <Text style={styles.businessValue}>{item.value}</Text>
 
-          <ChevronRight color="#5D607E" size={rs(18)} strokeWidth={2.2} />
+          <ChevronRight color={colors.slateText} size={rs(18)} strokeWidth={2.2} />
         </TouchableOpacity>
       ))}
     </View>
@@ -365,17 +359,17 @@ const SettingsCard = ({
             <Switch
               value={!!item.enabled}
               onValueChange={() => toggle(item.id)}
-              trackColor={{ false: '#D0D3DA', true: '#173CFF' }}
-              thumbColor="#FFFFFF"
+              trackColor={{ false: '#D0D3DA', true: colors.financeBlue }}
+              thumbColor={colors.white}
             />
           )}
 
           {item.type === 'download' && (
-            <Download color="#173CFF" size={rs(20)} strokeWidth={2.3} />
+            <Download color={colors.financeBlue} size={rs(20)} strokeWidth={2.3} />
           )}
 
           {item.type === 'arrow' && (
-            <ChevronRight color="#5D607E" size={rs(18)} strokeWidth={2.2} />
+            <ChevronRight color={colors.slateText} size={rs(18)} strokeWidth={2.2} />
           )}
         </TouchableOpacity>
       ))}
@@ -418,13 +412,13 @@ const PreferencesCard = ({ items }: { items: RowItem[] }) => {
             <Switch
               value={!!item.enabled}
               onValueChange={() => toggle(item.id)}
-              trackColor={{ false: '#D0D3DA', true: '#173CFF' }}
-              thumbColor="#FFFFFF"
+              trackColor={{ false: '#D0D3DA', true: colors.financeBlue }}
+              thumbColor={colors.white}
             />
           )}
 
           {item.type === 'arrow' && (
-            <ChevronRight color="#5D607E" size={rs(18)} strokeWidth={2.2} />
+            <ChevronRight color={colors.slateText} size={rs(18)} strokeWidth={2.2} />
           )}
         </TouchableOpacity>
       ))}
@@ -468,7 +462,7 @@ const LogoutButton = () => {
       onPress={handleLogout}
       style={[styles.logoutButton, isLoggingOut && styles.disabledButton]}
     >
-      <LogOut color="#E00014" size={rs(24)} strokeWidth={2.4} />
+      <LogOut color={colors.dangerDark} size={rs(24)} strokeWidth={2.4} />
       <Text style={styles.logoutText}>
         {isLoggingOut ? 'Logging out...' : 'Logout'}
       </Text>
@@ -540,15 +534,15 @@ const DealerProfileScreen = () => {
   if (loading || !data) {
     return (
       <SafeAreaView style={styles.loaderScreen}>
-        <StatusBar backgroundColor="#061B66" barStyle="light-content" />
-        <ActivityIndicator size="large" color="#173CFF" />
+        <StatusBar backgroundColor={colors.primary} barStyle="light-content" />
+        <ActivityIndicator size="large" color={colors.financeBlue} />
       </SafeAreaView>
     );
   }
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <StatusBar backgroundColor="#061B66" barStyle="light-content" />
+      <StatusBar backgroundColor={colors.primary} barStyle="light-content" />
 
       <Header />
 
@@ -591,17 +585,17 @@ const PAGE_PADDING = rs(28);
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#F8F9FD',
+    backgroundColor: colors.financeBackground,
   },
   loaderScreen: {
     flex: 1,
-    backgroundColor: '#F8F9FD',
+    backgroundColor: colors.financeBackground,
     alignItems: 'center',
     justifyContent: 'center',
   },
   header: {
     height: rs(78),
-    backgroundColor: '#061B66',
+    backgroundColor: colors.primary,
     paddingHorizontal: rs(28),
     paddingTop: rs(8),
     flexDirection: 'row',
@@ -612,9 +606,9 @@ const styles = StyleSheet.create({
     width: rs(32),
   },
   headerTitle: {
-    color: '#FFFFFF',
+    color: colors.white,
     fontSize: fs(30),
-    fontWeight: '900',
+    fontFamily: fonts.extraBold,
   },
   scrollView: {
     flex: 1,
@@ -626,7 +620,7 @@ const styles = StyleSheet.create({
   },
   heroCard: {
     minHeight: rs(246),
-    backgroundColor: '#061B66',
+    backgroundColor: colors.primary,
     borderRadius: rs(8),
     flexDirection: 'row',
     alignItems: 'center',
@@ -639,23 +633,23 @@ const styles = StyleSheet.create({
     height: rs(178),
     borderRadius: rs(89),
     borderWidth: rs(3),
-    borderColor: '#FFFFFF',
-    backgroundColor: '#D9DCE8',
+    borderColor: colors.white,
+    backgroundColor: colors.inputBorder,
     marginRight: rs(50),
   },
   heroInfo: {
     flex: 1,
   },
   profileName: {
-    color: '#FFFFFF',
+    color: colors.white,
     fontSize: fs(31),
-    fontWeight: '900',
+    fontFamily: fonts.extraBold,
     marginBottom: rs(14),
   },
   profileBusiness: {
-    color: '#FFFFFF',
+    color: colors.white,
     fontSize: fs(20),
-    fontWeight: '700',
+    fontFamily: fonts.bold,
     marginBottom: rs(26),
   },
   goldBadge: {
@@ -670,18 +664,18 @@ const styles = StyleSheet.create({
     paddingHorizontal: rs(16),
   },
   goldBadgeText: {
-    color: '#FFFFFF',
+    color: colors.white,
     fontSize: fs(16),
-    fontWeight: '900',
+    fontFamily: fonts.extraBold,
     marginLeft: rs(10),
   },
   fullCard: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.white,
     borderRadius: rs(10),
     paddingHorizontal: rs(18),
     paddingVertical: rs(16),
     marginBottom: rs(16),
-    shadowColor: '#000000',
+    shadowColor: colors.black,
     shadowOpacity: 0.04,
     shadowRadius: rs(12),
     shadowOffset: { width: 0, height: rs(5) },
@@ -689,12 +683,12 @@ const styles = StyleSheet.create({
   },
   halfCard: {
     width: '100%',
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.white,
     borderRadius: rs(10),
     paddingHorizontal: rs(18),
     paddingVertical: rs(16),
     marginBottom: rs(16),
-    shadowColor: '#000000',
+    shadowColor: colors.black,
     shadowOpacity: 0.04,
     shadowRadius: rs(12),
     shadowOffset: { width: 0, height: rs(5) },
@@ -713,20 +707,20 @@ const styles = StyleSheet.create({
     width: rs(40),
     height: rs(40),
     borderRadius: rs(10),
-    backgroundColor: '#EEF3FF',
+    backgroundColor: colors.dealerBlueSoft,
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: rs(14),
   },
   cardTitle: {
-    color: '#061247',
+    color: colors.primaryText,
     fontSize: fs(20),
-    fontWeight: '900',
+    fontFamily: fonts.extraBold,
   },
   businessRow: {
     minHeight: rs(45),
     borderTopWidth: 1,
-    borderTopColor: '#EEF0F6',
+    borderTopColor: colors.financeDivider,
     flexDirection: 'row',
     alignItems: 'center',
   },
@@ -734,22 +728,22 @@ const styles = StyleSheet.create({
     width: rs(34),
     height: rs(34),
     borderRadius: rs(17),
-    backgroundColor: '#EEF3FF',
+    backgroundColor: colors.dealerBlueSoft,
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: rs(14),
   },
   businessLabel: {
     width: rs(350),
-    color: '#061247',
+    color: colors.primaryText,
     fontSize: fs(14),
-    fontWeight: '800',
+    fontFamily: fonts.extraBold,
   },
   businessValue: {
     flex: 1,
     color: '#252943',
     fontSize: fs(14),
-    fontWeight: '600',
+    fontFamily: fonts.semiBold,
     lineHeight: rs(20),
   },
   performanceRow: {
@@ -771,22 +765,22 @@ const styles = StyleSheet.create({
     marginBottom: rs(14),
   },
   performanceLabel: {
-    color: '#5D607E',
+    color: colors.slateText,
     fontSize: fs(12),
-    fontWeight: '700',
+    fontFamily: fonts.bold,
     textAlign: 'center',
     marginBottom: rs(8),
   },
   performanceValue: {
-    color: '#061247',
+    color: colors.primaryText,
     fontSize: fs(20),
-    fontWeight: '900',
+    fontFamily: fonts.extraBold,
     marginBottom: rs(7),
   },
   performanceGrowth: {
-    color: '#138A36',
+    color: colors.success,
     fontSize: fs(12),
-    fontWeight: '900',
+    fontFamily: fonts.extraBold,
   },
   performanceDivider: {
     position: 'absolute',
@@ -794,44 +788,44 @@ const styles = StyleSheet.create({
     top: rs(5),
     bottom: rs(5),
     width: 1,
-    backgroundColor: '#EEF0F6',
+    backgroundColor: colors.financeDivider,
   },
   settingRow: {
     minHeight: rs(45),
     borderTopWidth: 1,
-    borderTopColor: '#EEF0F6',
+    borderTopColor: colors.financeDivider,
     flexDirection: 'row',
     alignItems: 'center',
   },
   preferenceRow: {
     minHeight: rs(42),
     borderTopWidth: 1,
-    borderTopColor: '#EEF0F6',
+    borderTopColor: colors.financeDivider,
     flexDirection: 'row',
     alignItems: 'center',
   },
   settingLabel: {
     flex: 1,
-    color: '#061247',
+    color: colors.primaryText,
     fontSize: fs(14),
-    fontWeight: '800',
+    fontFamily: fonts.extraBold,
   },
   settingValue: {
-    color: '#5D607E',
+    color: colors.slateText,
     fontSize: fs(13),
-    fontWeight: '700',
+    fontFamily: fonts.bold,
     marginRight: rs(10),
     textAlign: 'right',
   },
   greenValue: {
-    color: '#138A36',
+    color: colors.success,
   },
   logoutButton: {
     height: rs(50),
     borderWidth: 1,
-    borderColor: '#E00014',
+    borderColor: colors.dangerDark,
     borderRadius: rs(6),
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.white,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
@@ -841,9 +835,9 @@ const styles = StyleSheet.create({
     opacity: 0.6,
   },
   logoutText: {
-    color: '#E00014',
+    color: colors.dangerDark,
     fontSize: fs(17),
-    fontWeight: '900',
+    fontFamily: fonts.extraBold,
     marginLeft: rs(12),
   },
 });

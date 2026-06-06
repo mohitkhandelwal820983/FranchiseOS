@@ -33,25 +33,22 @@ import {
 } from '../../api/mock/dealer/dealerPayment.mock';
 import { getDealerPayment } from '../../api/dealer/dealerPayment.api';
 import { showErrorToast } from '../../utils/toast';
+import { colors, fonts, size as rs, textSize as fs } from '../../theme';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
-const DESIGN_WIDTH = 832;
-const scale = SCREEN_WIDTH / DESIGN_WIDTH;
-const rs = (value: number) => Math.round(value * scale);
-const fs = (value: number) => rs(value + 3);
 
 const Header = () => {
   return (
     <View style={styles.header}>
       <TouchableOpacity activeOpacity={0.8}>
-        <Menu color="#FFFFFF" size={rs(36)} strokeWidth={2.5} />
+        <Menu color={colors.white} size={rs(36)} strokeWidth={2.5} />
       </TouchableOpacity>
 
       <Text style={styles.headerTitle}>Payments</Text>
 
       <TouchableOpacity activeOpacity={0.8}>
-        <Download color="#FFFFFF" size={rs(34)} strokeWidth={2.4} />
+        <Download color={colors.white} size={rs(34)} strokeWidth={2.4} />
       </TouchableOpacity>
     </View>
   );
@@ -61,16 +58,16 @@ const SummaryIcon = ({ item }: { item: SummaryCardType }) => {
   return (
     <View style={[styles.summaryIcon, { backgroundColor: item.bg }]}>
       {item.icon === 'collected' && (
-        <IndianRupee color="#FFFFFF" size={rs(34)} strokeWidth={2.5} />
+        <IndianRupee color={colors.white} size={rs(34)} strokeWidth={2.5} />
       )}
       {item.icon === 'outstanding' && (
-        <WalletCards color="#FFFFFF" size={rs(34)} strokeWidth={2.4} />
+        <WalletCards color={colors.white} size={rs(34)} strokeWidth={2.4} />
       )}
       {item.icon === 'supplier' && (
-        <WalletCards color="#FFFFFF" size={rs(34)} strokeWidth={2.4} />
+        <WalletCards color={colors.white} size={rs(34)} strokeWidth={2.4} />
       )}
       {item.icon === 'incentive' && (
-        <Gift color="#FFFFFF" size={rs(34)} strokeWidth={2.4} />
+        <Gift color={colors.white} size={rs(34)} strokeWidth={2.4} />
       )}
     </View>
   );
@@ -148,7 +145,7 @@ const CustomerCollectionsCard = ({
 
         <TouchableOpacity activeOpacity={0.8} style={styles.viewAllRow}>
           <Text style={styles.viewAllText}>View All</Text>
-          <ChevronRight color="#173CFF" size={rs(20)} />
+          <ChevronRight color={colors.financeBlue} size={rs(20)} />
         </TouchableOpacity>
       </View>
 
@@ -200,7 +197,7 @@ const CustomerCollectionsCard = ({
               onPress={() => onCollect(item)}
               style={styles.collectButton}
             >
-              <IndianRupee color="#F06419" size={rs(17)} />
+              <IndianRupee color={colors.profileOrange} size={rs(17)} />
               <Text style={styles.collectText}>Collect</Text>
             </TouchableOpacity>
 
@@ -209,7 +206,7 @@ const CustomerCollectionsCard = ({
               onPress={() => onReminder(item)}
               style={styles.reminderButton}
             >
-              <Bell color="#173CFF" size={rs(16)} />
+              <Bell color={colors.financeBlue} size={rs(16)} />
               <Text style={styles.reminderText}>Reminder</Text>
             </TouchableOpacity>
           </View>
@@ -233,7 +230,7 @@ const SupplierPaymentsCard = ({
 
         <TouchableOpacity activeOpacity={0.8} style={styles.viewAllRow}>
           <Text style={styles.viewAllText}>View All</Text>
-          <ChevronRight color="#173CFF" size={rs(20)} />
+          <ChevronRight color={colors.financeBlue} size={rs(20)} />
         </TouchableOpacity>
       </View>
 
@@ -290,7 +287,7 @@ const SupplierPaymentsCard = ({
               onPress={() => onPayNow(item)}
               style={styles.payNowButton}
             >
-              <IndianRupee color="#173CFF" size={rs(17)} />
+              <IndianRupee color={colors.financeBlue} size={rs(17)} />
               <Text style={styles.payNowText}>Pay Now</Text>
             </TouchableOpacity>
 
@@ -298,7 +295,7 @@ const SupplierPaymentsCard = ({
               activeOpacity={0.85}
               style={styles.downloadButton}
             >
-              <Download color="#173CFF" size={rs(16)} />
+              <Download color={colors.financeBlue} size={rs(16)} />
               <Text style={styles.downloadText}>Download</Text>
             </TouchableOpacity>
           </View>
@@ -393,7 +390,7 @@ const RecentTransactionsCard = ({ items }: { items: Transaction[] }) => {
 
         <TouchableOpacity activeOpacity={0.8} style={styles.viewAllRow}>
           <Text style={styles.viewAllText}>View All</Text>
-          <ChevronRight color="#173CFF" size={rs(20)} />
+          <ChevronRight color={colors.financeBlue} size={rs(20)} />
         </TouchableOpacity>
       </View>
 
@@ -454,7 +451,7 @@ const BottomActions = ({
         onPress={onRecordPayment}
       >
         <View style={styles.bottomIconCircle}>
-          <Plus color="#173CFF" size={rs(25)} />
+          <Plus color={colors.financeBlue} size={rs(25)} />
         </View>
         <Text style={styles.bottomActionText}>Record Payment</Text>
       </TouchableOpacity>
@@ -467,7 +464,7 @@ const BottomActions = ({
         onPress={onSendReminder}
       >
         <View style={styles.bottomIconCircle}>
-          <Plus color="#173CFF" size={rs(25)} />
+          <Plus color={colors.financeBlue} size={rs(25)} />
         </View>
         <Text style={styles.bottomActionText}>Send Reminder</Text>
       </TouchableOpacity>
@@ -480,7 +477,7 @@ const BottomActions = ({
         onPress={onGenerateInvoice}
       >
         <View style={styles.bottomIconCircle}>
-          <Plus color="#173CFF" size={rs(25)} />
+          <Plus color={colors.financeBlue} size={rs(25)} />
         </View>
         <Text style={styles.bottomActionText}>Generate Invoice</Text>
       </TouchableOpacity>
@@ -539,15 +536,15 @@ const DealerPaymentScreen = () => {
   if (loading || !data) {
     return (
       <SafeAreaView style={styles.loaderScreen}>
-        <StatusBar backgroundColor="#061B66" barStyle="light-content" />
-        <ActivityIndicator size="large" color="#173CFF" />
+        <StatusBar backgroundColor={colors.primary} barStyle="light-content" />
+        <ActivityIndicator size="large" color={colors.financeBlue} />
       </SafeAreaView>
     );
   }
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <StatusBar backgroundColor="#061B66" barStyle="light-content" />
+      <StatusBar backgroundColor={colors.primary} barStyle="light-content" />
 
       <Header />
 
@@ -592,17 +589,17 @@ const HALF_WIDTH = (SCREEN_WIDTH - PAGE_PADDING * 2 - CARD_GAP) / 2;
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#F8F9FD',
+    backgroundColor: colors.financeBackground,
   },
   loaderScreen: {
     flex: 1,
-    backgroundColor: '#F8F9FD',
+    backgroundColor: colors.financeBackground,
     alignItems: 'center',
     justifyContent: 'center',
   },
   header: {
     height: rs(78),
-    backgroundColor: '#061B66',
+    backgroundColor: colors.primary,
     paddingHorizontal: rs(28),
     paddingTop: rs(8),
     flexDirection: 'row',
@@ -610,9 +607,9 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   headerTitle: {
-    color: '#FFFFFF',
+    color: colors.white,
     fontSize: fs(31),
-    fontWeight: '900',
+    fontFamily: fonts.extraBold,
   },
   scrollView: {
     flex: 1,
@@ -631,7 +628,7 @@ const styles = StyleSheet.create({
   summaryCardBox: {
     width: HALF_WIDTH,
     minHeight: rs(118),
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.white,
     borderRadius: rs(10),
     paddingHorizontal: rs(24),
     flexDirection: 'row',
@@ -655,23 +652,23 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   summaryTitle: {
-    color: '#061247',
+    color: colors.primaryText,
     fontSize: fs(15),
-    fontWeight: '800',
+    fontFamily: fonts.extraBold,
   },
   summaryValue: {
     fontSize: fs(29),
-    fontWeight: '900',
+    fontFamily: fonts.extraBold,
     marginTop: rs(9),
     letterSpacing: rs(3),
   },
   summarySubtitle: {
     fontSize: fs(14),
-    fontWeight: '800',
+    fontFamily: fonts.extraBold,
     marginTop: rs(9),
   },
   tableCard: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.white,
     borderRadius: rs(10),
     paddingTop: rs(16),
     marginBottom: rs(16),
@@ -690,18 +687,18 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   sectionTitle: {
-    color: '#061247',
+    color: colors.primaryText,
     fontSize: fs(20),
-    fontWeight: '900',
+    fontFamily: fonts.extraBold,
   },
   viewAllRow: {
     flexDirection: 'row',
     alignItems: 'center',
   },
   viewAllText: {
-    color: '#173CFF',
+    color: colors.financeBlue,
     fontSize: fs(14),
-    fontWeight: '900',
+    fontFamily: fonts.extraBold,
     marginRight: rs(8),
   },
   tableHeader: {
@@ -711,20 +708,20 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: rs(18),
     borderTopWidth: 1,
-    borderTopColor: '#EEF0F6',
+    borderTopColor: colors.financeDivider,
     borderBottomWidth: 1,
-    borderBottomColor: '#EEF0F6',
+    borderBottomColor: colors.financeDivider,
   },
   tableHeadText: {
-    color: '#5D607E',
+    color: colors.slateText,
     fontSize: fs(12),
-    fontWeight: '800',
+    fontFamily: fonts.extraBold,
   },
   collectionRow: {
     minHeight: rs(88),
     paddingHorizontal: rs(18),
     borderBottomWidth: 1,
-    borderBottomColor: '#EEF0F6',
+    borderBottomColor: colors.financeDivider,
     flexDirection: 'row',
     alignItems: 'center',
   },
@@ -742,43 +739,43 @@ const styles = StyleSheet.create({
   },
   avatarText: {
     fontSize: fs(18),
-    fontWeight: '900',
+    fontFamily: fonts.extraBold,
   },
   customerInfo: {
     flex: 1,
   },
   nameText: {
-    color: '#061247',
+    color: colors.primaryText,
     fontSize: fs(14),
-    fontWeight: '900',
+    fontFamily: fonts.extraBold,
   },
   cityText: {
-    color: '#5D607E',
+    color: colors.slateText,
     fontSize: fs(12),
-    fontWeight: '700',
+    fontFamily: fonts.bold,
     marginTop: rs(6),
   },
   amountText: {
-    color: '#061247',
+    color: colors.primaryText,
     fontSize: fs(15),
-    fontWeight: '900',
+    fontFamily: fonts.extraBold,
   },
   dateText: {
-    color: '#061247',
+    color: colors.primaryText,
     fontSize: fs(13),
-    fontWeight: '700',
+    fontFamily: fonts.bold,
   },
   dueMetaText: {
-    color: '#173CFF',
+    color: colors.financeBlue,
     fontSize: fs(11),
-    fontWeight: '800',
+    fontFamily: fonts.extraBold,
     marginTop: rs(6),
   },
   redText: {
-    color: '#E00014',
+    color: colors.dangerDark,
   },
   orangeText: {
-    color: '#F06419',
+    color: colors.profileOrange,
   },
   statusBadge: {
     minWidth: rs(76),
@@ -789,26 +786,26 @@ const styles = StyleSheet.create({
     paddingHorizontal: rs(8),
   },
   overdueBadge: {
-    backgroundColor: '#FFF0F0',
+    backgroundColor: colors.dangerLight,
   },
   dueSoonBadge: {
-    backgroundColor: '#FFF3E9',
+    backgroundColor: colors.orangeSoft,
   },
   pendingBadge: {
-    backgroundColor: '#F1F5FF',
+    backgroundColor: colors.blueLight,
   },
   statusText: {
     fontSize: fs(12),
-    fontWeight: '900',
+    fontFamily: fonts.extraBold,
   },
   overdueText: {
-    color: '#E00014',
+    color: colors.dangerDark,
   },
   dueSoonText: {
-    color: '#F06419',
+    color: colors.profileOrange,
   },
   pendingText: {
-    color: '#173CFF',
+    color: colors.financeBlue,
   },
   actionsColumn: {
     gap: rs(7),
@@ -816,31 +813,31 @@ const styles = StyleSheet.create({
   collectButton: {
     height: rs(30),
     borderWidth: 1,
-    borderColor: '#F06419',
+    borderColor: colors.profileOrange,
     borderRadius: rs(4),
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
   },
   collectText: {
-    color: '#F06419',
+    color: colors.profileOrange,
     fontSize: fs(12),
-    fontWeight: '900',
+    fontFamily: fonts.extraBold,
     marginLeft: rs(6),
   },
   reminderButton: {
     height: rs(30),
     borderWidth: 1,
-    borderColor: '#B8C8FF',
+    borderColor: colors.blueBorderSoft,
     borderRadius: rs(4),
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
   },
   reminderText: {
-    color: '#173CFF',
+    color: colors.financeBlue,
     fontSize: fs(12),
-    fontWeight: '900',
+    fontFamily: fonts.extraBold,
     marginLeft: rs(6),
   },
   supplierLogo: {
@@ -853,41 +850,41 @@ const styles = StyleSheet.create({
   },
   supplierLogoText: {
     fontSize: fs(11),
-    fontWeight: '900',
+    fontFamily: fonts.extraBold,
     textAlign: 'center',
   },
   payNowButton: {
     height: rs(30),
     borderWidth: 1,
-    borderColor: '#B8C8FF',
+    borderColor: colors.blueBorderSoft,
     borderRadius: rs(4),
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
   },
   payNowText: {
-    color: '#173CFF',
+    color: colors.financeBlue,
     fontSize: fs(12),
-    fontWeight: '900',
+    fontFamily: fonts.extraBold,
     marginLeft: rs(6),
   },
   downloadButton: {
     height: rs(30),
     borderWidth: 1,
-    borderColor: '#B8C8FF',
+    borderColor: colors.blueBorderSoft,
     borderRadius: rs(4),
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
   },
   downloadText: {
-    color: '#173CFF',
+    color: colors.financeBlue,
     fontSize: fs(12),
-    fontWeight: '900',
+    fontFamily: fonts.extraBold,
     marginLeft: rs(6),
   },
   analyticsCard: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.white,
     borderRadius: rs(10),
     paddingHorizontal: rs(18),
     paddingVertical: rs(16),
@@ -907,14 +904,14 @@ const styles = StyleSheet.create({
     width: '32%',
     height: rs(170),
     borderWidth: 1,
-    borderColor: '#EEF0F6',
+    borderColor: colors.financeDivider,
     borderRadius: rs(8),
     padding: rs(12),
   },
   chartTitle: {
-    color: '#061247',
+    color: colors.primaryText,
     fontSize: fs(12),
-    fontWeight: '900',
+    fontFamily: fonts.extraBold,
     marginBottom: rs(10),
   },
   legendRow: {
@@ -925,34 +922,34 @@ const styles = StyleSheet.create({
   greenDot: {
     width: rs(8),
     height: rs(8),
-    backgroundColor: '#138A36',
+    backgroundColor: colors.success,
     marginRight: rs(6),
   },
   redDot: {
     width: rs(8),
     height: rs(8),
-    backgroundColor: '#E00014',
+    backgroundColor: colors.dangerDark,
     marginLeft: rs(14),
     marginRight: rs(6),
   },
   blueDot: {
     width: rs(8),
     height: rs(8),
-    backgroundColor: '#173CFF',
+    backgroundColor: colors.financeBlue,
     marginLeft: rs(14),
     marginRight: rs(6),
   },
   legendText: {
-    color: '#5D607E',
+    color: colors.slateText,
     fontSize: fs(10),
-    fontWeight: '700',
+    fontFamily: fonts.bold,
   },
   donutOuter: {
     width: rs(118),
     height: rs(118),
     borderRadius: rs(59),
     borderWidth: rs(22),
-    borderColor: '#138A36',
+    borderColor: colors.success,
     alignSelf: 'center',
     alignItems: 'center',
     justifyContent: 'center',
@@ -961,19 +958,19 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   donutMain: {
-    color: '#061247',
+    color: colors.primaryText,
     fontSize: fs(17),
-    fontWeight: '900',
+    fontFamily: fonts.extraBold,
   },
   donutSub: {
-    color: '#5D607E',
+    color: colors.slateText,
     fontSize: fs(12),
-    fontWeight: '700',
+    fontFamily: fonts.bold,
   },
   donutRed: {
-    color: '#E00014',
+    color: colors.dangerDark,
     fontSize: fs(18),
-    fontWeight: '900',
+    fontFamily: fonts.extraBold,
   },
   barChart: {
     flex: 1,
@@ -997,11 +994,11 @@ const styles = StyleSheet.create({
   },
   blueBar: {
     width: rs(10),
-    backgroundColor: '#173CFF',
+    backgroundColor: colors.financeBlue,
     borderRadius: rs(3),
   },
   monthText: {
-    color: '#5D607E',
+    color: colors.slateText,
     fontSize: fs(10),
     marginTop: rs(6),
   },
@@ -1015,14 +1012,14 @@ const styles = StyleSheet.create({
     right: 0,
     top: rs(22),
     height: 1,
-    backgroundColor: '#EEF0F6',
+    backgroundColor: colors.financeDivider,
   },
   axisLabel: {
     position: 'absolute',
     left: 0,
-    color: '#5D607E',
+    color: colors.slateText,
     fontSize: fs(9),
-    fontWeight: '700',
+    fontFamily: fonts.bold,
   },
   redLineOne: {
     position: 'absolute',
@@ -1030,7 +1027,7 @@ const styles = StyleSheet.create({
     top: rs(96),
     width: rs(48),
     borderTopWidth: 2,
-    borderColor: '#E00014',
+    borderColor: colors.dangerDark,
     transform: [{ rotate: '-25deg' }],
   },
   redLineTwo: {
@@ -1039,7 +1036,7 @@ const styles = StyleSheet.create({
     top: rs(72),
     width: rs(48),
     borderTopWidth: 2,
-    borderColor: '#E00014',
+    borderColor: colors.dangerDark,
     transform: [{ rotate: '22deg' }],
   },
   redLineThree: {
@@ -1048,7 +1045,7 @@ const styles = StyleSheet.create({
     top: rs(66),
     width: rs(48),
     borderTopWidth: 2,
-    borderColor: '#E00014',
+    borderColor: colors.dangerDark,
     transform: [{ rotate: '-32deg' }],
   },
   redLineFour: {
@@ -1057,11 +1054,11 @@ const styles = StyleSheet.create({
     top: rs(35),
     width: rs(42),
     borderTopWidth: 2,
-    borderColor: '#E00014',
+    borderColor: colors.dangerDark,
     transform: [{ rotate: '-38deg' }],
   },
   transactionsCard: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.white,
     borderRadius: rs(10),
     paddingVertical: rs(16),
     marginBottom: rs(16),
@@ -1074,7 +1071,7 @@ const styles = StyleSheet.create({
   transactionRow: {
     minHeight: rs(58),
     borderTopWidth: 1,
-    borderTopColor: '#EEF0F6',
+    borderTopColor: colors.financeDivider,
     paddingHorizontal: rs(18),
     flexDirection: 'row',
     alignItems: 'center',
@@ -1089,20 +1086,20 @@ const styles = StyleSheet.create({
   },
   failedIconText: {
     fontSize: fs(22),
-    fontWeight: '900',
+    fontFamily: fonts.extraBold,
   },
   transactionInfo: {
     flex: 1,
   },
   transactionTitle: {
-    color: '#061247',
+    color: colors.primaryText,
     fontSize: fs(14),
-    fontWeight: '900',
+    fontFamily: fonts.extraBold,
   },
   transactionSubtitle: {
-    color: '#5D607E',
+    color: colors.slateText,
     fontSize: fs(12),
-    fontWeight: '700',
+    fontFamily: fonts.bold,
     marginTop: rs(4),
   },
   transactionRight: {
@@ -1110,17 +1107,17 @@ const styles = StyleSheet.create({
   },
   transactionAmount: {
     fontSize: fs(15),
-    fontWeight: '900',
+    fontFamily: fonts.extraBold,
   },
   transactionDate: {
-    color: '#5D607E',
+    color: colors.slateText,
     fontSize: fs(12),
-    fontWeight: '700',
+    fontFamily: fonts.bold,
     marginTop: rs(6),
   },
   bottomActions: {
     height: rs(58),
-    backgroundColor: '#173CFF',
+    backgroundColor: colors.financeBlue,
     borderRadius: rs(29),
     flexDirection: 'row',
     alignItems: 'center',
@@ -1137,15 +1134,15 @@ const styles = StyleSheet.create({
     width: rs(34),
     height: rs(34),
     borderRadius: rs(17),
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.white,
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: rs(10),
   },
   bottomActionText: {
-    color: '#FFFFFF',
+    color: colors.white,
     fontSize: fs(14),
-    fontWeight: '900',
+    fontFamily: fonts.extraBold,
   },
   bottomDivider: {
     width: 1,

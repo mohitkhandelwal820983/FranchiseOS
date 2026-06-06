@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import {
   ActivityIndicator,
   Alert,
-  Dimensions,
   ScrollView,
   StatusBar,
   StyleSheet,
@@ -12,6 +11,7 @@ import {
   View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import {colors, fonts, size as themeSize, textSize} from '../../theme';
 
 import {
   Bell,
@@ -51,12 +51,6 @@ import { clearAuthStorage } from '../../utils/sessionManager';
 import { resetToLogin } from '../../navigation/navigationService';
 import { showErrorToast } from '../../utils/toast';
 
-const { width: SCREEN_WIDTH } = Dimensions.get('window');
-
-const DESIGN_WIDTH = 832;
-const scale = SCREEN_WIDTH / DESIGN_WIDTH;
-const rs = (value: number) => Math.round(value * scale);
-const fs = (value: number) => rs(value + 3);
 
 const Header = () => {
   return (
@@ -66,7 +60,7 @@ const Header = () => {
       <Text style={styles.headerTitle}>Company Profile</Text>
 
       <TouchableOpacity activeOpacity={0.8} style={styles.headerEditButton}>
-        <Edit3 color="#FFFFFF" size={rs(32)} strokeWidth={2.2} />
+        <Edit3 color={colors.white} size={themeSize(32)} strokeWidth={2.2} />
       </TouchableOpacity>
     </View>
   );
@@ -81,7 +75,7 @@ const ProfileHero = ({ data }: { data: CompanyProfileData }) => {
         </View>
 
         <View style={styles.cameraButton}>
-          <Camera color="#173CFF" size={rs(22)} strokeWidth={2.3} />
+          <Camera color={colors.financeBlue} size={themeSize(22)} strokeWidth={2.3} />
         </View>
       </View>
 
@@ -107,8 +101,8 @@ const ProfileHero = ({ data }: { data: CompanyProfileData }) => {
 };
 
 const DetailIcon = ({ type }: { type: BusinessDetail['icon'] }) => {
-  const color = '#5D607E';
-  const size = rs(22);
+  const color = colors.slateText;
+  const size = themeSize(22);
 
   if (type === 'company') {
     return <Building2 color={color} size={size} strokeWidth={2} />;
@@ -154,7 +148,7 @@ const SectionHeader = ({
 
       {edit ? (
         <TouchableOpacity activeOpacity={0.8}>
-          <Edit3 color="#173CFF" size={rs(20)} strokeWidth={2.2} />
+          <Edit3 color={colors.financeBlue} size={themeSize(20)} strokeWidth={2.2} />
         </TouchableOpacity>
       ) : null}
     </View>
@@ -180,9 +174,9 @@ const BusinessDetailsCard = ({ details }: { details: BusinessDetail[] }) => {
             <View style={styles.verifiedWrap}>
               <Text style={styles.verifiedText}>Verified</Text>
               <CheckCircle2
-                color="#138A36"
-                size={rs(17)}
-                fill="#138A36"
+                color={colors.success}
+                size={themeSize(17)}
+                fill={colors.success}
                 strokeWidth={2}
               />
             </View>
@@ -210,13 +204,13 @@ const CommissionRulesCard = ({ rules }: { rules: CommissionRule[] }) => {
           </View>
 
           <TouchableOpacity activeOpacity={0.8}>
-            <Edit3 color="#5D607E" size={rs(18)} strokeWidth={2} />
+            <Edit3 color={colors.slateText} size={themeSize(18)} strokeWidth={2} />
           </TouchableOpacity>
         </View>
       ))}
 
       <TouchableOpacity activeOpacity={0.8} style={styles.addRuleButton}>
-        <Plus color="#173CFF" size={rs(18)} strokeWidth={2.4} />
+        <Plus color={colors.financeBlue} size={themeSize(18)} strokeWidth={2.4} />
         <Text style={styles.addRuleText}>Add New Rule</Text>
       </TouchableOpacity>
     </View>
@@ -256,9 +250,9 @@ const PlanCard = ({ plan }: { plan: CompanyProfileData['plan'] }) => {
           <View style={styles.activePlanBadge}>
             <Text style={styles.activePlanText}>{plan.status}</Text>
             <CheckCircle2
-              color="#138A36"
-              size={rs(15)}
-              fill="#138A36"
+              color={colors.success}
+              size={themeSize(15)}
+              fill={colors.success}
               strokeWidth={2}
             />
           </View>
@@ -281,9 +275,9 @@ const DocumentsCard = ({ documents }: { documents: DocumentItem[] }) => {
         {documents.map(item => (
           <View key={item.id} style={styles.documentRow}>
             <CheckCircle2
-              color="#138A36"
-              size={rs(20)}
-              fill="#138A36"
+              color={colors.success}
+              size={themeSize(20)}
+              fill={colors.success}
               strokeWidth={2}
             />
 
@@ -292,9 +286,9 @@ const DocumentsCard = ({ documents }: { documents: DocumentItem[] }) => {
             <Text style={styles.documentVerified}>Verified</Text>
 
             <CheckCircle2
-              color="#138A36"
-              size={rs(17)}
-              fill="#138A36"
+              color={colors.success}
+              size={themeSize(17)}
+              fill={colors.success}
               strokeWidth={2}
             />
 
@@ -309,8 +303,8 @@ const DocumentsCard = ({ documents }: { documents: DocumentItem[] }) => {
 };
 
 const SecurityIcon = ({ type }: { type: SecurityItem['icon'] }) => {
-  const color = '#5D607E';
-  const size = rs(20);
+  const color = colors.slateText;
+  const size = themeSize(20);
 
   if (type === 'password') {
     return <Lock color={color} size={size} strokeWidth={2} />;
@@ -356,11 +350,11 @@ const AccountSecurityCard = ({ items }: { items: SecurityItem[] }) => {
             <Switch
               value={!!item.enabled}
               onValueChange={() => toggleSecurity(item.id)}
-              trackColor={{ false: '#D9DCE8', true: '#173CFF' }}
-              thumbColor="#FFFFFF"
+              trackColor={{ false: colors.inputBorder, true: colors.financeBlue }}
+              thumbColor={colors.white}
             />
           ) : (
-            <ChevronRight color="#061247" size={rs(19)} strokeWidth={2.2} />
+            <ChevronRight color={colors.primaryText} size={themeSize(19)} strokeWidth={2.2} />
           )}
         </View>
       ))}
@@ -385,15 +379,15 @@ const AlertsCard = ({ items }: { items: NotificationItem[] }) => {
 
       {notifications.map(item => (
         <View key={item.id} style={styles.settingRow}>
-          <Bell color="#5D607E" size={rs(20)} strokeWidth={2} />
+          <Bell color={colors.slateText} size={themeSize(20)} strokeWidth={2} />
 
           <Text style={styles.settingTitle}>{item.title}</Text>
 
           <Switch
             value={item.enabled}
             onValueChange={() => toggleNotification(item.id)}
-            trackColor={{ false: '#D9DCE8', true: '#173CFF' }}
-            thumbColor="#FFFFFF"
+            trackColor={{ false: colors.inputBorder, true: colors.financeBlue }}
+            thumbColor={colors.white}
           />
         </View>
       ))}
@@ -402,8 +396,8 @@ const AlertsCard = ({ items }: { items: NotificationItem[] }) => {
 };
 
 const HelpIcon = ({ type }: { type: HelpItem['icon'] }) => {
-  const color = '#5D607E';
-  const size = rs(18);
+  const color = colors.slateText;
+  const size = themeSize(18);
 
   if (type === 'ticket') {
     return <MessageSquareText color={color} size={size} strokeWidth={2} />;
@@ -447,7 +441,7 @@ const HelpCard = ({ items }: { items: HelpItem[] }) => {
           ) : null}
 
           {item.arrow ? (
-            <ChevronRight color="#061247" size={rs(18)} strokeWidth={2.2} />
+            <ChevronRight color={colors.primaryText} size={themeSize(18)} strokeWidth={2.2} />
           ) : null}
         </TouchableOpacity>
       ))}
@@ -490,7 +484,7 @@ const LogoutButton = () => {
       disabled={isLoggingOut}
       onPress={handleLogout}
     >
-      <LogOut color="#E00014" size={rs(24)} strokeWidth={2.3} />
+      <LogOut color={colors.dangerDark} size={themeSize(24)} strokeWidth={2.3} />
       <Text style={styles.logoutText}>
         {isLoggingOut ? 'Logging out...' : 'Logout'}
       </Text>
@@ -536,8 +530,8 @@ const ProfileScreen = () => {
   if (loading) {
     return (
       <SafeAreaView style={styles.loaderScreen}>
-        <StatusBar backgroundColor="#061B66" barStyle="light-content" />
-        <ActivityIndicator size="large" color="#173CFF" />
+        <StatusBar backgroundColor={colors.primary} barStyle="light-content" />
+        <ActivityIndicator size="large" color={colors.financeBlue} />
       </SafeAreaView>
     );
   }
@@ -545,14 +539,14 @@ const ProfileScreen = () => {
   if (error || !data) {
     return (
       <SafeAreaView style={styles.loaderScreen}>
-        <StatusBar backgroundColor="#061B66" barStyle="light-content" />
+        <StatusBar backgroundColor={colors.primary} barStyle="light-content" />
 
         <Text
           style={{
-            color: '#061247',
-            fontSize: fs(18),
-            fontWeight: '700',
-            marginBottom: rs(18),
+            color: colors.primaryText,
+            fontSize: textSize(18),
+            fontFamily: fonts.bold,
+            marginBottom: themeSize(18),
             textAlign: 'center',
           }}
         >
@@ -563,17 +557,17 @@ const ProfileScreen = () => {
           activeOpacity={0.85}
           onPress={handleRetry}
           style={{
-            backgroundColor: '#061B66',
-            paddingHorizontal: rs(28),
-            paddingVertical: rs(14),
-            borderRadius: rs(8),
+            backgroundColor: colors.primary,
+            paddingHorizontal: themeSize(28),
+            paddingVertical: themeSize(14),
+            borderRadius: themeSize(8),
           }}
         >
           <Text
             style={{
-              color: '#FFFFFF',
-              fontSize: fs(14),
-              fontWeight: '800',
+              color: colors.white,
+              fontSize: textSize(14),
+              fontFamily: fonts.extraBold,
             }}
           >
             Retry
@@ -585,7 +579,7 @@ const ProfileScreen = () => {
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <StatusBar backgroundColor="#061B66" barStyle="light-content" />
+      <StatusBar backgroundColor={colors.primary} barStyle="light-content" />
 
       <Header />
 
@@ -624,242 +618,242 @@ const ProfileScreen = () => {
 };
 export default ProfileScreen;
 
-const PAGE_PADDING = rs(22);
+const PAGE_PADDING = themeSize(22);
 
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#F8F9FD',
+    backgroundColor: colors.financeBackground,
   },
   loaderScreen: {
     flex: 1,
-    backgroundColor: '#F8F9FD',
+    backgroundColor: colors.financeBackground,
     alignItems: 'center',
     justifyContent: 'center',
   },
   header: {
-    height: rs(74),
-    backgroundColor: '#061B66',
-    paddingHorizontal: rs(28),
-    paddingTop: rs(8),
+    height: themeSize(74),
+    backgroundColor: colors.primary,
+    paddingHorizontal: themeSize(28),
+    paddingTop: themeSize(8),
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
   },
   headerSide: {
-    width: rs(32),
+    width: themeSize(32),
   },
   headerEditButton: {
-    width: rs(32),
-    height: rs(32),
+    width: themeSize(32),
+    height: themeSize(32),
     alignItems: 'center',
     justifyContent: 'center',
   },
   headerTitle: {
-    color: '#FFFFFF',
-    fontSize: fs(27),
-    fontWeight: '800',
+    color: colors.white,
+    fontSize: textSize(27),
+    fontFamily: fonts.extraBold,
   },
   scrollView: {
     flex: 1,
   },
   scrollContent: {
     paddingHorizontal: PAGE_PADDING,
-    paddingTop: rs(20),
-    paddingBottom: rs(34),
+    paddingTop: themeSize(20),
+    paddingBottom: themeSize(34),
   },
   profileHero: {
-    minHeight: rs(335),
-    backgroundColor: '#061B66',
-    borderRadius: rs(8),
+    minHeight: themeSize(335),
+    backgroundColor: colors.primary,
+    borderRadius: themeSize(8),
     alignItems: 'center',
-    paddingVertical: rs(18),
-    marginBottom: rs(14),
+    paddingVertical: themeSize(18),
+    marginBottom: themeSize(14),
   },
   logoWrap: {
-    width: rs(164),
-    height: rs(142),
+    width: themeSize(164),
+    height: themeSize(142),
     position: 'relative',
     alignItems: 'center',
     justifyContent: 'center',
   },
   logoBox: {
-    width: rs(152),
-    height: rs(142),
-    borderRadius: rs(20),
-    backgroundColor: '#FFFFFF',
+    width: themeSize(152),
+    height: themeSize(142),
+    borderRadius: themeSize(20),
+    backgroundColor: colors.white,
     alignItems: 'center',
     justifyContent: 'center',
   },
   logoText: {
-    color: '#061247',
-    fontSize: fs(74),
-    fontWeight: '900',
-    letterSpacing: rs(2),
+    color: colors.primaryText,
+    fontSize: textSize(74),
+    fontFamily: fonts.extraBold,
+    letterSpacing: themeSize(2),
   },
   cameraButton: {
     position: 'absolute',
-    right: rs(0),
-    bottom: rs(0),
-    width: rs(38),
-    height: rs(38),
-    borderRadius: rs(19),
-    backgroundColor: '#FFFFFF',
+    right: themeSize(0),
+    bottom: themeSize(0),
+    width: themeSize(38),
+    height: themeSize(38),
+    borderRadius: themeSize(19),
+    backgroundColor: colors.white,
     alignItems: 'center',
     justifyContent: 'center',
   },
   companyName: {
-    color: '#FFFFFF',
-    fontSize: fs(33),
-    lineHeight: rs(39),
-    fontWeight: '800',
-    marginTop: rs(10),
+    color: colors.white,
+    fontSize: textSize(33),
+    lineHeight: themeSize(39),
+    fontFamily: fonts.extraBold,
+    marginTop: themeSize(10),
   },
   companyRole: {
-    color: '#FFFFFF',
-    fontSize: fs(17),
-    lineHeight: rs(23),
-    fontWeight: '500',
-    marginTop: rs(8),
+    color: colors.white,
+    fontSize: textSize(17),
+    lineHeight: themeSize(23),
+    fontFamily: fonts.medium,
+    marginTop: themeSize(8),
   },
   badgeRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginTop: rs(16),
+    marginTop: themeSize(16),
   },
   statusPill: {
-    minWidth: rs(105),
-    height: rs(36),
-    borderRadius: rs(18),
+    minWidth: themeSize(105),
+    height: themeSize(36),
+    borderRadius: themeSize(18),
     borderWidth: 1,
-    borderColor: '#FFFFFF',
+    borderColor: colors.white,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    marginRight: rs(16),
+    marginRight: themeSize(16),
   },
   greenDot: {
-    width: rs(12),
-    height: rs(12),
-    borderRadius: rs(6),
-    backgroundColor: '#0AB72B',
-    marginRight: rs(10),
+    width: themeSize(12),
+    height: themeSize(12),
+    borderRadius: themeSize(6),
+    backgroundColor: colors.activeGreen,
+    marginRight: themeSize(10),
   },
   statusPillText: {
-    color: '#FFFFFF',
-    fontSize: fs(15),
-    fontWeight: '700',
+    color: colors.white,
+    fontSize: textSize(15),
+    fontFamily: fonts.bold,
   },
   planPill: {
-    minWidth: rs(158),
-    height: rs(36),
-    borderRadius: rs(18),
+    minWidth: themeSize(158),
+    height: themeSize(36),
+    borderRadius: themeSize(18),
     borderWidth: 1,
-    borderColor: '#FFFFFF',
+    borderColor: colors.white,
     alignItems: 'center',
     justifyContent: 'center',
   },
   planPillText: {
-    color: '#FFFFFF',
-    fontSize: fs(15),
-    fontWeight: '700',
+    color: colors.white,
+    fontSize: textSize(15),
+    fontFamily: fonts.bold,
   },
   memberSince: {
-    color: '#FFFFFF',
-    fontSize: fs(16),
-    fontWeight: '500',
-    marginTop: rs(12),
+    color: colors.white,
+    fontSize: textSize(16),
+    fontFamily: fonts.medium,
+    marginTop: themeSize(12),
   },
   fullCard: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: rs(8),
-    paddingHorizontal: rs(22),
-    paddingVertical: rs(16),
-    marginBottom: rs(10),
-    shadowColor: '#000000',
+    backgroundColor: colors.white,
+    borderRadius: themeSize(8),
+    paddingHorizontal: themeSize(22),
+    paddingVertical: themeSize(16),
+    marginBottom: themeSize(10),
+    shadowColor: colors.black,
     shadowOpacity: 0.04,
-    shadowRadius: rs(10),
-    shadowOffset: { width: 0, height: rs(4) },
+    shadowRadius: themeSize(10),
+    shadowOffset: { width: 0, height: themeSize(4) },
     elevation: 3,
   },
   halfCard: {
     width: '100%',
-    backgroundColor: '#FFFFFF',
-    borderRadius: rs(8),
-    paddingHorizontal: rs(16),
-    paddingVertical: rs(14),
-    marginBottom: rs(10),
-    shadowColor: '#000000',
+    backgroundColor: colors.white,
+    borderRadius: themeSize(8),
+    paddingHorizontal: themeSize(16),
+    paddingVertical: themeSize(14),
+    marginBottom: themeSize(10),
+    shadowColor: colors.black,
     shadowOpacity: 0.04,
-    shadowRadius: rs(10),
-    shadowOffset: { width: 0, height: rs(4) },
+    shadowRadius: themeSize(10),
+    shadowOffset: { width: 0, height: themeSize(4) },
     elevation: 3,
   },
   twoColumnRow: {
     flexDirection: 'column',
   },
   sectionHeader: {
-    height: rs(26),
+    height: themeSize(26),
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginBottom: rs(8),
+    marginBottom: themeSize(8),
   },
   sectionTitle: {
-    color: '#111327',
-    fontSize: fs(18),
-    lineHeight: rs(25),
-    fontWeight: '900',
+    color: colors.text,
+    fontSize: textSize(18),
+    lineHeight: themeSize(25),
+    fontFamily: fonts.extraBold,
   },
   sectionActionText: {
-    color: '#173CFF',
-    fontSize: fs(14),
-    fontWeight: '800',
+    color: colors.financeBlue,
+    fontSize: textSize(14),
+    fontFamily: fonts.extraBold,
   },
   businessRow: {
-    minHeight: rs(44),
+    minHeight: themeSize(44),
     flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical: rs(6),
+    paddingVertical: themeSize(6),
   },
   businessIcon: {
-    width: rs(30),
+    width: themeSize(30),
   },
   businessLabel: {
-    width: rs(205),
-    color: '#5D607E',
-    fontSize: fs(14),
-    lineHeight: rs(21),
-    fontWeight: '600',
+    width: themeSize(205),
+    color: colors.slateText,
+    fontSize: textSize(14),
+    lineHeight: themeSize(21),
+    fontFamily: fonts.semiBold,
   },
   businessValue: {
     flex: 1,
-    color: '#111327',
-    fontSize: fs(15),
-    lineHeight: rs(22),
-    fontWeight: '800',
+    color: colors.text,
+    fontSize: textSize(15),
+    lineHeight: themeSize(22),
+    fontFamily: fonts.extraBold,
   },
   verifiedWrap: {
-    width: rs(110),
+    width: themeSize(110),
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'flex-end',
   },
   verifiedPlaceholder: {
-    width: rs(110),
+    width: themeSize(110),
   },
   verifiedText: {
-    color: '#138A36',
-    fontSize: fs(13),
-    fontWeight: '800',
-    marginRight: rs(8),
+    color: colors.success,
+    fontSize: textSize(13),
+    fontFamily: fonts.extraBold,
+    marginRight: themeSize(8),
   },
   ruleRow: {
-    minHeight: rs(62),
+    minHeight: themeSize(62),
     borderWidth: 1,
-    borderColor: '#EEF0F6',
-    borderRadius: rs(6),
-    paddingHorizontal: rs(10),
+    borderColor: colors.financeDivider,
+    borderRadius: themeSize(6),
+    paddingHorizontal: themeSize(10),
     flexDirection: 'row',
     alignItems: 'center',
   },
@@ -867,208 +861,208 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   ruleCategory: {
-    color: '#111327',
-    fontSize: fs(14),
-    lineHeight: rs(21),
-    fontWeight: '900',
+    color: colors.text,
+    fontSize: textSize(14),
+    lineHeight: themeSize(21),
+    fontFamily: fonts.extraBold,
   },
   ruleSubText: {
-    color: '#5D607E',
-    fontSize: fs(12),
-    lineHeight: rs(19),
-    fontWeight: '600',
-    marginTop: rs(2),
+    color: colors.slateText,
+    fontSize: textSize(12),
+    lineHeight: themeSize(19),
+    fontFamily: fonts.semiBold,
+    marginTop: themeSize(2),
   },
   addRuleButton: {
-    height: rs(36),
+    height: themeSize(36),
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
   },
   addRuleText: {
-    color: '#173CFF',
-    fontSize: fs(15),
-    fontWeight: '800',
-    marginLeft: rs(6),
+    color: colors.financeBlue,
+    fontSize: textSize(15),
+    fontFamily: fonts.extraBold,
+    marginLeft: themeSize(6),
   },
   targetRow: {
-    minHeight: rs(56),
+    minHeight: themeSize(56),
     borderBottomWidth: 1,
-    borderBottomColor: '#EEF0F6',
+    borderBottomColor: colors.financeDivider,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
   },
   targetLabel: {
-    color: '#111327',
-    fontSize: fs(14),
-    lineHeight: rs(21),
-    fontWeight: '700',
+    color: colors.text,
+    fontSize: textSize(14),
+    lineHeight: themeSize(21),
+    fontFamily: fonts.bold,
   },
   targetValue: {
-    color: '#111327',
-    fontSize: fs(14),
-    lineHeight: rs(21),
-    fontWeight: '800',
+    color: colors.text,
+    fontSize: textSize(14),
+    lineHeight: themeSize(21),
+    fontFamily: fonts.extraBold,
   },
   setTargetText: {
-    color: '#173CFF',
-    fontSize: fs(14),
-    fontWeight: '800',
+    color: colors.financeBlue,
+    fontSize: textSize(14),
+    fontFamily: fonts.extraBold,
     textAlign: 'center',
-    marginTop: rs(14),
+    marginTop: themeSize(14),
   },
   planCardInner: {
-    marginTop: rs(10),
-    backgroundColor: '#073DD4',
-    borderRadius: rs(6),
-    paddingHorizontal: rs(18),
-    paddingVertical: rs(14),
+    marginTop: themeSize(10),
+    backgroundColor: colors.profilePlanBlue,
+    borderRadius: themeSize(6),
+    paddingHorizontal: themeSize(18),
+    paddingVertical: themeSize(14),
   },
   planName: {
-    color: '#FFFFFF',
-    fontSize: fs(22),
-    fontWeight: '900',
+    color: colors.white,
+    fontSize: textSize(22),
+    fontFamily: fonts.extraBold,
   },
   planPrice: {
-    color: '#FFFFFF',
-    fontSize: fs(16),
-    fontWeight: '700',
-    marginTop: rs(6),
+    color: colors.white,
+    fontSize: textSize(16),
+    fontFamily: fonts.bold,
+    marginTop: themeSize(6),
   },
   renewalText: {
-    color: '#FFFFFF',
-    fontSize: fs(13),
-    fontWeight: '500',
-    marginTop: rs(6),
+    color: colors.white,
+    fontSize: textSize(13),
+    fontFamily: fonts.medium,
+    marginTop: themeSize(6),
   },
   planButtonRow: {
-    marginTop: rs(12),
+    marginTop: themeSize(12),
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
   },
   activePlanBadge: {
-    minWidth: rs(96),
-    height: rs(34),
-    borderRadius: rs(4),
-    backgroundColor: '#FFFFFF',
+    minWidth: themeSize(96),
+    height: themeSize(34),
+    borderRadius: themeSize(4),
+    backgroundColor: colors.white,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
   },
   activePlanText: {
-    color: '#138A36',
-    fontSize: fs(13),
-    fontWeight: '900',
-    marginRight: rs(6),
+    color: colors.success,
+    fontSize: textSize(13),
+    fontFamily: fonts.extraBold,
+    marginRight: themeSize(6),
   },
   viewPlanButton: {
-    minWidth: rs(156),
-    height: rs(34),
-    borderRadius: rs(4),
+    minWidth: themeSize(156),
+    height: themeSize(34),
+    borderRadius: themeSize(4),
     borderWidth: 1,
-    borderColor: '#FFFFFF',
+    borderColor: colors.white,
     alignItems: 'center',
     justifyContent: 'center',
   },
   viewPlanText: {
-    color: '#FFFFFF',
-    fontSize: fs(13),
-    fontWeight: '800',
+    color: colors.white,
+    fontSize: textSize(13),
+    fontFamily: fonts.extraBold,
   },
   documentList: {
-    marginTop: rs(12),
+    marginTop: themeSize(12),
   },
   documentRow: {
-    minHeight: rs(56),
+    minHeight: themeSize(56),
     borderWidth: 1,
-    borderColor: '#EEF0F6',
-    borderRadius: rs(6),
-    paddingHorizontal: rs(12),
+    borderColor: colors.financeDivider,
+    borderRadius: themeSize(6),
+    paddingHorizontal: themeSize(12),
     flexDirection: 'row',
     alignItems: 'center',
   },
   documentName: {
     flex: 1,
-    color: '#111327',
-    fontSize: fs(14),
-    fontWeight: '800',
-    marginLeft: rs(10),
+    color: colors.text,
+    fontSize: textSize(14),
+    fontFamily: fonts.extraBold,
+    marginLeft: themeSize(10),
   },
   documentVerified: {
-    color: '#138A36',
-    fontSize: fs(13),
-    fontWeight: '800',
-    marginRight: rs(8),
+    color: colors.success,
+    fontSize: textSize(13),
+    fontFamily: fonts.extraBold,
+    marginRight: themeSize(8),
   },
   documentView: {
-    color: '#173CFF',
-    fontSize: fs(13),
-    fontWeight: '800',
-    marginLeft: rs(22),
+    color: colors.financeBlue,
+    fontSize: textSize(13),
+    fontFamily: fonts.extraBold,
+    marginLeft: themeSize(22),
   },
   settingRow: {
-    minHeight: rs(46),
+    minHeight: themeSize(46),
     flexDirection: 'row',
     alignItems: 'center',
   },
   settingTitle: {
     flex: 1,
-    color: '#111327',
-    fontSize: fs(14),
-    lineHeight: rs(21),
-    fontWeight: '700',
-    marginLeft: rs(14),
+    color: colors.text,
+    fontSize: textSize(14),
+    lineHeight: themeSize(21),
+    fontFamily: fonts.bold,
+    marginLeft: themeSize(14),
   },
   helpRow: {
-    minHeight: rs(44),
+    minHeight: themeSize(44),
     flexDirection: 'row',
     alignItems: 'center',
   },
   helpTitle: {
-    color: '#111327',
-    fontSize: fs(14),
-    lineHeight: rs(21),
-    fontWeight: '700',
-    marginLeft: rs(14),
+    color: colors.text,
+    fontSize: textSize(14),
+    lineHeight: themeSize(21),
+    fontFamily: fonts.bold,
+    marginLeft: themeSize(14),
   },
   helpSubtitle: {
     flex: 1,
-    color: '#5D607E',
-    fontSize: fs(14),
-    fontWeight: '700',
-    marginLeft: rs(8),
+    color: colors.slateText,
+    fontSize: textSize(14),
+    fontFamily: fonts.bold,
+    marginLeft: themeSize(8),
   },
   openTicketText: {
-    color: '#F06419',
+    color: colors.profileOrange,
   },
   logoutButton: {
-    height: rs(46),
-    borderRadius: rs(5),
+    height: themeSize(46),
+    borderRadius: themeSize(5),
     borderWidth: 1,
-    borderColor: '#E00014',
-    backgroundColor: '#FFFFFF',
+    borderColor: colors.dangerDark,
+    backgroundColor: colors.white,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    marginTop: rs(8),
+    marginTop: themeSize(8),
   },
   logoutButtonDisabled: {
     opacity: 0.6,
   },
   logoutText: {
-    color: '#E00014',
-    fontSize: fs(17),
-    fontWeight: '800',
-    marginLeft: rs(12),
+    color: colors.dangerDark,
+    fontSize: textSize(17),
+    fontFamily: fonts.extraBold,
+    marginLeft: themeSize(12),
   },
   footerText: {
-    color: '#5D607E',
-    fontSize: fs(13),
-    lineHeight: rs(19),
-    fontWeight: '600',
+    color: colors.slateText,
+    fontSize: textSize(13),
+    lineHeight: themeSize(19),
+    fontFamily: fonts.semiBold,
     textAlign: 'center',
-    marginTop: rs(12),
+    marginTop: themeSize(12),
   },
 });

@@ -1,9 +1,9 @@
-import React, {useEffect} from 'react';
-import {AppState, StatusBar, View} from 'react-native';
+import React, { useEffect } from 'react';
+import { AppState, StatusBar, View } from 'react-native';
 import RootNavigator from './src/navigation/RootNavigator';
 
-import {initCrashlytics} from './src/services/crashlyticsService';
-import {checkAppUpdate} from './src/services/appUpdateService';
+import { initCrashlytics } from './src/services/crashlyticsService';
+import { checkAppUpdate } from './src/services/appUpdateService';
 import Toast from 'react-native-toast-message';
 
 import {
@@ -15,10 +15,7 @@ import {
   listenFcmTokenRefresh,
 } from './src/services/notificationService';
 
-import {
-  clearAuthStorage,
-  isSessionExpired,
-} from './src/utils/sessionManager';
+import { clearAuthStorage, isSessionExpired } from './src/utils/sessionManager';
 
 import {
   isAuthRouteActive,
@@ -27,25 +24,25 @@ import {
 import { showErrorToast } from './src/utils/toast';
 
 const App = () => {
- const checkSessionExpiry = async () => {
-  try {
-    const expired = await isSessionExpired();
+  const checkSessionExpiry = async () => {
+    try {
+      const expired = await isSessionExpired();
 
-    if (!expired) {
-      return;
+      if (!expired) {
+        return;
+      }
+
+      if (isAuthRouteActive()) {
+        return;
+      }
+
+      await clearAuthStorage();
+
+      resetToLogin();
+    } catch {
+      showErrorToast('Session check failed. Please restart the app.');
     }
-
-    if (isAuthRouteActive()) {
-      return;
-    }
-
-    await clearAuthStorage();
-
-    resetToLogin();
-  } catch {
-   showErrorToast('Session check failed. Please restart the app.');
-  }
-};
+  };
 
   useEffect(() => {
     initCrashlytics();
@@ -99,14 +96,14 @@ const App = () => {
   }, []);
 
   return (
-    <View style={{flex: 1}}>
+    <View style={{ flex: 1 }}>
       <StatusBar
-      backgroundColor="#0D3696"
-      barStyle="light-content"
-      translucent={false}
-    />
+        backgroundColor="#103A94"
+        barStyle="light-content"
+        translucent={false}
+      />
       <RootNavigator />
-       <Toast />
+      <Toast />
     </View>
   );
 };
