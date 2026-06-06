@@ -200,13 +200,13 @@ const styles = StyleSheet.create({
     flex: 1,
     minHeight: SCREEN_HEIGHT,
     width: '100%',
-    backgroundColor: colors.loginBg,
+    backgroundColor: colors.primary,
   },
 
   blueSection: {
     height: SCREEN_HEIGHT * 0.36,
     minHeight: rs(250),
-    backgroundColor: colors.loginPrimary,
+    backgroundColor: colors.primary,
     alignItems: 'center',
     justifyContent: 'center',
     paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight || 0 : 0,

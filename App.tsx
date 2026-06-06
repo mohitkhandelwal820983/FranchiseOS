@@ -1,9 +1,13 @@
-import React, { useEffect } from 'react';
-import { AppState, StatusBar, View } from 'react-native';
+import React, {useEffect} from 'react';
+import {AppState, Platform, StatusBar, View} from 'react-native';
+import {
+  SafeAreaProvider,
+  useSafeAreaInsets,
+} from 'react-native-safe-area-context';
 import RootNavigator from './src/navigation/RootNavigator';
 
-import { initCrashlytics } from './src/services/crashlyticsService';
-import { checkAppUpdate } from './src/services/appUpdateService';
+import {initCrashlytics} from './src/services/crashlyticsService';
+import {checkAppUpdate} from './src/services/appUpdateService';
 import Toast from 'react-native-toast-message';
 
 import {
@@ -15,15 +19,20 @@ import {
   listenFcmTokenRefresh,
 } from './src/services/notificationService';
 
-import { clearAuthStorage, isSessionExpired } from './src/utils/sessionManager';
+import {clearAuthStorage, isSessionExpired} from './src/utils/sessionManager';
 
 import {
   isAuthRouteActive,
   resetToLogin,
 } from './src/navigation/navigationService';
-import { showErrorToast } from './src/utils/toast';
+import {showErrorToast} from './src/utils/toast';
+import { colors } from './src/theme';
 
-const App = () => {
+const STATUS_BAR_COLOR = colors.primary
+
+const AppContent = () => {
+  const insets = useSafeAreaInsets();
+
   const checkSessionExpiry = async () => {
     try {
       const expired = await isSessionExpired();
@@ -47,7 +56,6 @@ const App = () => {
   useEffect(() => {
     initCrashlytics();
 
-    // Check app update on app launch
     checkAppUpdate();
 
     const setupNotifications = async () => {
@@ -65,15 +73,12 @@ const App = () => {
 
     setupNotifications();
 
-    // Check session when app starts
     checkSessionExpiry();
 
-    // Check session every 5 seconds while app is open
     const sessionInterval = setInterval(() => {
       checkSessionExpiry();
     }, 5000);
 
-    // Check session and update when app comes back from background
     const appStateSubscription = AppState.addEventListener(
       'change',
       nextAppState => {
@@ -96,15 +101,41 @@ const App = () => {
   }, []);
 
   return (
-    <View style={{ flex: 1 }}>
+    <View style={{flex: 1, backgroundColor: STATUS_BAR_COLOR}}>
       <StatusBar
-        backgroundColor="#103A94"
+        backgroundColor={STATUS_BAR_COLOR}
         barStyle="light-content"
         translucent={false}
       />
+
+      <View
+        pointerEvents="none"
+        style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          height:
+            insets.top ||
+            (Platform.OS === 'android' ? StatusBar.currentHeight || 0 : 0),
+          backgroundColor: STATUS_BAR_COLOR,
+          zIndex: 9999,
+          elevation: 9999,
+        }}
+      />
+
       <RootNavigator />
+
       <Toast />
     </View>
+  );
+};
+
+const App = () => {
+  return (
+    <SafeAreaProvider>
+      <AppContent />
+    </SafeAreaProvider>
   );
 };
 
