@@ -16,6 +16,24 @@ import Profile from '../screens/superAdmin/Profile/Profile';
 
 const Tab = createBottomTabNavigator();
 
+type TabIconProps = {
+  color: string;
+  size: number;
+};
+
+const DashboardIcon = ({color, size}: TabIconProps) => (
+  <LayoutDashboard color={color} size={size} />
+);
+const CompaniesIcon = ({color, size}: TabIconProps) => (
+  <Building2 color={color} size={size} />
+);
+const BillingIcon = ({color, size}: TabIconProps) => (
+  <CreditCard color={color} size={size} />
+);
+const ProfileIcon = ({color, size}: TabIconProps) => (
+  <User color={color} size={size} />
+);
+
 const SuperAdminNavigator = () => {
   return (
     <Tab.Navigator
@@ -46,9 +64,7 @@ const SuperAdminNavigator = () => {
         component={Dashboard}
         options={{
           tabBarLabel: 'Home',
-          tabBarIcon: ({color, size}) => (
-            <LayoutDashboard color={color} size={size} />
-          ),
+          tabBarIcon: DashboardIcon,
         }}
       />
 
@@ -57,9 +73,7 @@ const SuperAdminNavigator = () => {
         component={Companies}
         options={{
           tabBarLabel: 'Companies',
-          tabBarIcon: ({color, size}) => (
-            <Building2 color={color} size={size} />
-          ),
+          tabBarIcon: CompaniesIcon,
         }}
       />
 
@@ -68,9 +82,7 @@ const SuperAdminNavigator = () => {
         component={Billing}
         options={{
           tabBarLabel: 'Billing',
-          tabBarIcon: ({color, size}) => (
-            <CreditCard color={color} size={size} />
-          ),
+          tabBarIcon: BillingIcon,
         }}
       />
 
@@ -79,9 +91,7 @@ const SuperAdminNavigator = () => {
         component={Profile}
         options={{
           tabBarLabel: 'Profile',
-          tabBarIcon: ({color, size}) => (
-            <User color={color} size={size} />
-          ),
+          tabBarIcon: ProfileIcon,
         }}
       />
 

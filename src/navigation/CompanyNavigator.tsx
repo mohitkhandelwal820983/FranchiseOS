@@ -19,6 +19,27 @@ import ProfileScreen from '../screens/company/ProfileScreen';
 const Tab = createBottomTabNavigator();
 const NetworkStack = createNativeStackNavigator();
 
+type TabIconProps = {
+  color: string;
+  size: number;
+};
+
+const HomeIcon = ({color, size}: TabIconProps) => (
+  <Home color={color} size={size} />
+);
+const NetworkIcon = ({color, size}: TabIconProps) => (
+  <Globe2 color={color} size={size} />
+);
+const OrdersIcon = ({color, size}: TabIconProps) => (
+  <Package color={color} size={size} />
+);
+const FinanceIcon = ({color, size}: TabIconProps) => (
+  <IndianRupee color={color} size={size} />
+);
+const ProfileIcon = ({color, size}: TabIconProps) => (
+  <User color={color} size={size} />
+);
+
 const NetworkStackScreen = () => {
   return (
     <NetworkStack.Navigator screenOptions={{headerShown: false}}>
@@ -57,7 +78,7 @@ const CompanyNavigator = () => {
         component={CompanyDashboardScreen}
         options={{
           tabBarLabel: 'Home',
-          tabBarIcon: ({color, size}) => <Home color={color} size={size} />,
+          tabBarIcon: HomeIcon,
         }}
       />
 
@@ -66,7 +87,7 @@ const CompanyNavigator = () => {
         component={NetworkStackScreen}
         options={{
           tabBarLabel: 'Network',
-          tabBarIcon: ({color, size}) => <Globe2 color={color} size={size} />,
+          tabBarIcon: NetworkIcon,
         }}
       />
 
@@ -75,7 +96,7 @@ const CompanyNavigator = () => {
         component={OrdersScreen}
         options={{
           tabBarLabel: 'Orders',
-          tabBarIcon: ({color, size}) => <Package color={color} size={size} />,
+          tabBarIcon: OrdersIcon,
         }}
       />
 
@@ -84,9 +105,7 @@ const CompanyNavigator = () => {
         component={FinanceScreen}
         options={{
           tabBarLabel: 'Finance',
-          tabBarIcon: ({color, size}) => (
-            <IndianRupee color={color} size={size} />
-          ),
+          tabBarIcon: FinanceIcon,
         }}
       />
 
@@ -95,7 +114,7 @@ const CompanyNavigator = () => {
         component={ProfileScreen}
         options={{
           tabBarLabel: 'Profile',
-          tabBarIcon: ({color, size}) => <User color={color} size={size} />,
+          tabBarIcon: ProfileIcon,
         }}
       />
     </Tab.Navigator>

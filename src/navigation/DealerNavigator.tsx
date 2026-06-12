@@ -15,6 +15,27 @@ import DealerProfileScreen from '../screens/dealer/DealerProfileScreen';
 
 const Tab = createBottomTabNavigator();
 
+type TabIconProps = {
+  color: string;
+  size: number;
+};
+
+const DashboardIcon = ({color, size}: TabIconProps) => (
+  <Home color={color} size={size} />
+);
+const OrdersIcon = ({color, size}: TabIconProps) => (
+  <Package color={color} size={size} />
+);
+const CustomersIcon = ({color, size}: TabIconProps) => (
+  <Users color={color} size={size} />
+);
+const PaymentsIcon = ({color, size}: TabIconProps) => (
+  <IndianRupee color={color} size={size} />
+);
+const ProfileIcon = ({color, size}: TabIconProps) => (
+  <User color={color} size={size} />
+);
+
 
 
 const DealerNavigator = () => {
@@ -47,9 +68,7 @@ const DealerNavigator = () => {
         component={DealerDashboardScreen}
         options={{
           tabBarLabel: 'Dashboard',
-          tabBarIcon: ({color, size}) => (
-            <Home color={color} size={size} />
-          ),
+          tabBarIcon: DashboardIcon,
         }}
       />
 
@@ -58,9 +77,7 @@ const DealerNavigator = () => {
         component={DealerOrderScreen}
         options={{
           tabBarLabel: 'Orders',
-          tabBarIcon: ({color, size}) => (
-            <Package color={color} size={size} />
-          ),
+          tabBarIcon: OrdersIcon,
         }}
       />
 
@@ -69,9 +86,7 @@ const DealerNavigator = () => {
         component={DealerCustomerScreen}
         options={{
           tabBarLabel: 'Customers',
-          tabBarIcon: ({color, size}) => (
-            <Users color={color} size={size} />
-          ),
+          tabBarIcon: CustomersIcon,
         }}
       />
 
@@ -80,9 +95,7 @@ const DealerNavigator = () => {
         component={DealerPaymentScreen}
         options={{
           tabBarLabel: 'Payments',
-          tabBarIcon: ({color, size}) => (
-            <IndianRupee color={color} size={size} />
-          ),
+          tabBarIcon: PaymentsIcon,
         }}
       />
 
@@ -91,9 +104,7 @@ const DealerNavigator = () => {
         component={DealerProfileScreen}
         options={{
           tabBarLabel: 'Profile',
-          tabBarIcon: ({color, size}) => (
-            <User color={color} size={size} />
-          ),
+          tabBarIcon: ProfileIcon,
         }}
       />
     </Tab.Navigator>

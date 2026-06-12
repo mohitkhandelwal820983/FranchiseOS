@@ -18,7 +18,7 @@ export const requestNotificationPermission = async () => {
     await notifee.requestPermission();
 
     return true;
-  } catch (error) {
+  } catch {
     return false;
   }
 };
@@ -36,7 +36,7 @@ export const getFcmToken = async () => {
   try {
     const token = await messaging().getToken();
     return token;
-  } catch (error) {
+  } catch {
     return null;
   }
 };
@@ -69,21 +69,21 @@ export const listenForegroundMessages = () => {
 };
 
 export const listenNotificationOpenedApp = () => {
-  messaging().onNotificationOpenedApp(remoteMessage => {
+  messaging().onNotificationOpenedApp(_remoteMessage => {
     // Handle background notification click here if needed
   });
 
   messaging()
     .getInitialNotification()
-    .then(remoteMessage => {
-      if (remoteMessage) {
+    .then(_remoteMessage => {
+      if (_remoteMessage) {
         // Handle closed-state notification click here if needed
       }
     });
 };
 
 export const listenFcmTokenRefresh = () => {
-  return messaging().onTokenRefresh(token => {
+  return messaging().onTokenRefresh(_token => {
     // Send refreshed token to backend here if needed
   });
 };
