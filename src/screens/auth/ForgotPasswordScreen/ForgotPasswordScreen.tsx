@@ -3,19 +3,18 @@ import {
   KeyboardAvoidingView,
   Platform,
   ScrollView,
-  StatusBar,
   StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
   View,
   Dimensions,
-  SafeAreaView,
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import {ArrowLeft, Phone} from 'lucide-react-native';
 import {showErrorToast, showSuccessToast} from '../../../utils/toast';
 import {colors, fonts, forgotPasswordSize as rs} from '../../../theme';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const {width: SCREEN_WIDTH, height: SCREEN_HEIGHT} = Dimensions.get('window');
 
@@ -104,7 +103,7 @@ const ForgotPasswordScreen = () => {
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <StatusBar backgroundColor={colors.forgotPrimary} barStyle="light-content" />
+      
 
       <KeyboardAvoidingView
         style={styles.container}
@@ -219,24 +218,24 @@ export default ForgotPasswordScreen;
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: colors.forgotPrimary,
+    backgroundColor: colors.primary,
   },
 
   container: {
     flex: 1,
-    backgroundColor: colors.forgotContainerBg,
+    backgroundColor: colors.primary,
   },
 
   scrollContent: {
     flexGrow: 1,
     minHeight: SCREEN_HEIGHT,
-    backgroundColor: colors.forgotScreenBg,
+    backgroundColor: colors.primary,
   },
 
   screenWrap: {
     width: SCREEN_WIDTH,
     minHeight: SCREEN_HEIGHT,
-    backgroundColor: colors.forgotScreenBg,
+    backgroundColor: colors.white,
     shadowColor: colors.black,
     shadowOpacity: 0.12,
     shadowRadius: rs(14),
@@ -246,7 +245,7 @@ const styles = StyleSheet.create({
 
   topSection: {
     height: rs(92),
-    backgroundColor: colors.forgotPrimary,
+    backgroundColor: colors.primary,
     borderTopLeftRadius: rs(4),
     borderTopRightRadius: rs(4),
     alignItems: 'center',
