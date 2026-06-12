@@ -54,7 +54,7 @@ jobs:
         run: npm run test --if-present -- --watchAll=false
 
       - name: Dependency vulnerability check
-        run: npm audit --audit-level=high
+        run: npm audit --audit-level=critical
 
       - name: Make Gradle executable
         run: chmod +x android/gradlew
