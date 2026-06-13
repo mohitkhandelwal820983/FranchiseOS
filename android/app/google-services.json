@@ -7,6 +7,25 @@
   "client": [
     {
       "client_info": {
+        "mobilesdk_app_id": "1:700784948800:android:93f3a0eae807f1ce8d51a5",
+        "android_client_info": {
+          "package_name": "com.doomshell.franchiseOS"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBJZQs1joHnKMRbsM8EQ1BKKWHWMQqQv2c"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
         "mobilesdk_app_id": "1:700784948800:android:a443771a0bc4fb068d51a5",
         "android_client_info": {
           "package_name": "com.franchiseos"

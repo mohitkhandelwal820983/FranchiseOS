@@ -56,16 +56,16 @@ android {
     buildToolsVersion rootProject.ext.buildToolsVersion
     compileSdk rootProject.ext.compileSdkVersion
 
-    namespace "com.franchiseos"
+    namespace "com.doomshell.franchiseOS"
 
     defaultConfig {
-        applicationId "com.franchiseos"
+        applicationId "com.doomshell.franchiseOS"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
 
         // Increase this every time you upload a new AAB to Play Console
-        versionCode 1
-        versionName "1.0"
+        versionCode 2
+        versionName "1.0.2"
     }
 
     signingConfigs {
