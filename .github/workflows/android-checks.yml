@@ -1,0 +1,156 @@
+name: Android Checks and QA Build
+
+on:
+  pull_request:
+    branches:
+      - main
+      - staging
+
+  push:
+    branches:
+      - staging
+
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pull-requests: read
+
+jobs:
+  android-checks:
+    name: Android Code Checks
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: Install dependencies
+        run: |
+          if [ -f package-lock.json ]; then
+            npm ci
+          else
+            npm install
+          fi
+
+      - name: TypeScript check
+        run: npm run typecheck --if-present
+
+      - name: ESLint check
+        run: npm run lint --if-present
+
+      - name: Unit tests
+        run: npm run test --if-present -- --watchAll=false
+
+      - name: Dependency vulnerability check
+        run: npm audit --audit-level=critical
+
+      - name: Make Gradle executable
+        run: chmod +x android/gradlew
+
+      - name: Android Debug Build Check
+        run: |
+          cd android
+          ./gradlew assembleDebug --no-daemon
+
+  secret-scan:
+    name: Secret Scan
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      pull-requests: read
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Run Gitleaks secret scan
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  android-qa-build:
+    name: Android QA APK and AAB
+    runs-on: ubuntu-latest
+    needs:
+      - android-checks
+      - secret-scan
+      
+    if: ${{ (github.event_name == 'push' && github.ref == 'refs/heads/staging') || github.event_name == 'workflow_dispatch' }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: Install dependencies
+        run: |
+          if [ -f package-lock.json ]; then
+            npm ci
+          else
+            npm install
+          fi
+
+      - name: Decode Android keystore
+        run: |
+          echo "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" | base64 --decode > android/app/upload-keystore.jks
+
+      - name: Create key.properties
+        run: |
+          cat > android/key.properties <<EOF
+          storeFile=upload-keystore.jks
+          storePassword=${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          keyAlias=${{ secrets.ANDROID_KEY_ALIAS }}
+          keyPassword=${{ secrets.ANDROID_KEY_PASSWORD }}
+          EOF
+
+      - name: Make Gradle executable
+        run: chmod +x android/gradlew
+
+      - name: Build Release APK
+        run: |
+          cd android
+          ./gradlew assembleRelease --no-daemon
+
+      - name: Build Release AAB
+        run: |
+          cd android
+          ./gradlew bundleRelease --no-daemon
+
+      - name: Upload APK Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: franchiseos-android-apk
+          path: android/app/build/outputs/apk/release/*.apk
+
+      - name: Upload AAB Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: franchiseos-android-aab
+          path: android/app/build/outputs/bundle/release/*.aab

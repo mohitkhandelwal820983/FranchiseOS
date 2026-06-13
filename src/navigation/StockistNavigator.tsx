@@ -13,6 +13,27 @@ import StockistDealerScreen from '../screens/stockist/StockistDealerScreen';
 const Tab = createBottomTabNavigator();
 const OrderStack = createNativeStackNavigator();
 
+type TabIconProps = {
+  color: string;
+  size: number;
+};
+
+const DashboardIcon = ({color, size}: TabIconProps) => (
+  <Home color={color} size={size} />
+);
+const InventoryIcon = ({color, size}: TabIconProps) => (
+  <Boxes color={color} size={size} />
+);
+const OrdersIcon = ({color, size}: TabIconProps) => (
+  <Package color={color} size={size} />
+);
+const DealersIcon = ({color, size}: TabIconProps) => (
+  <Users color={color} size={size} />
+);
+const ProfileIcon = ({color, size}: TabIconProps) => (
+  <User color={color} size={size} />
+);
+
 const StockistOrderStack = () => {
   return (
     <OrderStack.Navigator screenOptions={{headerShown: false}}>
@@ -52,7 +73,7 @@ const StockistNavigator = () => {
         component={StockistDashboard}
         options={{
           tabBarLabel: 'Dashboard',
-          tabBarIcon: ({color, size}) => <Home color={color} size={size} />,
+          tabBarIcon: DashboardIcon,
         }}
       />
 
@@ -61,7 +82,7 @@ const StockistNavigator = () => {
         component={StockistInventoryScreen}
         options={{
           tabBarLabel: 'Inventory',
-          tabBarIcon: ({color, size}) => <Boxes color={color} size={size} />,
+          tabBarIcon: InventoryIcon,
         }}
       />
 
@@ -70,7 +91,7 @@ const StockistNavigator = () => {
         component={StockistOrderStack}
         options={{
           tabBarLabel: 'Orders',
-          tabBarIcon: ({color, size}) => <Package color={color} size={size} />,
+          tabBarIcon: OrdersIcon,
         }}
       />
 
@@ -79,7 +100,7 @@ const StockistNavigator = () => {
         component={StockistDealerScreen}
         options={{
           tabBarLabel: 'Dealers',
-          tabBarIcon: ({color, size}) => <Users color={color} size={size} />,
+          tabBarIcon: DealersIcon,
         }}
       />
 
@@ -88,7 +109,7 @@ const StockistNavigator = () => {
         component={StockistProfileScreen}
         options={{
           tabBarLabel: 'Profile',
-          tabBarIcon: ({color, size}) => <User color={color} size={size} />,
+          tabBarIcon: ProfileIcon,
         }}
       />
     </Tab.Navigator>
