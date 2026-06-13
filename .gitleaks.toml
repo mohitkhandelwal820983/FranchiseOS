@@ -1,0 +1,10 @@
+title = "FranchiseOS Gitleaks Config"
+
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Allow Firebase Android config file"
+paths = [
+  '''android/app/google-services\.json''',
+]
