@@ -14,6 +14,7 @@ on:
 
 permissions:
   contents: read
+  pull-requests: read
 
 jobs:
   android-checks:
@@ -68,6 +69,10 @@ jobs:
     name: Secret Scan
     runs-on: ubuntu-latest
 
+    permissions:
+      contents: read
+      pull-requests: read
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -76,6 +81,8 @@ jobs:
 
       - name: Run Gitleaks secret scan
         uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   android-qa-build:
     name: Android QA APK and AAB
@@ -84,7 +91,9 @@ jobs:
       - android-checks
       - secret-scan
 
-    if: github.ref == 'refs/heads/staging' || github.event_name == 'workflow_dispatch'
+    environment: staging
+
+    if: ${{ (github.event_name == 'push' && github.ref == 'refs/heads/staging') || github.event_name == 'workflow_dispatch' }}
 
     steps:
       - name: Checkout code
