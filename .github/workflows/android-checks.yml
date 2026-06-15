@@ -85,12 +85,12 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   android-qa-build:
-    name: Android QA APK and AAB
+    name: Android QA APK, AAB and Play Internal Upload
     runs-on: ubuntu-latest
     needs:
       - android-checks
       - secret-scan
-      
+
     if: ${{ (github.event_name == 'push' && github.ref == 'refs/heads/staging') || github.event_name == 'workflow_dispatch' }}
 
     steps:
@@ -142,6 +142,15 @@ jobs:
         run: |
           cd android
           ./gradlew bundleRelease --no-daemon
+
+      - name: Upload AAB to Play Console Internal Testing
+        uses: r0adkll/upload-google-play@v1
+        with:
+          serviceAccountJsonPlainText: ${{ secrets.PLAY_STORE_JSON_KEY }}
+          packageName: com.doomshell.franchiseOS
+          releaseFiles: android/app/build/outputs/bundle/release/*.aab
+          tracks: internal
+          status: completed
 
       - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
