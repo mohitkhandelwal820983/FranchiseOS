@@ -15,7 +15,7 @@ permissions:
 jobs:
   ios-ipa-build:
     name: Build iOS IPA
-    runs-on: macos-latest
+    runs-on: macos-26
 
     steps:
       - name: Checkout code
@@ -204,6 +204,82 @@ jobs:
 
           unless resources_phase.files_references.include?(file_ref)
             resources_phase.add_file_reference(file_ref, true)
+          end
+
+          project.save
+          RUBY
+
+      - name: Generate iOS app icons
+        run: |
+          test -f app-icon.png
+
+          ICONSET_DIR="ios/FranchiseOS/Images.xcassets/AppIcon.appiconset"
+          mkdir -p "$ICONSET_DIR"
+
+          sips -z 40 40 app-icon.png --out "$ICONSET_DIR/Icon-20@2x.png"
+          sips -z 60 60 app-icon.png --out "$ICONSET_DIR/Icon-20@3x.png"
+          sips -z 58 58 app-icon.png --out "$ICONSET_DIR/Icon-29@2x.png"
+          sips -z 87 87 app-icon.png --out "$ICONSET_DIR/Icon-29@3x.png"
+          sips -z 80 80 app-icon.png --out "$ICONSET_DIR/Icon-40@2x.png"
+          sips -z 120 120 app-icon.png --out "$ICONSET_DIR/Icon-40@3x.png"
+          sips -z 120 120 app-icon.png --out "$ICONSET_DIR/Icon-60@2x.png"
+          sips -z 180 180 app-icon.png --out "$ICONSET_DIR/Icon-60@3x.png"
+
+          sips -z 20 20 app-icon.png --out "$ICONSET_DIR/Icon-20.png"
+          sips -z 40 40 app-icon.png --out "$ICONSET_DIR/Icon-20-ipad@2x.png"
+          sips -z 29 29 app-icon.png --out "$ICONSET_DIR/Icon-29.png"
+          sips -z 58 58 app-icon.png --out "$ICONSET_DIR/Icon-29-ipad@2x.png"
+          sips -z 40 40 app-icon.png --out "$ICONSET_DIR/Icon-40.png"
+          sips -z 80 80 app-icon.png --out "$ICONSET_DIR/Icon-40-ipad@2x.png"
+          sips -z 76 76 app-icon.png --out "$ICONSET_DIR/Icon-76.png"
+          sips -z 152 152 app-icon.png --out "$ICONSET_DIR/Icon-76@2x.png"
+          sips -z 167 167 app-icon.png --out "$ICONSET_DIR/Icon-83.5@2x.png"
+          sips -z 1024 1024 app-icon.png --out "$ICONSET_DIR/Icon-1024.png"
+
+          cat > "$ICONSET_DIR/Contents.json" <<'EOF'
+          {
+            "images": [
+              { "idiom": "iphone", "size": "20x20", "scale": "2x", "filename": "Icon-20@2x.png" },
+              { "idiom": "iphone", "size": "20x20", "scale": "3x", "filename": "Icon-20@3x.png" },
+              { "idiom": "iphone", "size": "29x29", "scale": "2x", "filename": "Icon-29@2x.png" },
+              { "idiom": "iphone", "size": "29x29", "scale": "3x", "filename": "Icon-29@3x.png" },
+              { "idiom": "iphone", "size": "40x40", "scale": "2x", "filename": "Icon-40@2x.png" },
+              { "idiom": "iphone", "size": "40x40", "scale": "3x", "filename": "Icon-40@3x.png" },
+              { "idiom": "iphone", "size": "60x60", "scale": "2x", "filename": "Icon-60@2x.png" },
+              { "idiom": "iphone", "size": "60x60", "scale": "3x", "filename": "Icon-60@3x.png" },
+
+              { "idiom": "ipad", "size": "20x20", "scale": "1x", "filename": "Icon-20.png" },
+              { "idiom": "ipad", "size": "20x20", "scale": "2x", "filename": "Icon-20-ipad@2x.png" },
+              { "idiom": "ipad", "size": "29x29", "scale": "1x", "filename": "Icon-29.png" },
+              { "idiom": "ipad", "size": "29x29", "scale": "2x", "filename": "Icon-29-ipad@2x.png" },
+              { "idiom": "ipad", "size": "40x40", "scale": "1x", "filename": "Icon-40.png" },
+              { "idiom": "ipad", "size": "40x40", "scale": "2x", "filename": "Icon-40-ipad@2x.png" },
+              { "idiom": "ipad", "size": "76x76", "scale": "1x", "filename": "Icon-76.png" },
+              { "idiom": "ipad", "size": "76x76", "scale": "2x", "filename": "Icon-76@2x.png" },
+              { "idiom": "ipad", "size": "83.5x83.5", "scale": "2x", "filename": "Icon-83.5@2x.png" },
+
+              { "idiom": "ios-marketing", "size": "1024x1024", "scale": "1x", "filename": "Icon-1024.png" }
+            ],
+            "info": {
+              "version": 1,
+              "author": "xcode"
+            }
+          }
+          EOF
+
+          /usr/libexec/PlistBuddy -c "Set :CFBundleIconName AppIcon" ios/FranchiseOS/Info.plist || /usr/libexec/PlistBuddy -c "Add :CFBundleIconName string AppIcon" ios/FranchiseOS/Info.plist
+
+          ruby <<'RUBY'
+          require 'xcodeproj'
+
+          project_path = 'ios/FranchiseOS.xcodeproj'
+          project = Xcodeproj::Project.open(project_path)
+
+          target = project.targets.find { |t| t.name == 'FranchiseOS' }
+          raise "FranchiseOS target not found" unless target
+
+          target.build_configurations.each do |config|
+            config.build_settings['ASSETCATALOG_COMPILER_APPICON_NAME'] = 'AppIcon'
           end
 
           project.save
