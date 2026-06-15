@@ -48,20 +48,41 @@ jobs:
           pods_project_path = 'ios/Pods/Pods.xcodeproj'
           project = Xcodeproj::Project.open(pods_project_path)
 
+          project.build_configurations.each do |config|
+            config.build_settings['CODE_SIGNING_ALLOWED'] = 'NO'
+            config.build_settings['CODE_SIGNING_REQUIRED'] = 'NO'
+            config.build_settings['CODE_SIGN_IDENTITY'] = ''
+            config.build_settings['CODE_SIGN_IDENTITY[sdk=iphoneos*]'] = ''
+            config.build_settings['EXPANDED_CODE_SIGN_IDENTITY'] = ''
+            config.build_settings['PROVISIONING_PROFILE_SPECIFIER'] = ''
+            config.build_settings['PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]'] = ''
+            config.build_settings['PROVISIONING_PROFILE'] = ''
+            config.build_settings['DEVELOPMENT_TEAM'] = ''
+          end
+
           project.targets.each do |target|
             target.build_configurations.each do |config|
               config.build_settings['CODE_SIGNING_ALLOWED'] = 'NO'
               config.build_settings['CODE_SIGNING_REQUIRED'] = 'NO'
               config.build_settings['CODE_SIGN_IDENTITY'] = ''
+              config.build_settings['CODE_SIGN_IDENTITY[sdk=iphoneos*]'] = ''
               config.build_settings['EXPANDED_CODE_SIGN_IDENTITY'] = ''
               config.build_settings['PROVISIONING_PROFILE_SPECIFIER'] = ''
+              config.build_settings['PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]'] = ''
               config.build_settings['PROVISIONING_PROFILE'] = ''
+              config.build_settings['DEVELOPMENT_TEAM'] = ''
 
               deployment_target = config.build_settings['IPHONEOS_DEPLOYMENT_TARGET']
               if deployment_target && deployment_target.to_f < 12.0
                 config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '12.0'
               end
             end
+          end
+
+          target_attributes = project.root_object.attributes['TargetAttributes'] ||= {}
+          project.targets.each do |target|
+            target_attributes[target.uuid] ||= {}
+            target_attributes[target.uuid]['ProvisioningStyle'] = 'Automatic'
           end
 
           project.save
@@ -148,7 +169,42 @@ jobs:
             config.build_settings['DEVELOPMENT_TEAM'] = ENV['APPLE_TEAM_ID']
             config.build_settings['CODE_SIGN_STYLE'] = 'Manual'
             config.build_settings['CODE_SIGN_IDENTITY'] = 'Apple Distribution'
+            config.build_settings['CODE_SIGN_IDENTITY[sdk=iphoneos*]'] = 'Apple Distribution'
             config.build_settings['PROVISIONING_PROFILE_SPECIFIER'] = ENV['IOS_PROFILE_NAME']
+            config.build_settings['PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]'] = ENV['IOS_PROFILE_NAME']
+          end
+
+          target_attributes = project.root_object.attributes['TargetAttributes'] ||= {}
+          target_attributes[target.uuid] ||= {}
+          target_attributes[target.uuid]['ProvisioningStyle'] = 'Manual'
+
+          project.save
+          RUBY
+
+      - name: Validate and attach Firebase plist
+        run: |
+          test -f ios/FranchiseOS/GoogleService-Info.plist
+          /usr/libexec/PlistBuddy -c "Print :GOOGLE_APP_ID" ios/FranchiseOS/GoogleService-Info.plist
+
+          ruby <<'RUBY'
+          require 'xcodeproj'
+
+          project_path = 'ios/FranchiseOS.xcodeproj'
+          project = Xcodeproj::Project.open(project_path)
+
+          target = project.targets.find { |t| t.name == 'FranchiseOS' }
+          raise "FranchiseOS target not found" unless target
+
+          app_group = project.main_group.find_subpath('FranchiseOS', true)
+          app_group.set_path('FranchiseOS') if app_group.path.nil?
+
+          file_ref = app_group.files.find { |f| f.path == 'GoogleService-Info.plist' }
+          file_ref ||= app_group.new_file('GoogleService-Info.plist')
+
+          resources_phase = target.resources_build_phase
+
+          unless resources_phase.files_references.include?(file_ref)
+            resources_phase.add_file_reference(file_ref, true)
           end
 
           project.save
