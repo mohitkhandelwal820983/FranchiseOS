@@ -1,6 +1,12 @@
 name: iOS IPA Build
 
 on:
+  push:
+    branches:
+      - staging
+      - main
+      - "ai/**"
+
   workflow_dispatch:
 
 permissions:
