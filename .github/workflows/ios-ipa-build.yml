@@ -66,6 +66,7 @@ jobs:
           security default-keychain -s build.keychain
           security unlock-keychain -p "$IOS_KEYCHAIN_PASSWORD" build.keychain
           security set-keychain-settings -lut 21600 build.keychain
+          security list-keychains -d user -s build.keychain login.keychain
 
           security import "$RUNNER_TEMP/ios_certificate.p12" \
             -k build.keychain \
@@ -78,6 +79,10 @@ jobs:
             -s \
             -k "$IOS_KEYCHAIN_PASSWORD" \
             build.keychain
+
+      - name: Show available signing identities
+        run: |
+          security find-identity -v -p codesigning build.keychain
 
       - name: Install provisioning profile
         run: |
@@ -92,6 +97,10 @@ jobs:
 
           echo "IOS_PROFILE_UUID=$PROFILE_UUID" >> $GITHUB_ENV
           echo "IOS_PROFILE_NAME=$PROFILE_NAME" >> $GITHUB_ENV
+
+          echo "Installed provisioning profile:"
+          echo "$PROFILE_NAME"
+          echo "$PROFILE_UUID"
 
       - name: Create ExportOptions.plist
         run: |
@@ -137,8 +146,10 @@ jobs:
             -destination "generic/platform=iOS" \
             DEVELOPMENT_TEAM="${{ secrets.APPLE_TEAM_ID }}" \
             CODE_SIGN_STYLE=Manual \
+            CODE_SIGN_IDENTITY="Apple Distribution" \
             PROVISIONING_PROFILE_SPECIFIER="${IOS_PROFILE_NAME}" \
-            CODE_SIGNING_ALLOWED=YES
+            CODE_SIGNING_ALLOWED=YES \
+            CODE_SIGNING_REQUIRED=YES
 
       - name: Export IPA
         run: |
