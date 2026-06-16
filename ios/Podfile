@@ -6,6 +6,8 @@ require Pod::Executable.execute_command('node', ['-p',
   )', __dir__]).strip
 
 platform :ios, min_ios_version_supported
+use_modular_headers!
+
 prepare_react_native_project!
 
 linkage = ENV['USE_FRAMEWORKS']
@@ -30,5 +32,46 @@ target 'FranchiseOS' do
       :mac_catalyst_enabled => false,
       # :ccache_enabled => true
     )
+
+    pods_project = installer.pods_project
+
+    pods_project.build_configurations.each do |build_config|
+      build_config.build_settings['CODE_SIGNING_ALLOWED'] = 'NO'
+      build_config.build_settings['CODE_SIGNING_REQUIRED'] = 'NO'
+      build_config.build_settings['CODE_SIGN_IDENTITY'] = ''
+      build_config.build_settings['CODE_SIGN_IDENTITY[sdk=iphoneos*]'] = ''
+      build_config.build_settings['EXPANDED_CODE_SIGN_IDENTITY'] = ''
+      build_config.build_settings['PROVISIONING_PROFILE'] = ''
+      build_config.build_settings['PROVISIONING_PROFILE_SPECIFIER'] = ''
+      build_config.build_settings['PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]'] = ''
+      build_config.build_settings['DEVELOPMENT_TEAM'] = ''
+    end
+
+    pods_project.targets.each do |pod_target|
+      pod_target.build_configurations.each do |build_config|
+        build_config.build_settings['CODE_SIGNING_ALLOWED'] = 'NO'
+        build_config.build_settings['CODE_SIGNING_REQUIRED'] = 'NO'
+        build_config.build_settings['CODE_SIGN_IDENTITY'] = ''
+        build_config.build_settings['CODE_SIGN_IDENTITY[sdk=iphoneos*]'] = ''
+        build_config.build_settings['EXPANDED_CODE_SIGN_IDENTITY'] = ''
+        build_config.build_settings['PROVISIONING_PROFILE'] = ''
+        build_config.build_settings['PROVISIONING_PROFILE_SPECIFIER'] = ''
+        build_config.build_settings['PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]'] = ''
+        build_config.build_settings['DEVELOPMENT_TEAM'] = ''
+
+        deployment_target = build_config.build_settings['IPHONEOS_DEPLOYMENT_TARGET']
+        if deployment_target && deployment_target.to_f < 12.0
+          build_config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '12.0'
+        end
+      end
+    end
+
+    target_attributes = pods_project.root_object.attributes['TargetAttributes'] ||= {}
+    pods_project.targets.each do |pod_target|
+      target_attributes[pod_target.uuid] ||= {}
+      target_attributes[pod_target.uuid]['ProvisioningStyle'] = 'Automatic'
+    end
+
+    pods_project.save
   end
 end
