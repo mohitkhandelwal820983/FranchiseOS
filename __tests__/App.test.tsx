@@ -3,11 +3,11 @@ import { render } from '@testing-library/react-native';
 import App from '../App';
 
 jest.mock('../src/navigation/RootNavigator', () => {
-  const React = require('react');
+  const MockReact = require('react');
   const { View } = require('react-native');
 
   return function MockRootNavigator() {
-    return <View testID="root-navigator" />;
+    return MockReact.createElement(View, { testID: 'root-navigator' });
   };
 });
 
